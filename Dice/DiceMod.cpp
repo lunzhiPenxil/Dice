@@ -80,7 +80,7 @@ string DiceModManager::get_help(const string& key) const {
 		if (!extInfo)
 		{
 			extInfo = true;
-			strAns += "\n#请尝试以下近似条目:";
+			strAns += "\n{strHlpRecommend}";
 		}
 		strAns += "\n[.help " + vResult[u].second + "]";
 	}
