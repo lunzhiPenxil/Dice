@@ -44,14 +44,14 @@ int DiceModManager::minDistance(string word1, string word2) const
 	if (word1.length() > word2.length())swap(word1, word2);
 	if (word2.find(word1) != string::npos)return 1;
 	vector<vector<int>> dp(word1.size() + 1, vector<int>(word2.size() + 1, 0));
-	for (int i = 0; i < word1.size() + 1; i++) {
+	for (unsigned int i = 0; i < word1.size() + 1; i++) {
 		dp[i][0] = i;
 	}
-	for (int i = 0; i < word2.size() + 1; i++) {
+	for (unsigned int i = 0; i < word2.size() + 1; i++) {
 		dp[0][i] = i;
 	}
-	for (int i = 1; i < word1.size() + 1; i++) {
-		for (int j = 1; j < word2.size() + 1; j++) {
+	for (unsigned int i = 1; i < word1.size() + 1; i++) {
+		for (unsigned int j = 1; j < word2.size() + 1; j++) {
 			if (word1[i - 1] == word2[j - 1]) {
 				dp[i][j] = dp[i - 1][j - 1];
 			}
@@ -75,14 +75,14 @@ string DiceModManager::get_help(const string& key) const {
 	}
 	sort(vResult.begin(), vResult.end());
 	bool extInfo = false;
-	for (unsigned u = 0; u < 10 && u < vResult.size() && vResult[u].first < key.length() / 2; ++u)
+	for (unsigned int u = 0; u < 6 && u < vResult.size() && vResult[u].first < (int)key.length() / 2; ++u)
 	{
 		if (!extInfo)
 		{
 			extInfo = true;
-			strAns += "\nSuggestions:";
+			strAns += "\n#请尝试以下近似条目:";
 		}
-		strAns += "\n" + vResult[u].second;
+		strAns += "\n[.help " + vResult[u].second + "]";
 	}
 	return strAns;
 }
