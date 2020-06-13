@@ -6,8 +6,8 @@
 #include "DiceFile.hpp"
 using std::set;
 
-DiceModManager::DiceModManager() {
-	helpdoc = HelpDoc;
+DiceModManager::DiceModManager() : helpdoc(HelpDoc) {
+
 }
 
 string DiceModManager::format(string s, const map<string, string, less_ci>& dict, const char* mod_name = "") const {
@@ -39,11 +39,52 @@ string DiceModManager::format(string s, const map<string, string, less_ci>& dict
 	return s;
 }
 
+int DiceModManager::minDistance(string word1, string word2) const
+{
+	if (word1.length() > word2.length())swap(word1, word2);
+	if (word2.find(word1) != string::npos)return 1;
+	vector<vector<int>> dp(word1.size() + 1, vector<int>(word2.size() + 1, 0));
+	for (int i = 0; i < word1.size() + 1; i++) {
+		dp[i][0] = i;
+	}
+	for (int i = 0; i < word2.size() + 1; i++) {
+		dp[0][i] = i;
+	}
+	for (int i = 1; i < word1.size() + 1; i++) {
+		for (int j = 1; j < word2.size() + 1; j++) {
+			if (word1[i - 1] == word2[j - 1]) {
+				dp[i][j] = dp[i - 1][j - 1];
+			}
+			else {
+				dp[i][j] = min(dp[i - 1][j - 1], min(dp[i][j - 1], dp[i - 1][j])) + 1;
+			}
+		}
+	}
+	return dp[word1.size()][word2.size()];
+}
+
 string DiceModManager::get_help(const string& key) const {
 	if (auto it = helpdoc.find(key); it != helpdoc.end()) {
 		return format(it->second, helpdoc);
 	}
-	else return "{strHlpNotFound}";
+	string strAns = "{strHlpNotFound}";
+	vector<pair<int, string>> vResult;
+	for (auto it = helpdoc.begin(); it != helpdoc.end(); ++it)
+	{
+		vResult.push_back(make_pair(minDistance(it->first, key), it->first));
+	}
+	sort(vResult.begin(), vResult.end());
+	bool extInfo = false;
+	for (unsigned u = 0; u < 10 && u < vResult.size() && vResult[u].first < key.length() / 2; ++u)
+	{
+		if (!extInfo)
+		{
+			extInfo = true;
+			strAns += "\nSuggestions:";
+		}
+		strAns += "\n" + vResult[u].second;
+	}
+	return strAns;
 }
 
 void DiceModManager::set_help(string key, string val) {
