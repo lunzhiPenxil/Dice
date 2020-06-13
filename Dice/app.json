@@ -2,8 +2,8 @@
   "ret": 1,
   "apiver": 9,
   "name": "Dice!",
-  "version": "2.4.0beta",
-  "version_id": 561,
+  "version": "2.4.0beta2",
+  "version_id": 562,
   "author": "w4123溯洄 Shiki",
   "description": "跑团用骰子 本程序使用AGPLv3开源协议授权 Copyright (c) 2018-2019 w4123溯洄 Shiki",
   "event": [
@@ -112,6 +112,10 @@
     {
       "name": "全局开关",
       "function": "eventGlobalSwitch"
+    },
+    {
+      "name": "综合管理",
+      "function": "eventGUI"
     }
   ],
   "status": [ // 悬浮窗状态（将应用运行状态等显示在酷Q悬浮窗）
@@ -124,11 +128,11 @@
     }
   ],
   "auth": [
-    //20, //取好友列表	getFriendList
+    //20, //[敏感]取Cookies getCookies
     101, //发送群消息			sendGroupMsg
     103, //发送讨论组消息		sendDiscussMsg
     106, //发送私聊消息		sendPrivateMsg
-    110, //发送赞		sendLike
+    //110, //发送赞		sendLike
     120, //置群成员移出  setGroupKick
     121, //置群成员禁言  setGroupBan
     122, //置群管理员			setGroupAdmin

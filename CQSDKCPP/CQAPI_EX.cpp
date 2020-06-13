@@ -80,7 +80,7 @@ GroupMemberInfo::GroupMemberInfo(const char* msg)
 	}
 }
 
-GroupMemberInfo::GroupMemberInfo(vector<unsigned char> data)
+GroupMemberInfo::GroupMemberInfo(const vector<unsigned char>& data)
 {
 	if (data.size() != 0)
 	{
@@ -348,9 +348,6 @@ std::map<long long, FriendInfo> CQ::getFriendList() noexcept {
 		FriendInfo info(pack.getUnpack()); //∂¡»°
 		ret[info.QQID] = info; //–¥»Îmap
 	}
-	std::ofstream fout("friendinfo.log", std::ios::out | std::ios::app);
-	fout << "friend add" << std::endl;
-	fout.close();
 	return ret;
 }
 bool CQ::canSendImage() noexcept
