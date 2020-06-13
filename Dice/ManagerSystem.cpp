@@ -3,6 +3,8 @@
  * Copyright (C) 2019-2020 String.Empty
  */
 #include <windows.h>
+
+#include <utility>
 #include "ManagerSystem.h"
 
 string DiceDir = "DiceData";
@@ -54,9 +56,6 @@ string getName(long long QQ, long long GroupID)
 	string nick;
 	if (getUser(QQ).getNick(nick, GroupID))return nick;
 	if (GroupID && !(nick = strip(CQ::getGroupMemberInfo(GroupID, QQ).GroupNick)).empty())return nick;
-	CQ::FriendInfo frd = CQ::getFriendList()[QQ];
-	if (!(nick = strip(frd.remark)).empty())return nick;
-	if (!(nick = strip(frd.nick)).empty())return nick;
 	if (!(nick = strip(CQ::getStrangerInfo(QQ).nick)).empty())return nick;
 	return GlobalMsg["stranger"] + "(" + to_string(QQ) + ")";
 }
@@ -67,7 +66,7 @@ Chat& chat(long long id) {
 }
 int groupset(long long id, string st) {
 	if (!ChatList.count(id))return -1;
-	else return ChatList[id].isset(st);
+	else return ChatList[id].isset(std::move(st));
 }
 string printChat(Chat& grp) {
 	if (CQ::getGroupList().count(grp.ID))return CQ::getGroupList()[grp.ID] + "(" + to_string(grp.ID) + ")";
@@ -76,7 +75,7 @@ string printChat(Chat& grp) {
 	return "讨论组" + to_string(grp.ID) + "";
 }
 
-void scanImage(string s, set<string>& list) {
+void scanImage(const string& s, set<string>& list) {
 	int l = 0, r = 0;
 	while ((l = s.find('[', r)) != string::npos && (r = s.find(']', l)) != string::npos) {
 		if (s.substr(l, 15) != CQ_IMAGE)continue;
@@ -115,7 +114,7 @@ DWORD getRamPort() {
 	return memory_status.dwMemoryLoad;
 }
 
-__int64 compareFileTime(FILETIME& ft1, FILETIME& ft2) {
+__int64 compareFileTime(const FILETIME& ft1, const FILETIME& ft2) {
 	__int64 t1 = ft1.dwHighDateTime;
 	t1 = t1 << 32 | ft1.dwLowDateTime;
 	__int64 t2 = ft2.dwHighDateTime;
@@ -124,8 +123,6 @@ __int64 compareFileTime(FILETIME& ft1, FILETIME& ft2) {
 }
 
 __int64 getWinCpuUsage() {
-	HANDLE hEvent;
-	BOOL res;
 	FILETIME preidleTime;
 	FILETIME prekernelTime;
 	FILETIME preuserTime;
@@ -133,15 +130,13 @@ __int64 getWinCpuUsage() {
 	FILETIME kernelTime;
 	FILETIME userTime;
 
-	res = GetSystemTimes(&idleTime, &kernelTime, &userTime);
+	if (!GetSystemTimes(&idleTime, &kernelTime, &userTime)) return -1;
 	preidleTime = idleTime;
 	prekernelTime = kernelTime;
 	preuserTime = userTime;
 
-	hEvent = CreateEventA(NULL, FALSE, FALSE, NULL); // 初始值为 nonsignaled ，并且每次触发后自动设置为nonsignaled
-	//WaitForSingleObject(hEvent, 1000);
-	Sleep(2000);
-	res = GetSystemTimes(&idleTime, &kernelTime, &userTime);
+	Sleep(1000);
+	if (!GetSystemTimes(&idleTime, &kernelTime, &userTime)) return -1;
 
 	__int64 idle = compareFileTime(idleTime, preidleTime);
 	__int64 kernel = compareFileTime(kernelTime, prekernelTime);
@@ -167,9 +162,7 @@ int getProcessCpu()
 
 	if (!GetProcessTimes(hProcess, &ftCreationTime, &ftExitTime, &ftPreKernelTime, &ftPreUserTime)) { return -1; }
 	log << ftPreKernelTime.dwLowDateTime << "\n" << ftPreUserTime.dwLowDateTime << "\n";
-	HANDLE hEvent = CreateEventA(NULL, FALSE, FALSE, NULL); // 初始值为 nonsignaled ，并且每次触发后自动设置为nonsignaled
-	if (hEvent == nullptr) { return -1; }
-	WaitForSingleObject(hEvent, 1000);
+	Sleep(1000);
 	if (!GetProcessTimes(hProcess, &ftCreationTime, &ftExitTime, &ftKernelTime, &ftUserTime)) { return -1; }
 	log << ftKernelTime.dwLowDateTime << "\n" << ftUserTime.dwLowDateTime << "\n";
 	__int64 ullKernelTime = compareFileTime(ftKernelTime, ftPreKernelTime);
