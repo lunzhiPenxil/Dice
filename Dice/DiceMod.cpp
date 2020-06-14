@@ -39,10 +39,28 @@ string DiceModManager::format(string s, const map<string, string, less_ci>& dict
 	return s;
 }
 
-int DiceModManager::minDistance(string word1, string word2) const
+vector<pair<char, char>> DiceModManager::makeConsult(string word) const
 {
-	if (word1.length() > word2.length())swap(word1, word2);
-	if (word2.find(word1) != string::npos)return 1;
+	vector<pair<char, char>> vResult;
+	for (unsigned int i = 0; i < word.size(); i++) {
+		if (word[i] & 0x80) {
+			vResult.push_back(std::make_pair(word[i], word[i+1]));
+			i++;
+		}
+		else {
+			vResult.push_back(std::make_pair(0x00, word[i]));
+		}
+	}
+	return vResult;
+}
+
+int DiceModManager::minDistance(string word1_in, string word2_in) const
+{
+	if (word1_in.length() > word2_in.length())swap(word1_in, word2_in);
+	if (word2_in.find(word1_in) != string::npos)return 1;
+	vector<pair<char, char>> word1, word2;
+	word1 = makeConsult(word1_in);
+	word2 = makeConsult(word2_in);
 	vector<vector<int>> dp(word1.size() + 1, vector<int>(word2.size() + 1, 0));
 	for (unsigned int i = 0; i < word1.size() + 1; i++) {
 		dp[i][0] = i;
@@ -52,7 +70,7 @@ int DiceModManager::minDistance(string word1, string word2) const
 	}
 	for (unsigned int i = 1; i < word1.size() + 1; i++) {
 		for (unsigned int j = 1; j < word2.size() + 1; j++) {
-			if (word1[i - 1] == word2[j - 1]) {
+			if (word1[i - 1].second == word2[j - 1].second && word1[i - 1].first == word2[j - 1].first) {
 				dp[i][j] = dp[i - 1][j - 1];
 			}
 			else {
@@ -71,11 +89,11 @@ string DiceModManager::get_help(const string& key) const {
 	vector<pair<int, string>> vResult;
 	for (auto it = helpdoc.begin(); it != helpdoc.end(); ++it)
 	{
-		vResult.push_back(make_pair(minDistance(it->first, key), it->first));
+		vResult.push_back(std::make_pair(minDistance(it->first, key), it->first));
 	}
 	sort(vResult.begin(), vResult.end());
 	bool extInfo = false;
-	for (unsigned int u = 0; u < 6 && u < vResult.size() && vResult[u].first < (int)key.length() / 2; ++u)
+	for (unsigned int u = 0; u < 10 && u < vResult.size() && vResult[u].first <= (int)makeConsult(key).size() / 2; ++u)
 	{
 		if (!extInfo)
 		{
