@@ -54,31 +54,59 @@ vector<pair<char, char>> DiceModManager::makeConsult(string word) const
 	return vResult;
 }
 
-int DiceModManager::minDistance(string word1_in, string word2_in) const
+int DiceModManager::getRecommendRank(string word1_in, string word2_in) const
 {
-	if (word1_in.length() > word2_in.length())swap(word1_in, word2_in);
-	if (word2_in.find(word1_in) != string::npos)return 1;
+	int iRank = 0;
+	bool find_flag = 1;
 	vector<pair<char, char>> word1, word2;
 	word1 = makeConsult(word1_in);
 	word2 = makeConsult(word2_in);
-	vector<vector<int>> dp(word1.size() + 1, vector<int>(word2.size() + 1, 0));
+	if (word1_in.length() > word2_in.length())swap(word1_in, word2_in);
+	if (word2_in.find(word1_in) != string::npos) {
+		find_flag = 0;
+	}
+	//LCS
+	vector<vector<int>> dp1(word1.size() + 1, vector<int>(word2.size() + 1, 0));
 	for (unsigned int i = 0; i < word1.size() + 1; i++) {
-		dp[i][0] = i;
+		dp1[i][0] = 0;
 	}
 	for (unsigned int i = 0; i < word2.size() + 1; i++) {
-		dp[0][i] = i;
+		dp1[0][i] = 0;
 	}
 	for (unsigned int i = 1; i < word1.size() + 1; i++) {
 		for (unsigned int j = 1; j < word2.size() + 1; j++) {
 			if (word1[i - 1].second == word2[j - 1].second && word1[i - 1].first == word2[j - 1].first) {
-				dp[i][j] = dp[i - 1][j - 1];
+				dp1[i][j] = dp1[i - 1][j - 1] + 1;
 			}
 			else {
-				dp[i][j] = min(dp[i - 1][j - 1], min(dp[i][j - 1], dp[i - 1][j])) + 1;
+				dp1[i][j] = max(dp1[i][j - 1], dp1[i - 1][j]);
 			}
 		}
 	}
-	return dp[word1.size()][word2.size()];
+	//minDistance
+	vector<vector<int>> dp2(word1.size() + 1, vector<int>(word2.size() + 1, 0));
+	for (unsigned int i = 0; i < word1.size() + 1; i++) {
+		dp2[i][0] = i;
+	}
+	for (unsigned int i = 0; i < word2.size() + 1; i++) {
+		dp2[0][i] = i;
+	}
+	for (unsigned int i = 1; i < word1.size() + 1; i++) {
+		for (unsigned int j = 1; j < word2.size() + 1; j++) {
+			if (word1[i - 1].second == word2[j - 1].second && word1[i - 1].first == word2[j - 1].first) {
+				dp2[i][j] = dp2[i - 1][j - 1];
+			}
+			else {
+				dp2[i][j] = min(dp2[i - 1][j - 1], min(dp2[i][j - 1], dp2[i - 1][j])) + 1;
+			}
+		}
+	}
+	iRank = (find_flag) * (word1.size() * (word2.size() - dp1[word1.size()][word2.size()]) + dp2[word1.size()][word2.size()] + 1);
+	iRank = iRank * iRank / word1.size() / word2.size();
+	if (iRank >= word1.size() * word2.size()) {
+		iRank += 1000;
+	}
+	return iRank;
 }
 
 string DiceModManager::get_help(const string& key) const {
@@ -89,11 +117,11 @@ string DiceModManager::get_help(const string& key) const {
 	vector<pair<int, string>> vResult;
 	for (auto it = helpdoc.begin(); it != helpdoc.end(); ++it)
 	{
-		vResult.push_back(std::make_pair(minDistance(it->first, key), it->first));
+		vResult.push_back(std::make_pair(getRecommendRank(it->first, key), it->first));
 	}
 	sort(vResult.begin(), vResult.end());
 	bool extInfo = false;
-	for (unsigned int u = 0; u < 10 && u < vResult.size() && vResult[u].first <= (int)makeConsult(key).size() / 2; ++u)
+	for (unsigned int u = 0; u < 8 && u < vResult.size() && vResult[u].first < (int)(makeConsult(vResult[u].second).size() * makeConsult(key).size()); ++u)
 	{
 		if (!extInfo)
 		{

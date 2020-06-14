@@ -58,7 +58,7 @@ public:
 	friend void loadData();
 	string format(string, const map<string, string, less_ci>&, const char*) const;
 	vector<pair<char, char>> makeConsult(string word)const;
-	int minDistance(string word1, string word2)const;
+	int getRecommendRank(string word1, string word2)const;
 	string get_help(const string&) const;
 	void set_help(string, string);
 	void rm_help(string);
