@@ -103,7 +103,7 @@ int DiceModManager::getRecommendRank(string word1_in, string word2_in) const
 	}
 	iRank = (find_flag) * (word1.size() * (word2.size() - dp1[word1.size()][word2.size()]) + dp2[word1.size()][word2.size()] + 1);
 	iRank = iRank * iRank / word1.size() / word2.size();
-	if (iRank >= word1.size() * word2.size()) {
+	if ((unsigned int)abs(iRank) >= word1.size() * word2.size()) {
 		iRank += 1000;
 	}
 	return iRank;
