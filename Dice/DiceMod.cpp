@@ -6,35 +6,41 @@
 #include "DiceFile.hpp"
 using std::set;
 
-DiceModManager::DiceModManager() : helpdoc(HelpDoc) {
-
+DiceModManager::DiceModManager() : helpdoc(HelpDoc)
+{
 }
 
-string DiceModManager::format(string s, const map<string, string, less_ci>& dict, const char* mod_name = "") const {
-	//÷±Ω”÷ÿ∂®œÚ
-	if (s[0] == '&') {
+string DiceModManager::format(string s, const map<string, string, less_ci>& dict, const char* mod_name = "") const
+{
+	//Áõ¥Êé•ÈáçÂÆöÂêë
+	if (s[0] == '&')
+	{
 		string key = s.substr(1);
 		auto it = dict.find(key);
-		if (it != dict.end()) {
+		if (it != dict.end())
+		{
 			return format(it->second, dict, mod_name);
 		}
-		//µ˜”√±æmod¥ Ãı
+		//Ë∞ÉÁî®Êú¨modËØçÊù°
 	}
 	int l = 0, r = 0;
 	int len = s.length();
-	while ((l = s.find('{', r)) != string::npos && (r = s.find('}', l)) != string::npos) {
-		if (s[l - 1] == 0x5c) {
+	while ((l = s.find('{', r)) != string::npos && (r = s.find('}', l)) != string::npos)
+	{
+		if (s[l - 1] == 0x5c)
+		{
 			s.replace(l - 1, 1, "");
 			continue;
 		}
 		string key = s.substr(l + 1, r - l - 1);
 		auto it = dict.find(key);
-		if (it != dict.end()) {
+		if (it != dict.end())
+		{
 			s.replace(l, r - l + 1, format(it->second, dict, mod_name));
 			r += s.length() - len + 1;
 			len = s.length();
 		}
-		//µ˜”√±æmod¥ Ãı
+		//Ë∞ÉÁî®Êú¨modËØçÊù°
 	}
 	return s;
 }
@@ -133,38 +139,49 @@ string DiceModManager::get_help(const string& key) const {
 	return strAns;
 }
 
-void DiceModManager::set_help(string key, string val) {
+void DiceModManager::set_help(const string& key, const string& val)
+{
 	helpdoc[key] = val;
 }
-void DiceModManager::rm_help(string key) {
+
+void DiceModManager::rm_help(const string& key)
+{
 	helpdoc.erase(key);
 }
 
-int DiceModManager::load(string& strLog) {
+int DiceModManager::load(string& strLog)
+{
 	vector<std::filesystem::path> sFile;
 	vector<string> sFileErr;
 	int cntFile = listDir(DiceDir + "\\mod\\", sFile, true);
-	int cntItem{ 0 };
+	int cntItem{0};
 	if (cntFile <= 0)return cntFile;
-	for (auto& filename : sFile) {
+	for (auto& filename : sFile)
+	{
 		nlohmann::json j = freadJson(filename);
-		if (j.is_null()) {
+		if (j.is_null())
+		{
 			sFileErr.push_back(filename.filename().string());
 			continue;
 		}
-		if (j.count("helpdoc")) {
+		if (j.count("helpdoc"))
+		{
 			cntItem += readJMap(j["helpdoc"], helpdoc);
 		}
 	}
-	strLog += "∂¡»°" + DiceDir + "mod\\÷–µƒ" + std::to_string(cntFile) + "∏ˆŒƒº˛, π≤" + std::to_string(cntItem) + "∏ˆÃıƒø\n";
-	if (!sFileErr.empty()) {
-		strLog += "∂¡»° ß∞‹" + std::to_string(sFileErr.size()) + "∏ˆ:\n";
-		for (auto &it : sFileErr) {
+	strLog += "ËØªÂèñ" + DiceDir + "mod\\‰∏≠ÁöÑ" + std::to_string(cntFile) + "‰∏™Êñá‰ª∂, ÂÖ±" + std::to_string(cntItem) + "‰∏™Êù°ÁõÆ\n";
+	if (!sFileErr.empty())
+	{
+		strLog += "ËØªÂèñÂ§±Ë¥•" + std::to_string(sFileErr.size()) + "‰∏™:\n";
+		for (auto& it : sFileErr)
+		{
 			strLog += it + "\n";
 		}
 	}
 	return cntFile;
 }
-void DiceModManager::clear() {
+
+void DiceModManager::clear()
+{
 	helpdoc.clear();
 }
