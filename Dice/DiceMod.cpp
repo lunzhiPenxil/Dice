@@ -67,6 +67,7 @@ int DiceModManager::getRecommendRank(string word1_in, string word2_in) const
 	vector<pair<char, char>> word1, word2;
 	word1 = makeConsult(word1_in);
 	word2 = makeConsult(word2_in);
+	if (word1.size() <= 0 || word2.size() <= 0)return 1000;
 	if (word1_in.length() > word2_in.length())swap(word1_in, word2_in);
 	if (word2_in.find(word1_in) != string::npos) {
 		find_flag = 0;
