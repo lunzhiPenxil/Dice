@@ -1,5 +1,5 @@
 /*
- * ×ÊÔ´Ä£¿é
+ * èµ„æºæ¨¡å—
  * Copyright (C) 2019 String.Empty
  */
 #pragma once
@@ -15,12 +15,12 @@ using std::map;
 
 class DiceGenerator
 {
-	//ÀäÈ´Ê±¼ä
+	//å†·å´æ—¶é—´
 	//int cold_time;
-	//µ¥´Î³éÈ¡ÉÏÏŞ
+	//å•æ¬¡æŠ½å–ä¸Šé™
 	//int draw_limit = 1;
 	string expression;
-	//string cold_msg = "ÀäÈ´Ê±¼äÖĞ¡Á";
+	//string cold_msg = "å†·å´æ—¶é—´ä¸­Ã—";
 public:
 	string getExp() { return expression; }
 };
@@ -59,6 +59,8 @@ public:
 	DiceModManager();
 	friend void loadData();
 	string format(string, const map<string, string, less_ci>&, const char*) const;
+	vector<pair<char, char>> makeConsult(string word)const;
+	int getRecommendRank(string word1, string word2)const;
 	[[nodiscard]] string get_help(const string&) const;
 	void set_help(const string&, const string&);
 	void rm_help(const string&);
