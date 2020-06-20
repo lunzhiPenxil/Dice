@@ -103,7 +103,7 @@ bool fscan(std::ifstream& fin, std::string& t)
 
 bool rdbuf(const string& strPath, string& s)
 {
-	std::ifstream fin(strPath);
+	const std::ifstream fin(strPath);
 	if (!fin)return false;
 	stringstream ss;
 	ss << fin.rdbuf();
@@ -122,8 +122,8 @@ void fprint(std::ofstream& fout, std::string s)
 
 void fwrite(ofstream& fout, const std::string& s)
 {
-	short len = static_cast<short>(s.length());
-	fout.write((char*)&len, sizeof(short));
+	auto len = static_cast<short>(s.length());
+	fout.write(reinterpret_cast<char*>(&len), sizeof(short));
 	fout.write(s.c_str(), sizeof(char) * s.length());
 }
 
@@ -131,7 +131,7 @@ void readini(ifstream& fin, std::string& s)
 {
 	std::string line;
 	getline(fin, line);
-	int pos = line.find('=');
+	const int pos = line.find('=');
 	if (pos == std::string::npos)return;
 	std::istringstream sin(line.substr(pos + 1));
 	sin >> s;
@@ -142,7 +142,7 @@ using namespace std;
 
 std::ifstream& operator>>(std::ifstream& fin, CQ::msgtype& t)
 {
-	fin >> (int&)t;
+	fin >> reinterpret_cast<int&>(t);
 	return fin;
 }
 
@@ -186,7 +186,7 @@ ofstream& operator<<(ofstream& fout, const Chat& grp)
 }
 
 template <typename T>
-int _listDir(const string& dir, vector<std::filesystem::path>& files) noexcept
+int _listDir(const string& dir, vector<std::filesystem::path>& files)
 {
 	int intFile = 0;
 	std::error_code err;
@@ -201,7 +201,7 @@ int _listDir(const string& dir, vector<std::filesystem::path>& files) noexcept
 	return err ? -1 : intFile;
 }
 
-int listDir(const string& dir, vector<std::filesystem::path>& files, bool isSub) noexcept
+int listDir(const string& dir, vector<std::filesystem::path>& files, bool isSub)
 {
 	if (isSub)
 	{

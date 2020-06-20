@@ -62,7 +62,7 @@ int Console::setClock(Clock c, ClockEvent e)
 
 int Console::rmClock(Clock c, ClockEvent e)
 {
-	if (auto it = match(mWorkClock, c, e); it != mWorkClock.end())
+	if (const auto it = match(mWorkClock, c, e); it != mWorkClock.end())
 	{
 		mWorkClock.erase(it);
 		save();
@@ -74,10 +74,9 @@ int Console::rmClock(Clock c, ClockEvent e)
 ResList Console::listClock() const
 {
 	ResList list;
-	string strClock;
-	for (auto& [clock, eve] : mWorkClock)
+	for (const auto& [clock, eve] : mWorkClock)
 	{
-		strClock = printClock(clock);
+		string strClock = printClock(clock);
 		switch (eve)
 		{
 		case ClockEvent::on:
@@ -102,7 +101,7 @@ ResList Console::listClock() const
 ResList Console::listNotice() const
 {
 	ResList list;
-	for (auto& [ct,lv] : NoticeList)
+	for (const auto& [ct,lv] : NoticeList)
 	{
 		list << printChat(ct) + " " + to_binary(lv);
 	}
@@ -111,7 +110,7 @@ ResList Console::listNotice() const
 
 int Console::showNotice(chatType ct) const
 {
-	if (auto it = NoticeList.find(ct); it != NoticeList.end())return it->second;
+	if (const auto it = NoticeList.find(ct); it != NoticeList.end())return it->second;
 	return 0;
 }
 
@@ -146,7 +145,7 @@ int Console::log(const std::string& strMsg, int note_lv, const string& strTime)
 	fout << strTime << "\t" << note_lv << "\t" << printLine(strMsg) << std::endl;
 	fout.close();
 	int Cnt = 0;
-	string note = strTime.empty() ? strMsg : (strTime + " " + strMsg);
+	const string note = strTime.empty() ? strMsg : (strTime + " " + strMsg);
 	if (note_lv)
 	{
 		for (auto& [ct, level] : NoticeList)
@@ -182,13 +181,13 @@ void Console::loadNotice()
 	{
 		std::set<chatType> sChat;
 		if (loadFile(static_cast<string>(getAppDirectory()) + "MonitorList.RDconf", sChat) > 0)
-			for (auto& it : sChat)
+			for (const auto& it : sChat)
 			{
 				console.setNotice(it, 0b100000);
 			}
 		sChat.clear();
 		if (loadFile(DiceDir + "\\conf\\RecorderList.RDconf", sChat) > 0)
-			for (auto& it : sChat)
+			for (const auto& it : sChat)
 			{
 				console.setNotice(it, 0b11011);
 			}
@@ -205,7 +204,7 @@ void Console::loadNotice()
 	}
 }
 
-void Console::saveNotice()
+void Console::saveNotice() const
 {
 	saveFile(DiceDir + "\\conf\\NoticeList.txt", NoticeList);
 }
@@ -238,8 +237,8 @@ std::string printDate()
 
 std::string printDate(time_t tt)
 {
-	tm t;
-	if (!tt || localtime_s(&t, &tt))return "\?\?\?\?-\?\?-\?\?";
+	tm t{};
+	if (!tt || localtime_s(&t, &tt))return R"(????-??-??)";
 	return to_string(t.tm_year + 1900) + "-" + to_string(t.tm_mon + 1) + "-" + to_string(t.tm_mday);
 }
 
@@ -257,7 +256,7 @@ string printClock(std::pair<int, int> clock)
 	return strClock;
 }
 
-std::string printSTime(SYSTEMTIME st)
+std::string printSTime(const SYSTEMTIME st)
 {
 	return to_string(st.wYear) + "-" + (st.wMonth < 10 ? "0" : "") + to_string(st.wMonth) + "-" + (
 			st.wDay < 10 ? "0" : "") + to_string(st.wDay) + " " + (st.wHour < 10 ? "0" : "") + to_string(st.wHour) + ":"
@@ -270,11 +269,11 @@ std::string printSTime(SYSTEMTIME st)
 string printQQ(long long llqq)
 {
 	string nick = getStrangerInfo(llqq).nick;
-	if (nick.empty())nick = getFriendList()[llqq].nick;
-	while (nick.find(" ") != string::npos)nick.erase(nick.begin() + nick.find(" "),
-	                                                 nick.begin() + nick.find(" ") + strlen(" "));
-	while (nick.find(" ") != string::npos)nick.erase(nick.begin() + nick.find(" "),
-	                                                 nick.begin() + nick.find(" ") + strlen(" "));
+	string::size_type i;
+	while ((i = nick.find(' ')) != string::npos)
+	{
+		nick.erase(nick.begin() + i);
+	}
 	return nick + "(" + to_string(llqq) + ")";
 }
 
@@ -282,7 +281,11 @@ string printQQ(long long llqq)
 string printGroup(long long llgroup)
 {
 	if (!llgroup)return "私聊";
-	if (getGroupList().count(llgroup))return getGroupList()[llgroup] + "(" + to_string(llgroup) + ")";
+	const auto GroupList = getGroupList();
+	if (GroupList.count(llgroup))
+	{
+		return GroupList.at(llgroup) + "(" + to_string(llgroup) + ")";
+	}
 	return "群聊(" + to_string(llgroup) + ")";
 }
 
@@ -340,7 +343,7 @@ void ConsoleTimer()
 		{
 			stTmp = stNow;
 			clockNow = {stNow.wHour, stNow.wMinute};
-			for (auto& [clock,eve_type] : multi_range(console.mWorkClock, clockNow))
+			for (const auto& [clock,eve_type] : multi_range(console.mWorkClock, clockNow))
 			{
 				switch (eve_type)
 				{
@@ -378,7 +381,7 @@ void ConsoleTimer()
 			{
 				if (console["SystemAlarmCPU"])
 				{
-					long long perCPU = getWinCpuUsage();
+					const long long perCPU = getWinCpuUsage();
 					if (perCPU > console["SystemAlarmCPU"] && perCPU > perLastCPU)console.log(
 						"警告：" + GlobalMsg["strSelfName"] + "所在系统CPU占用达" + to_string(perCPU) + "%", 0b1001,
 						printSTime(stNow));
@@ -389,7 +392,7 @@ void ConsoleTimer()
 				}
 				if (console["SystemAlarmRAM"])
 				{
-					long long perRAM = getRamPort();
+					const long long perRAM = getRamPort();
 					if (perRAM > console["SystemAlarmRAM"] && perRAM > perLastRAM)console.log(
 						"警告：" + GlobalMsg["strSelfName"] + "所在系统内存占用达" + to_string(perRAM) + "%", 0b1001,
 						printSTime(stNow));
@@ -429,21 +432,21 @@ int clearGroup(string strPara, long long fromQQ)
 	}
 	else if (isdigit(static_cast<unsigned char>(strPara[0])))
 	{
-		int intDayLim = stoi(strPara);
-		string strDayLim = to_string(intDayLim);
-		time_t tNow = time(nullptr);
+		const int intDayLim = stoi(strPara);
+		const string strDayLim = to_string(intDayLim);
+		const time_t tNow = time(nullptr);
 		for (auto& [id, grp] : ChatList)
 		{
 			if (grp.isset("忽略") || grp.isset("已退") || grp.isset("未进") || grp.isset("免清"))continue;
 			time_t tLast = grp.tLastMsg;
 			if (grp.isGroup)
 			{
-				int tLMT = getGroupMemberInfo(id, console.DiceMaid).LastMsgTime;
+				const int tLMT = getGroupMemberInfo(id, console.DiceMaid).LastMsgTime;
 				if (tLMT > 0)
 					tLast = tLMT;
 			}
 			if (!tLast)continue;
-			int intDay = static_cast<int>(tNow - tLast) / 86400;
+			const int intDay = static_cast<int>(tNow - tLast) / 86400;
 			if (intDay > intDayLim)
 			{
 				strVar["day"] = to_string(intDay);
@@ -471,7 +474,7 @@ int clearGroup(string strPara, long long fromQQ)
 					if (console["LeaveBlackGroup"])grp.leave(getMsg("strBlackGroup"));
 				}
 				vector<GroupMemberInfo> MemberList = getGroupMemberList(id);
-				for (auto eachQQ : MemberList)
+				for (const auto& eachQQ : MemberList)
 				{
 					if (blacklist->get_qq_danger(eachQQ.QQID) > 1)
 					{
@@ -537,16 +540,16 @@ int clearGroup(string strPara, long long fromQQ)
 
 EVE_Menu(eventClearGroupUnpower)
 {
-	int intGroupCnt = clearGroup("unpower");
-	string strReply = "已清退无权限群聊" + to_string(intGroupCnt) + "个√";
+	const int intGroupCnt = clearGroup("unpower");
+	const string strReply = "已清退无权限群聊" + to_string(intGroupCnt) + "个√";
 	MessageBoxA(nullptr, strReply.c_str(), "一键清退", MB_OK | MB_ICONINFORMATION);
 	return 0;
 }
 
 EVE_Menu(eventClearGroup30)
 {
-	int intGroupCnt = clearGroup("30");
-	string strReply = "已清退30天未使用群聊" + to_string(intGroupCnt) + "个√";
+	const int intGroupCnt = clearGroup("30");
+	const string strReply = "已清退30天未使用群聊" + to_string(intGroupCnt) + "个√";
 	MessageBoxA(nullptr, strReply.c_str(), "一键清退", MB_OK | MB_ICONINFORMATION);
 	return 0;
 }

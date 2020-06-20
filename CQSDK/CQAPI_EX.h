@@ -163,14 +163,14 @@ namespace CQ
 	StrangerInfo getStrangerInfo(long long QQID, CQBOOL DisableCache = false) noexcept;
 
 	//取群成员列表 Auth=160  
-	std::vector<GroupMemberInfo> getGroupMemberList(long long GroupID) noexcept;
+	std::vector<GroupMemberInfo> getGroupMemberList(long long GroupID);
 
 	//取群列表 Auth=161  
-	std::map<long long, std::string> getGroupList() noexcept;
+	std::map<long long, std::string> getGroupList();
 
 	class FriendInfo;
 	//取好友列表 Auth=162  
-	std::map<long long, FriendInfo> getFriendList() noexcept;
+	std::map<long long, FriendInfo> getFriendList();
 
 	//是否支持发送图片，返回true为支持，返回false为不支持
 	bool canSendImage() noexcept;
@@ -200,7 +200,7 @@ namespace CQ
 
 		explicit GroupInfo(long long group);
 		GroupInfo() = default;
-		std::string tostring() const;
+		[[nodiscard]] std::string tostring() const;
 	};
 	// 群成员信息
 	class GroupMemberInfo final
@@ -228,7 +228,7 @@ namespace CQ
 		explicit GroupMemberInfo(const std::vector<unsigned char>& data); //从Unpack解码
 		GroupMemberInfo() = default;
 
-		std::string tostring() const;
+		[[nodiscard]] std::string tostring() const;
 	};
 	// 好友信息
 	class FriendInfo final
@@ -240,7 +240,7 @@ namespace CQ
 
 		explicit FriendInfo(Unpack p);
 		FriendInfo() = default;
-		std::string tostring() const;
+		[[nodiscard]] std::string tostring() const;
 	};
 	// 陌生人信息
 	class StrangerInfo final
@@ -254,6 +254,6 @@ namespace CQ
 		explicit StrangerInfo(const char* msg);
 		StrangerInfo() = default;
 
-		std::string tostring() const;
+		[[nodiscard]] std::string tostring() const;
 	};
 }
