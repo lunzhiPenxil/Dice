@@ -1,5 +1,5 @@
 /*
- * èµ„æºæ¨¡å—
+ * ×ÊÔ´Ä£¿é
  * Copyright (C) 2019 String.Empty
  */
 #pragma once
@@ -15,12 +15,12 @@ using std::map;
 
 class DiceGenerator
 {
-	//å†·å´æ—¶é—´
+	//ÀäÈ´Ê±¼ä
 	//int cold_time;
-	//å•æ¬¡æŠ½å–ä¸Šé™
+	//µ¥´Î³éÈ¡ÉÏÏŞ
 	//int draw_limit = 1;
 	string expression;
-	//string cold_msg = "å†·å´æ—¶é—´ä¸­Ã—";
+	//string cold_msg = "ÀäÈ´Ê±¼äÖĞ¡Á";
 public:
 	string getExp() { return expression; }
 };
