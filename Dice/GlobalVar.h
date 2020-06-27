@@ -38,8 +38,8 @@
 const unsigned short Dice_Build = 563u;
 inline const std::string Dice_Ver_Without_Build = "2.4.0beta3";
 constexpr auto DiceRequestHeader = "Dice/2.4.0BETA3";
-inline const std::string Dice_Ver = Dice_Ver_Without_Build + "(" + std::to_string(Dice_Build) + ")";
-inline const std::string Dice_Short_Ver = "Dice! by À›‰ß Shiki Ver " + Dice_Ver;
+inline const std::string Dice_Ver = Dice_Ver_Without_Build + ".Oliva.1.1.2(" + std::to_string(Dice_Build) + ")";
+inline const std::string Dice_Short_Ver = "Dice! by À›‰ß Shiki ¬ÿ÷  Ver " + Dice_Ver;
 
 #ifdef __clang__
 
