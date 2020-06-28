@@ -135,6 +135,7 @@ std::map<std::string, std::string> GlobalMsg
 	{"strRollDice", "{pc}掷骰: {res}"},
 	{"strRollDiceReason", "{pc}掷骰 {reason}: {res}"},
 	{"strRollHidden", "{pc}进行了一次暗骰"},
+	{"strHiddenCheck", "{pc}进行{attr}暗检定"},
 	{"strRollTurn", "{pc}的掷骰轮数: {turn}轮"},
 	{"strRollMultiDice", "{pc}掷骰{turn}次: {dice_exp}={res}"},
 	{"strRollMultiDiceReason", "{pc}掷骰{turn}次{reason}: {dice_exp}={res}"},
