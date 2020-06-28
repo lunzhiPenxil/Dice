@@ -48,12 +48,15 @@ string DiceModManager::format(string s, const map<string, string, less_ci>& dict
 vector<pair<char, char>> DiceModManager::makeConsult(string word) const
 {
 	vector<pair<char, char>> vResult;
-	for (unsigned int i = 0; i < word.size(); i++) {
-		if (word[i] & 0x80) {
-			vResult.push_back(std::make_pair(word[i], word[i+1]));
+	for (unsigned int i = 0; i < word.size(); i++)
+	{
+		if (word[i] & 0x80) 
+		{
+			vResult.push_back(std::make_pair(word[i], word[i + 1]));
 			i++;
 		}
-		else {
+		else 
+		{
 			vResult.push_back(std::make_pair(0x00, word[i]));
 		}
 	}
@@ -69,38 +72,50 @@ int DiceModManager::getRecommendRank(string word1_in, string word2_in) const
 	word2 = makeConsult(word2_in);
 	if (word1.size() <= 0 || word2.size() <= 0)return 1000;
 	if (word1_in.length() > word2_in.length())swap(word1_in, word2_in);
-	if (word2_in.find(word1_in) != string::npos) {
+	if (word2_in.find(word1_in) != string::npos) 
+	{
 		find_flag = 0;
 	}
 	//LCS
 	vector<vector<int>> dp1(word1.size() + 1, vector<int>(word2.size() + 1, 0));
-	for (unsigned int i = 0; i < word1.size() + 1; i++) {
+	for (unsigned int i = 0; i < word1.size() + 1; i++) 
+	{
 		dp1[i][0] = 0;
 	}
-	for (unsigned int i = 0; i < word2.size() + 1; i++) {
+	for (unsigned int i = 0; i < word2.size() + 1; i++)
+	{
 		dp1[0][i] = 0;
 	}
-	for (unsigned int i = 1; i < word1.size() + 1; i++) {
-		for (unsigned int j = 1; j < word2.size() + 1; j++) {
-			if (word1[i - 1].second == word2[j - 1].second && word1[i - 1].first == word2[j - 1].first) {
+	for (unsigned int i = 1; i < word1.size() + 1; i++) 
+	{
+		for (unsigned int j = 1; j < word2.size() + 1; j++) 
+		{
+			if (word1[i - 1].second == word2[j - 1].second && word1[i - 1].first == word2[j - 1].first)
+			{
 				dp1[i][j] = dp1[i - 1][j - 1] + 1;
 			}
-			else {
+			else 
+			{
 				dp1[i][j] = max(dp1[i][j - 1], dp1[i - 1][j]);
 			}
 		}
 	}
 	//minDistance
 	vector<vector<int>> dp2(word1.size() + 1, vector<int>(word2.size() + 1, 0));
-	for (unsigned int i = 0; i < word1.size() + 1; i++) {
+	for (unsigned int i = 0; i < word1.size() + 1; i++) 
+	{
 		dp2[i][0] = i;
 	}
-	for (unsigned int i = 0; i < word2.size() + 1; i++) {
+	for (unsigned int i = 0; i < word2.size() + 1; i++)
+	{
 		dp2[0][i] = i;
 	}
-	for (unsigned int i = 1; i < word1.size() + 1; i++) {
-		for (unsigned int j = 1; j < word2.size() + 1; j++) {
-			if (word1[i - 1].second == word2[j - 1].second && word1[i - 1].first == word2[j - 1].first) {
+	for (unsigned int i = 1; i < word1.size() + 1; i++) 
+	{
+		for (unsigned int j = 1; j < word2.size() + 1; j++)
+		{
+			if (word1[i - 1].second == word2[j - 1].second && word1[i - 1].first == word2[j - 1].first)
+			{
 				dp2[i][j] = dp2[i - 1][j - 1];
 			}
 			else {
@@ -110,14 +125,17 @@ int DiceModManager::getRecommendRank(string word1_in, string word2_in) const
 	}
 	iRank = (find_flag) * (word1.size() * (word2.size() - dp1[word1.size()][word2.size()]) + dp2[word1.size()][word2.size()] + 1);
 	iRank = iRank * iRank / word1.size() / word2.size();
-	if ((unsigned int)abs(iRank) >= word1.size() * word2.size()) {
+	if ((unsigned int)abs(iRank) >= word1.size() * word2.size()) 
+	{
 		iRank += 1000;
 	}
 	return iRank;
 }
 
-string DiceModManager::get_help(const string& key) const {
-	if (auto it = helpdoc.find(key); it != helpdoc.end()) {
+string DiceModManager::get_help(const string& key) const
+{
+	if (auto it = helpdoc.find(key); it != helpdoc.end())
+	{
 		return format(it->second, helpdoc);
 	}
 	string strAns = "{strHlpNotFound}";

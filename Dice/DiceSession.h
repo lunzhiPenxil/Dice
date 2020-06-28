@@ -61,6 +61,7 @@ public:
 	[[nodiscard]] bool table_count(string key) const { return mTable.count(key); }
 	int table_add(string, int, string);
 	[[nodiscard]] string table_prior_show(string key) const;
+	bool table_remove_item(string key, string item);
 	bool table_clr(string key);
 
 	//≈‘π€÷∏¡Ó

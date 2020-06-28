@@ -13,6 +13,7 @@
 #include "CQAPI.h"
 #include "DiceNetwork.h"
 #include "DiceCloud.h"
+#include "JrrpModule.h"
 
 //#pragma warning(disable:28159)
 using namespace std;
@@ -56,12 +57,12 @@ int FromMsg::AdminEvent(const string& strOption)
 		if (console["DisabledSend"])res << "全局禁用.send";
 		if (trusted > 3)
 			res << "所在群聊数：" + to_string(getGroupList().size())
-				<< "群记录数：" + to_string(ChatList.size())
-				<< "好友数：" + to_string(getFriendList().size())
-				<< "用户记录数：" + to_string(UserList.size())
-				<< (!PList.empty() ? "角色卡记录数：" + to_string(PList.size()) : "无角色卡记录")
-				<< "黑名单用户数：" + to_string(blacklist->mQQDanger.size())
-				<< "黑名单群数：" + to_string(blacklist->mGroupDanger.size());
+			<< "群记录数：" + to_string(ChatList.size())
+			<< "好友数：" + to_string(getFriendList().size())
+			<< "用户记录数：" + to_string(UserList.size())
+			<< (!PList.empty() ? "角色卡记录数：" + to_string(PList.size()) : "无角色卡记录")
+			<< "黑名单用户数：" + to_string(blacklist->mQQDanger.size())
+			<< "黑名单群数：" + to_string(blacklist->mGroupDanger.size());
 		reply(GlobalMsg["strSelfName"] + "的当前情况" + res.show());
 		return 1;
 	}
@@ -2135,10 +2136,22 @@ int FromMsg::DiceReply()
 		while (isspace(static_cast<unsigned char>(strLowerMessage[intMsgCnt])))intMsgCnt++;
 		if (strLowerMessage.substr(intMsgCnt, 3) == "clr")
 		{
-			if (gm->session(fromGroup).table_clr("先攻"))
-				reply("成功清除先攻记录！");
+			intMsgCnt += 3;
+			string strTarget = readUntilSpace();
+			if (strTarget == "")
+			{
+				if (gm->session(fromGroup).table_clr("先攻"))
+					reply("成功清除先攻记录！");
+				else
+					reply("列表为空！");
+			}
 			else
-				reply("列表为空！");
+			{
+				if (gm->session(fromGroup).table_remove_item("先攻", strTarget))
+					reply("成功将" + strTarget + "从先攻列表移除！");
+				else
+					reply("先攻列表不存在" + strTarget);
+			}
 			return 1;
 		}
 		strVar["table_name"] = "先攻";
@@ -2247,7 +2260,18 @@ int FromMsg::DiceReply()
 		delete[] frmdata;
 		if (res)
 		{
-			reply(GlobalMsg["strJrrp"], {strVar["nick"], strVar["res"]});
+			int intJrrpValue;
+			try
+			{
+				intJrrpValue = stoi(strVar["res"]);
+			}
+			catch (...)
+			{
+				reply(GlobalMsg["strJrrpErr"], { strVar["res"] });
+				return 1;
+			}
+			string strReplyMsg = JrrpModule::Execute(intJrrpValue, strVar["nick"]);
+			reply(strReplyMsg, {strVar["nick"], strVar["res"], strVar["dashes"] = string(intJrrpValue,'|') });
 		}
 		else
 		{
@@ -3142,21 +3166,158 @@ int FromMsg::DiceReply()
 			return 1;
 		}
 	}
+	else if (strLowerMessage.substr(intMsgCnt, 3) == "rav" || strLowerMessage.substr(intMsgCnt, 3) == "rcv")
+	{
+	intMsgCnt += 3;
+	readSkipSpace();
+	int intRule = intT ? get(chat(fromGroup).intConf, string("rc房规"), 0) : get(getUser(fromQQ).intConf, string("rc房规"), 0);
+	long long playerA = fromQQ, playerB = fromQQ;
+	string strSkillA = "", strSkillB = "";
+	string strToken = strLowerMessage.substr(intMsgCnt, 10);
+	string strReply = "";
+	auto funcSuccessLevelStr = [](int level, int intDifficulty) {//this is lambda function. It is same to declare another function outside this function. I used here just for convenience
+		switch (level) {
+		case 0:return GlobalMsg["strFumble"];
+		case 1:return GlobalMsg["strFailure"];
+		case 5:return GlobalMsg["strCriticalSuccess"];
+		case 4:if (intDifficulty == 1) { return GlobalMsg["strExtremeSuccess"]; }
+		case 3:if (intDifficulty == 1) { return GlobalMsg["strHardSuccess"]; }
+		case 2:return GlobalMsg["strSuccess"];
+		default:return GlobalMsg["strFailure"];
+		}
+	};
+	if (strToken == "[cq:at,qq=") //Phrase PlayerA
+	{
+		intMsgCnt += 10;
+		strToken = readDigit();
+		try
+		{
+			playerA = stoll(strToken);
+		}
+		catch (...)
+		{
+			reply("无法读取对抗信息。");
+			return 1;
+		}
+		intMsgCnt++;
+	}
+	strSkillA = readPara(); //Phrase SkillA
+	readSkipSpace();
+	strToken = strLowerMessage.substr(intMsgCnt, 10);
+	if (strToken == "[cq:at,qq=") //Phrase PlayerB
+	{
+		intMsgCnt += 10;
+		strToken = readDigit();
+		try
+		{
+			playerB = stoll(strToken);
+		}
+		catch (...)
+		{
+			reply("无法读取对抗信息。");
+			return 1;
+		}
+		intMsgCnt++;
+	}
+	else
+	{
+		reply("指令格式不正确");
+		return 1;
+	}
+	strSkillB = readPara();
+	if (strSkillB == "")
+		strSkillB = strSkillA;
+	int intDifficultyA = 1, intDifficultyB = 1;
+	if (strSkillA.find("困难") == 0 || strSkillA.find("极难") == 0)
+	{
+		intDifficultyA = (strSkillA.substr(0, 4) == "困难") ? 2 : 5;
+		strSkillA = strSkillA.substr(4);
+	}
+	if (strSkillB.find("困难") == 0 || strSkillB.find("极难") == 0)
+	{
+		intDifficultyB = (strSkillB.substr(0, 4) == "困难") ? 2 : 5;
+		strSkillB = strSkillB.substr(4);
+	}
+	int intSkillA, intSkillB;
+	if (PList.count(playerA) && PList[playerA][fromGroup].count(strSkillA)) {
+		intSkillA = PList[playerA][fromGroup].call(strSkillA);
+	}
+	else {
+		if (!PList.count(playerA) && SkillNameReplace.count(strSkillA)) {
+			strSkillA = SkillNameReplace[strSkillA];
+		}
+		if (!PList.count(playerA) && SkillDefaultVal.count(strSkillA)) {
+			intSkillA = SkillDefaultVal[strSkillA];
+		}
+		else {
+			reply(GlobalMsg["strUnknownPropErr"], { strVar["attr"] = strSkillA });
+			return 1;
+		}
+	}
+	if (PList.count(playerB) && PList[playerB][fromGroup].count(strSkillB)) {
+		intSkillB = PList[playerB][fromGroup].call(strSkillB);
+	}
+	else {
+		if (!PList.count(playerB) && SkillNameReplace.count(strSkillB)) {
+			strSkillB = SkillNameReplace[strSkillB];
+		}
+		if (!PList.count(playerB) && SkillDefaultVal.count(strSkillB)) {
+			intSkillB = SkillDefaultVal[strSkillB];
+		}
+		else {
+			reply(GlobalMsg["strUnknownPropErr"], { strVar["attr"] = strSkillB });
+			return 1;
+		}
+	}
+	intSkillA /= intDifficultyA;
+	intSkillB /= intDifficultyB;
+	RD rdMainDice("1D100");
+	int intResA, intResB;
+	string strPCA = getPCName(playerA, fromGroup);
+	string strPCB = getPCName(playerB, fromGroup);
+	rdMainDice.Roll();
+	intResA = RollSuccessLevel(rdMainDice.intTotal, intSkillA, intRule);
+	strReply = strPCA + "的" + strSkillA + "与" + strPCB + "的" + strSkillB + "对抗：\n";
+	strReply += strPCA + "的" + strSkillA + "检定:" + rdMainDice.FormCompleteString() + ", " + funcSuccessLevelStr(intResA, intDifficultyA) + "\n";
+	rdMainDice.Roll();
+	intResB = RollSuccessLevel(rdMainDice.intTotal, intSkillB, intRule);
+	strReply += strPCB + "的" + strSkillB + "检定:" + rdMainDice.FormCompleteString() + ", " + funcSuccessLevelStr(intResB, intDifficultyB) + "\n";
+	if (intResA > intResB)
+	{
+		strReply += strPCA + "对抗胜利";
+	}
+	else if (intResA == intResB)
+	{
+		strReply += "对抗平局";
+	}
+	else
+	{
+		strReply += strPCB + "对抗胜利";
+	}
+		reply(strReply);
+		return 1;
+	}
 	else if (strLowerMessage.substr(intMsgCnt, 2) == "ra" || strLowerMessage.substr(intMsgCnt, 2) == "rc")
 	{
 		intMsgCnt += 2;
+		bool isHidden = false;
+		if (strLowerMessage[intMsgCnt] == 'h')
+		{
+			intMsgCnt++;
+			isHidden = true;
+		}
 		readSkipSpace();
 		int intRule = intT
-			              ? get(chat(fromGroup).intConf, string("rc房规"), 0)
-			              : get(getUser(fromQQ).intConf, string("rc房规"), 0);
+			? get(chat(fromGroup).intConf, string("rc房规"), 0)
+			: get(getUser(fromQQ).intConf, string("rc房规"), 0);
 		int intTurnCnt = 1;
-		if (strMsg.find('#') != string::npos)
+		if (strMsg.find("#") != string::npos)
 		{
-			string strTurnCnt = strMsg.substr(intMsgCnt, strMsg.find('#') - intMsgCnt);
+			string strTurnCnt = strMsg.substr(intMsgCnt, strMsg.find("#") - intMsgCnt);
 			//#能否识别有效
 			if (strTurnCnt.empty())intMsgCnt++;
 			else if ((strTurnCnt.length() == 1 && isdigit(static_cast<unsigned char>(strTurnCnt[0]))) || strTurnCnt ==
-				"10")
+				"10") 
 			{
 				intMsgCnt += strTurnCnt.length() + 1;
 				intTurnCnt = stoi(strTurnCnt);
@@ -3174,7 +3335,7 @@ int FromMsg::DiceReply()
 		int intSkillDivisor = 1;
 		//自动成功
 		bool isAutomatic = false;
-		if ((strLowerMessage[intMsgCnt] == 'p' || strLowerMessage[intMsgCnt] == 'b') && strLowerMessage[intMsgCnt - 1] != ' ')
+		if ((strLowerMessage[intMsgCnt] == 'p' || strLowerMessage[intMsgCnt] == 'b') && strLowerMessage[intMsgCnt - 1] != ' ') 
 		{
 			strMainDice = strLowerMessage[intMsgCnt];
 			intMsgCnt++;
@@ -3185,7 +3346,7 @@ int FromMsg::DiceReply()
 			}
 		}
 		readSkipSpace();
-		if (strMsg.length() == intMsgCnt)
+		if (strMsg.length() == intMsgCnt) 
 		{
 			strVar["attr"] = GlobalMsg["strEnDefaultName"];
 			reply(GlobalMsg["strUnknownPropErr"], {strVar["attr"]});
@@ -3206,17 +3367,17 @@ int FromMsg::DiceReply()
 			intDifficulty = (strVar["attr"].substr(0, 4) == "困难") ? 2 : 5;
 			strVar["attr"] = strVar["attr"].substr(4);
 		}
-		if (strLowerMessage[intMsgCnt] == '*' && isdigit(strLowerMessage[intMsgCnt + 1]))
+		if (strLowerMessage[intMsgCnt] == '*' && isdigit(strLowerMessage[intMsgCnt + 1])) 
 		{
 			intMsgCnt++;
 			readNum(intSkillMultiple);
 		}
 		while ((strLowerMessage[intMsgCnt] == '+' || strLowerMessage[intMsgCnt] == '-') && isdigit(
-			strLowerMessage[intMsgCnt + 1]))
+			strLowerMessage[intMsgCnt + 1])) 
 		{
 			if (!readNum(intSkillModify))strSkillModify = to_signed_string(intSkillModify);
 		}
-		if (strLowerMessage[intMsgCnt] == '/' && isdigit(strLowerMessage[intMsgCnt + 1]))
+		if (strLowerMessage[intMsgCnt] == '/' && isdigit(strLowerMessage[intMsgCnt + 1])) 
 		{
 			intMsgCnt++;
 			readNum(intSkillDivisor);
@@ -3244,7 +3405,7 @@ int FromMsg::DiceReply()
 		int intSkillVal;
 		if (strSkillVal.empty())
 		{
-			if (PList.count(fromQQ) && PList[fromQQ][fromGroup].count(strVar["attr"]))
+			if (PList.count(fromQQ) && PList[fromQQ][fromGroup].count(strVar["attr"])) 
 			{
 				intSkillVal = PList[fromQQ][fromGroup].call(strVar["attr"]);
 			}
@@ -3294,14 +3455,14 @@ int FromMsg::DiceReply()
 		}
 		strVar["attr"] = strDifficulty + strVar["attr"] + (
 			(intSkillMultiple != 1) ? "×" + to_string(intSkillMultiple) : "") + strSkillModify + ((intSkillDivisor != 1)
-				                                                                                      ? "/" + to_string(
-					                                                                                      intSkillDivisor)
-				                                                                                      : "");
-		if (strVar["reason"].empty())
+			? "/" + to_string(
+				intSkillDivisor)
+			: "");
+		if (strVar["reason"].empty()) 
 		{
 			strReply = format(GlobalMsg["strRollSkill"], {strVar["pc"], strVar["attr"]});
 		}
-		else strReply = format(GlobalMsg["strRollSkillReason"], {strVar["pc"], strVar["attr"], strVar["reason"]});
+		else strReply = format(GlobalMsg["strRollSkillReason"], {strVar["pc"], strVar["attr"], strVar["reason"] });
 		ResList Res;
 		string strAns;
 		if (intTurnCnt == 1)
@@ -3325,17 +3486,17 @@ int FromMsg::DiceReply()
 			case 3: if (intDifficulty == 1)
 				{
 					strAns += GlobalMsg["strRollHardSuccess"];
-					break;
+						break;
 				}
 			case 2: strAns += GlobalMsg["strRollRegularSuccess"];
 				break;
 			}
 			strReply += strAns;
 		}
-		else
+		else 
 		{
 			Res.dot("\n");
-			while (intTurnCnt--)
+			while (intTurnCnt--) 
 			{
 				rdMainDice.Roll();
 				strAns = rdMainDice.FormCompleteString() + "/" + to_string(intFianlSkillVal) + " ";
@@ -3349,15 +3510,15 @@ int FromMsg::DiceReply()
 				case 5: strAns += GlobalMsg["strCriticalSuccess"];
 					break;
 				case 4: if (intDifficulty == 1)
-					{
-						strAns += GlobalMsg["strExtremeSuccess"];
-						break;
-					}
+				{
+					strAns += GlobalMsg["strExtremeSuccess"];
+					break;
+				}
 				case 3: if (intDifficulty == 1)
-					{
-						strAns += GlobalMsg["strHardSuccess"];
-						break;
-					}
+				{
+					strAns += GlobalMsg["strHardSuccess"];
+					break;
+				}
 				case 2: strAns += GlobalMsg["strSuccess"];
 					break;
 				}
@@ -3365,7 +3526,18 @@ int FromMsg::DiceReply()
 			}
 			strReply += Res.show();
 		}
-		reply();
+		if (!isHidden)
+			reply();
+		else
+		{
+			reply(GlobalMsg["strHiddenCheck"]);
+			strReply = format(strReply, GlobalMsg, strVar);
+			strReply = "在" + printChat(fromChat) + "中 " + strReply;
+			for (auto qq : gm->session(fromGroup).get_ob()) 
+{
+				AddMsgToQueue(strReply, qq, msgtype::Private);
+			}
+		}
 		return 1;
 	}
 	else if (strLowerMessage.substr(intMsgCnt, 2) == "ri" && intT)
