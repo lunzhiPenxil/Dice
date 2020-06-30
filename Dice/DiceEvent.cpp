@@ -14,6 +14,8 @@
 #include "DiceNetwork.h"
 #include "DiceCloud.h"
 #include "JrrpModule.h"
+#include "MD5.h"
+#include <time.h>
 
 //#pragma warning(disable:28159)
 using namespace std;
@@ -2252,11 +2254,51 @@ int FromMsg::DiceReply()
 				return 1;
 			}
 		}
-		string data = "QQ=" + to_string(getLoginQQ()) + "&v=20190114" + "&QueryQQ=" + to_string(fromQQ);
-		char* frmdata = new char[data.length() + 1];
-		strcpy_s(frmdata, data.length() + 1, data.c_str());
-		bool res = Network::POST("api.kokona.tech", "/jrrp", 5555, frmdata, strVar["res"]);
-		delete[] frmdata;
+		bool res = true;
+		if (console["LocalJrrp"])
+		{
+			int md5_1 = 6;
+			struct tm* LocalTime;
+			const time_t TimeStamp = time(NULL);
+			LocalTime = localtime(&TimeStamp);
+			string md5_str = md5(to_string(console.DiceMaid) + to_string(fromQQ) + to_string(LocalTime->tm_year) + to_string(LocalTime->tm_mon) + to_string(LocalTime->tm_mday));
+			int res_num = 0;
+			for (int str_i = 0; str_i < 4; str_i++)
+			{
+				switch (md5_str[str_i + md5_1])
+				{
+					case '0':
+					case '1':
+					case '2':
+					case '3':
+					case '4':
+					case '5':
+					case '6':
+					case '7':
+					case '8':
+					case '9':
+					{
+						res_num = md5_str[str_i + md5_1] - '0' + res_num * 10;
+						break;
+					}
+					default:
+					{
+						res_num = md5_str[str_i + md5_1] - 'a' + res_num * 10;
+						break;
+					}
+				}
+			}
+			res_num %= 100;
+			strVar["res"] = to_string(res_num + 1);
+		}
+		else
+		{
+			string data = "QQ=" + to_string(getLoginQQ()) + "&v=20190114" + "&QueryQQ=" + to_string(fromQQ);
+			char* frmdata = new char[data.length() + 1];
+			strcpy_s(frmdata, data.length() + 1, data.c_str());
+			res = Network::POST("api.kokona.tech", "/jrrp", 5555, frmdata, strVar["res"]);
+			delete[] frmdata;
+		}
 		if (res)
 		{
 			int intJrrpValue;
