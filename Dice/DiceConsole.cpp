@@ -310,13 +310,33 @@ string printChat(chatType ct)
 //获取骰娘列表
 void getDiceList()
 {
-	std::string list;
-	if (!Network::GET("shiki.stringempty.xyz", "/DiceList/", 80, list) && mDiceList.empty())
+	std::string list, list_Shiki, list_Oliva;
+	std::map<long long, long long> mDiceList_Shiki, mDiceList_Oliva;
+	bool flag_Shiki, flag_Oliva;
+	if (flag_Shiki = !Network::GET("shiki.stringempty.xyz", "/DiceList/", 80, list_Shiki) && mDiceList_Shiki.empty())
 	{
-		console.log("获取骰娘列表时遇到错误: \n" + list, 1, printSTNow());
-		return;
+		console.log("获取Shiki骰娘列表时遇到错误: \n" + list_Shiki, 1, printSTNow());
 	}
-	readJson(list, mDiceList);
+	if (flag_Oliva = !Network::GET("benzenpenxil.xyz", "/Oliva-DiceList/", 80, list_Oliva) && mDiceList_Oliva.empty())
+	{
+		console.log("获取Oliva骰娘列表时遇到错误: \n" + list_Oliva, 1, printSTNow());
+	}
+	if (!flag_Shiki)
+	{
+		readJson(list_Shiki, mDiceList_Shiki);
+		for (auto it_mDiceList : mDiceList_Shiki)
+		{
+			mDiceList.insert(it_mDiceList);
+		}
+	}
+	if (!flag_Oliva)
+	{
+		readJson(list_Oliva, mDiceList_Oliva);
+		for (auto it_mDiceList : mDiceList_Oliva)
+		{
+			mDiceList.insert(it_mDiceList);
+		}
+	}
 }
 
 
