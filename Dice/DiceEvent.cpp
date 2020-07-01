@@ -2278,12 +2278,12 @@ int FromMsg::DiceReply()
 					case '8':
 					case '9':
 					{
-						res_num = md5_str[str_i + md5_1] - '0' + res_num * 10;
+						res_num = md5_str[str_i + md5_1] - '0' + res_num * 16;
 						break;
 					}
 					default:
 					{
-						res_num = md5_str[str_i + md5_1] - 'a' + res_num * 10;
+						res_num = md5_str[str_i + md5_1] - 'a' + 10 + res_num * 16;
 						break;
 					}
 				}
