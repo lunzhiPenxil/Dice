@@ -40,7 +40,7 @@ inline const std::string Dice_Ver_Without_Build = "2.4.0beta3";
 constexpr auto DiceRequestHeader = "Dice/2.4.0BETA3";
 constexpr auto Oliva_Dice_Ver_Without_Build = "Oliva.1.2.2";
 inline const std::string Dice_Ver = Dice_Ver_Without_Build + "." + Oliva_Dice_Ver_Without_Build + "(" + std::to_string(Dice_Build) + ")";
-inline const std::string Dice_Short_Ver = "Dice! by À›‰ß Shiki ¬ÿ÷  Ver " + Dice_Ver;
+inline const std::string Dice_Short_Ver = "Dice! by À›‰ß Shiki ¬ÿ÷  Azusa Ver " + Dice_Ver;
 
 #ifdef __clang__
 
