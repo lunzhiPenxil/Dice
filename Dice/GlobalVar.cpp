@@ -328,12 +328,9 @@ const std::map<std::string, std::string, less_ci> HelpDoc = {
 	{
 		"链接",
 		R"(官方论坛:https://forum.kokona.tech/
-查看源码:https://github.com/mystringEmpty/Dice
-插件下载:https://github.com/mystringEmpty/Dice/releases
-用户手册:http://shiki.stringempty.xyz/download/Shiki_User_Manual.pdf
-骰主手册:http://shiki.stringempty.xyz/download/Shiki_Master_Manual.pdf
-炼骰手册:http://shiki.stringempty.xyz/download/DiceMaid_CookBook.html
-(在线文档)https://dice.c-j.dev/
+查看源码:https://github.com/lunzhiPenxil/Dice/tree/Oliva
+官方在线文档:https://v2docs.kokona.tech/
+青果扩充核心文档:https://oliva.dicer.wiki/
 st用COC7人物卡:http://shiki.stringempty.xyz/download/COC7_player_card_shiki.xlsx)"
 	},
 	{
