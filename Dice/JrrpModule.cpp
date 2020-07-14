@@ -18,7 +18,7 @@ namespace JrrpModule
 			if (1 <= intJrrpValue && 100 >= intJrrpValue)
 			{
 				string strReply = GlobalMsg["strJrrp"];
-				string strDashes = ">" + string(intJrrpValue/4, '|') + string(25 - intJrrpValue / 4, ' ') + "<";
+				string strDashes = string(intJrrpValue * console["JrrpDashesRange"] / 100, '|') + string(console["JrrpDashesRange"] - intJrrpValue * console["JrrpDashesRange"] / 100, ' ');
 				while (strReply.find("{nick}") != string::npos)
 				{
 					strReply.replace(strReply.find("{nick}"), 6, strNick);
