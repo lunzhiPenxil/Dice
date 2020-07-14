@@ -2255,41 +2255,9 @@ int FromMsg::DiceReply()
 			}
 		}
 		bool res = true;
-		if (console["LocalJrrp"])
+		if (console["LocalJrrp"] != 0)
 		{
-			int md5_1 = 6;
-			struct tm* LocalTime;
-			const time_t TimeStamp = time(NULL);
-			LocalTime = localtime(&TimeStamp);
-			string md5_str = md5(to_string(console.DiceMaid) + to_string(fromQQ) + to_string(LocalTime->tm_year) + to_string(LocalTime->tm_mon) + to_string(LocalTime->tm_mday));
-			int res_num = 0;
-			for (int str_i = 0; str_i < 4; str_i++)
-			{
-				switch (md5_str[str_i + md5_1])
-				{
-					case '0':
-					case '1':
-					case '2':
-					case '3':
-					case '4':
-					case '5':
-					case '6':
-					case '7':
-					case '8':
-					case '9':
-					{
-						res_num = md5_str[str_i + md5_1] - '0' + res_num * 16;
-						break;
-					}
-					default:
-					{
-						res_num = md5_str[str_i + md5_1] - 'a' + 10 + res_num * 16;
-						break;
-					}
-				}
-			}
-			res_num %= 100;
-			strVar["res"] = to_string(res_num + 1);
+			strVar["res"] = to_string(JrrpModule::LocalJrrpGenerate(fromQQ,console["LocalJrrp"], console["LocalJrrpMin"], console["LocalJrrpRange"]));
 		}
 		else
 		{
@@ -2312,7 +2280,7 @@ int FromMsg::DiceReply()
 				return 1;
 			}
 			string strReplyMsg = JrrpModule::Execute(intJrrpValue, strVar["nick"]);
-			reply(strReplyMsg, {strVar["nick"], strVar["res"], strVar["dashes"] = string(intJrrpValue,'|') });
+			reply(strReplyMsg);
 		}
 		else
 		{
