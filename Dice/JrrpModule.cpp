@@ -57,14 +57,26 @@ namespace JrrpModule
 
 	string Execute(int intJrrpValue,string strNick)
 	{
+		std::map<string, int> console_this =
+		{
+			{"LocalJrrp", console["LocalJrrp"]},
+			{"LocalJrrpMin", console["LocalJrrpMin"]},
+			{"LocalJrrpRange", console["LocalJrrpRange"]},
+			{"JrrpDashesRange", console["JrrpDashesRange"]}
+		};
+		if (console_this["LocalJrrp"] == 0)
+		{
+			console_this["LocalJrrpMin"] = 1;
+			console_this["LocalJrrpRange"] = 100;
+		}
 		try
 		{
 			SYSTEMTIME stNow;
 			GetLocalTime(&stNow);
-			if (console["LocalJrrpMin"] <= intJrrpValue && console["LocalJrrpMin"] + console["LocalJrrpRange"] - 1 >= intJrrpValue)
+			if (console_this["LocalJrrpMin"] <= intJrrpValue && console_this["LocalJrrpMin"] + console_this["LocalJrrpRange"] - 1 >= intJrrpValue)
 			{
 				string strReply = GlobalMsg["strJrrp"];
-				string strDashes = string((intJrrpValue + 1 - console["LocalJrrpMin"]) * console["JrrpDashesRange"] / console["LocalJrrpRange"], '|') + string(console["JrrpDashesRange"] - (intJrrpValue + 1 - console["LocalJrrpMin"]) * console["JrrpDashesRange"] / console["LocalJrrpRange"], ' ');
+				string strDashes = string((intJrrpValue + 1 - console_this["LocalJrrpMin"]) * console_this["JrrpDashesRange"] / console_this["LocalJrrpRange"], '|') + string(console_this["JrrpDashesRange"] - (intJrrpValue + 1 - console_this["LocalJrrpMin"]) * console_this["JrrpDashesRange"] / console_this["LocalJrrpRange"], ' ');
 				while (strReply.find("{nick}") != string::npos)
 				{
 					strReply.replace(strReply.find("{nick}"), 6, strNick);
