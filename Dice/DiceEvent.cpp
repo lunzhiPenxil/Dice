@@ -2257,7 +2257,7 @@ int FromMsg::DiceReply()
 		bool res = true;
 		if (console["LocalJrrp"] != 0)
 		{
-			strVar["res"] = to_string(JrrpModule::LocalJrrpGenerate(fromQQ,console["LocalJrrp"], console["LocalJrrpMin"], console["LocalJrrpRange"]));
+			strVar["res"] = to_string(JrrpModule::LocalJrrpGenerate(fromQQ, console["LocalJrrp"], console["LocalJrrpMin"], console["LocalJrrpRange"]));
 		}
 		else
 		{
