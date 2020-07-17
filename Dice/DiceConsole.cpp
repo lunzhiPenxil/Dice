@@ -46,7 +46,8 @@ const std::map<std::string, int, less_ci> Console::intDefault{
 	{"ListenGroupKick", 1}, {"ListenGroupBan", 1}, {"ListenSpam", 1},
 	{"BannedLeave", 0}, {"BannedBanInviter", 0},
 	{"KickedBanInviter", 0},
-	{"CloudBlackShare", 1}, {"BelieveDiceList", 0}, {"CloudVisible", 1},
+	{"CloudBlackShare", 0}, {"BelieveDiceList", 0}, {"CloudVisible", 1},
+	{"BelieveShikiDiceList", 0},{"BelieveOlivaDiceList", 0},{"BelieveThirdDiceList", 0},
 	{"SystemAlarmCPU", 90}, {"SystemAlarmRAM", 90},
 	{"SendIntervalIdle", 500}, {"SendIntervalBusy", 100}
 };
@@ -312,14 +313,20 @@ void getDiceList()
 {
 	std::string list, list_Shiki, list_Oliva;
 	std::map<long long, long long> mDiceList_Shiki, mDiceList_Oliva;
-	bool flag_Shiki, flag_Oliva;
-	if (flag_Shiki = !Network::GET("shiki.stringempty.xyz", "/DiceList/", 80, list_Shiki) && mDiceList_Shiki.empty())
+	bool flag_Shiki = true, flag_Oliva = true;
+	if (console["BelieveShikiDiceList"] != 0)
 	{
-		console.log("获取Shiki骰娘列表时遇到错误: \n" + list_Shiki, 1, printSTNow());
+		if (flag_Shiki = !Network::GET("shiki.stringempty.xyz", "/DiceList/", 80, list_Shiki) && mDiceList_Shiki.empty())
+		{
+			console.log("获取Shiki骰娘列表时遇到错误: \n" + list_Shiki, 1, printSTNow());
+		}
 	}
-	if (flag_Oliva = !Network::GET("benzenpenxil.xyz", "/Oliva-DiceList/", 80, list_Oliva) && mDiceList_Oliva.empty())
+	if (console["BelieveOlivaDiceList"] != 0)
 	{
-		console.log("获取Oliva骰娘列表时遇到错误: \n" + list_Oliva, 1, printSTNow());
+		if (flag_Oliva = !Network::GET("benzenpenxil.xyz", "/Oliva-DiceList/", 80, list_Oliva) && mDiceList_Oliva.empty())
+		{
+			console.log("获取Oliva骰娘列表时遇到错误: \n" + list_Oliva, 1, printSTNow());
+		}
 	}
 	if (!flag_Shiki)
 	{
