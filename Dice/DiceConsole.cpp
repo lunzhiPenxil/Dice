@@ -40,21 +40,22 @@ extern std::map<std::string, int, less_ci> ConsoleSafe{
 	{"CloudBlackShare", 0}
 };
 
-const std::map<std::string, int, less_ci> Console::intDefault{
-{"DisabledGlobal", 0}, {"DisabledBlock", 0}, {"DisabledListenAt", 1},
-{"DisabledMe", 1}, {"DisabledJrrp", 0}, {"DisabledDeck", 1}, {"DisabledDraw", 0}, {"DisabledSend", 0},
-{"LocalJrrp", 1}, {"LocalJrrpMin", 1}, {"LocalJrrpRange", 100}, {"JrrpDashesRange", 25},
-{"Private", 0}, {"CheckGroupLicense", 0}, {"LeaveDiscuss", 0},
-{"ListenGroupRequest", 1}, {"ListenGroupAdd", 1},
-{"ListenFriendRequest", 1}, {"ListenFriendAdd", 1}, {"AllowStranger", 1},
-{"AutoClearBlack", 1}, {"LeaveBlackQQ", 0},
-{"ListenGroupKick", 1}, {"ListenGroupBan", 1}, {"ListenSpam", 1},
-{"BannedLeave", 0}, {"BannedBanInviter", 0},
-{"KickedBanInviter", 0},
-{"CloudBlackShare", 0}, {"BelieveDiceList", 0}, {"CloudVisible", 1},
-{"BelieveShikiDiceList", 0},{"BelieveOlivaDiceList", 0},{"BelieveThirdDiceList", 0},
-{"SystemAlarmCPU", 90}, {"SystemAlarmRAM", 90},
-{"SendIntervalIdle", 500}, {"SendIntervalBusy", 100},
+const std::map<std::string, int, less_ci>Console::intDefault{
+{"DisabledGlobal",0},{"DisabledBlock",0},{"DisabledListenAt",1},
+{"DisabledMe",1},{"DisabledJrrp",0},{"DisabledDeck",1},{"DisabledDraw",0},{"DisabledSend",0},
+{"LocalJrrp",1},{"LocalJrrpMin",1},{"LocalJrrpRange",100},{"JrrpDashesRange",25},
+{"Private",0},{"CheckGroupLicense",0},{"LeaveDiscuss",0},
+{"ListenGroupRequest",1},{"ListenGroupAdd",1},
+{"ListenFriendRequest",1},{"ListenFriendAdd",1},{"AllowStranger",1},
+{"AutoClearBlack",1},{"LeaveBlackQQ",0},
+{"ListenGroupKick",1},{"ListenGroupBan",1},{"ListenSpam",1},
+{"BannedLeave",0},{"BannedBanInviter",0},
+{"KickedBanInviter",0},
+{"GroupClearLimit",20},
+{"CloudBlackShare",0},{"BelieveDiceList",0},{"CloudVisible",1},
+{"BelieveShikiDiceList",0},{"BelieveOlivaDiceList",0},{"BelieveThirdDiceList",0},
+{"SystemAlarmCPU",90},{"SystemAlarmRAM",90},{"SystemAlarmDisk",90},
+{"SendIntervalIdle",500},{"SendIntervalBusy",100},
 //自动保存事件间隔[min],自动图片清理间隔[h]
 {"AutoSaveInterval",10},{"AutoClearImage",0}
 };
