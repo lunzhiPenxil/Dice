@@ -95,7 +95,7 @@ public:
 	Session& session(long long group);
 	void session_end(long long group);
 	void save();
-	int load() const;
+	int load();
 };
 
 inline std::unique_ptr<DiceTableMaster> gm;

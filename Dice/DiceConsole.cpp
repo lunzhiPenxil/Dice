@@ -7,7 +7,8 @@
  * |_______/  |________| |________| |________| |__|
  *
  * Dice! QQ Dice Robot for TRPG
- * Copyright (C) 2018-2019 w4123Ëİä§
+ * Copyright (C) 2018-2020 w4123æº¯æ´„
+ * Copyright (C) 2019-2020 String.Empty
  *
  * This program is free software: you can redistribute it and/or modify it under the terms
  * of the GNU Affero General Public License as published by the Free Software Foundation,
@@ -86,16 +87,16 @@ ResList Console::listClock() const
 		switch (eve)
 		{
 		case ClockEvent::on:
-			strClock += " ¶¨Ê±¿ªÆô";
+			strClock += " å®šæ—¶å¼€å¯";
 			break;
 		case ClockEvent::off:
-			strClock += " ¶¨Ê±¹Ø±Õ";
+			strClock += " å®šæ—¶å…³é—­";
 			break;
 		case ClockEvent::save:
-			strClock += " ¶¨Ê±±£´æ";
+			strClock += " å®šæ—¶ä¿å­˜";
 			break;
 		case ClockEvent::clear:
-			strClock += " ¶¨Ê±ÇåÈº";
+			strClock += " å®šæ—¶æ¸…ç¾¤";
 			break;
 		default: break;
 		}
@@ -163,15 +164,14 @@ int Console::log(const std::string& strMsg, int note_lv, const string& strTime)
 		if (!Cnt)sendPrivateMsg(DiceMaid, note);
 	}
 	return Cnt;
-}
-
+} 
 void Console::newMaster(long long qq)
 {
-	masterQQ = qq;
-	getUser(qq).trust(5);
-	setNotice({qq, msgtype::Private}, 0b111111);
-	save();
-	AddMsgToQueue(getMsg("strNewMaster"), qq);
+	masterQQ = qq; 
+	getUser(qq).trust(5); 
+	setNotice({qq, CQ::msgtype::Private}, 0b111111);
+	save(); 
+	AddMsgToQueue(getMsg("strNewMaster"), qq); 
 }
 
 void Console::reset()
@@ -204,7 +204,7 @@ void Console::loadNotice()
 		{
 			if (ct.second != msgtype::Private)
 			{
-				chat(ct.first).set("Ğí¿ÉÊ¹ÓÃ").set("ÃâÇå").set("ÃâºÚ");
+				chat(ct.first).set("è®¸å¯ä½¿ç”¨").set("å…æ¸…").set("å…é»‘");
 			}
 		}
 	}
@@ -218,14 +218,15 @@ void Console::saveNotice() const
 Console console;
 
 //DiceModManager modules{};
-
-//÷»ÄïÁĞ±í
+//é™¤å¤–ç¾¤åˆ—è¡¨
+std::set<long long> ExceptGroups;
+//éª°å¨˜åˆ—è¡¨
 std::map<long long, long long> mDiceList;
 
-//³ÌĞòÆô¶¯Ê±¼ä
+//ç¨‹åºå¯åŠ¨æ—¶é—´
 long long llStartTime = clock();
 
-//µ±Ç°Ê±¼ä
+//å½“å‰æ—¶é—´
 SYSTEMTIME stNow{};
 SYSTEMTIME stTmp{};
 
@@ -248,9 +249,9 @@ std::string printDate(time_t tt)
 	return to_string(t.tm_year + 1900) + "-" + to_string(t.tm_mon + 1) + "-" + to_string(t.tm_mday);
 }
 
-//ÉÏ°àÊ±¼ä
+//ä¸Šç­æ—¶é—´
 std::pair<int, int> ClockToWork = {24, 0};
-//ÏÂ°àÊ±¼ä
+//ä¸‹ç­æ—¶é—´
 std::pair<int, int> ClockOffWork = {24, 0};
 
 string printClock(std::pair<int, int> clock)
@@ -270,49 +271,39 @@ std::string printSTime(const SYSTEMTIME st)
 			st.wMinute < 10 ? "0" : "") + to_string(st.wMinute) + ":" + (st.wSecond < 10 ? "0" : "") +
 		to_string(st.wSecond);
 }
-
-//´òÓ¡ÓÃ»§êÇ³ÆQQ
-string printQQ(long long llqq)
-{
-	string nick = getStrangerInfo(llqq).nick;
-	string::size_type i;
-	while ((i = nick.find(' ')) != string::npos)
+	//æ‰“å°ç”¨æˆ·æ˜µç§°QQ
+	string printQQ(long long llqq)
 	{
-		nick.erase(nick.begin() + i);
+		string nick = getStrangerInfo(llqq).nick;
+		if (nick.empty())nick = getFriendList()[llqq].nick;
+		if(nick.empty())return "ç”¨æˆ·(" + to_string(llqq) + ")";
+		return nick + "(" + to_string(llqq) + ")";
 	}
-	return nick + "(" + to_string(llqq) + ")";
-}
-
-//´òÓ¡QQÈººÅ
-string printGroup(long long llgroup)
-{
-	if (!llgroup)return "Ë½ÁÄ";
-	const auto GroupList = getGroupList();
-	if (GroupList.count(llgroup))
+	//æ‰“å°QQç¾¤å·
+	string printGroup(long long llgroup)
 	{
-		return GroupList.at(llgroup) + "(" + to_string(llgroup) + ")";
+		if (!llgroup)return"ç§èŠ";
+		if (ChatList.count(llgroup))return printChat(ChatList[llgroup]);
+		if (getGroupList().count(llgroup))return "[" + getGroupList()[llgroup] + "](" + to_string(llgroup) + ")";
+		return "ç¾¤(" + to_string(llgroup) + ")";
 	}
-	return "ÈºÁÄ(" + to_string(llgroup) + ")";
-}
-
-//´òÓ¡ÁÄÌì´°¿Ú
-string printChat(chatType ct)
-{
-	switch (ct.second)
+	//æ‰“å°èŠå¤©çª—å£
+	string printChat(chatType ct)
 	{
-	case msgtype::Private:
-		return printQQ(ct.first);
-	case msgtype::Group:
-		return printGroup(ct.first);
-	case msgtype::Discuss:
-		return "ÌÖÂÛ×é(" + to_string(ct.first) + ")";
-	default:
-		break;
+		switch (ct.second)
+		{
+		case msgtype::Private:
+			return printQQ(ct.first);
+		case msgtype::Group:
+			return printGroup(ct.first);
+		case msgtype::Discuss:
+			return "è®¨è®ºç»„(" + to_string(ct.first) + ")";
+		default:
+			break;
+		}
+		return "";
 	}
-	return "";
-}
-
-//»ñÈ¡÷»ÄïÁĞ±í
+//è·å–éª°å¨˜åˆ—è¡¨
 void getDiceList()
 {
 	std::string list, list_Shiki, list_Oliva;
@@ -322,14 +313,14 @@ void getDiceList()
 	{
 		if (flag_Shiki = !Network::GET("shiki.stringempty.xyz", "/DiceList/", 80, list_Shiki) && mDiceList_Shiki.empty())
 		{
-			console.log("»ñÈ¡Shiki÷»ÄïÁĞ±íÊ±Óöµ½´íÎó: \n" + list_Shiki, 1, printSTNow());
+			console.log("è·å–Shikiéª°å¨˜åˆ—è¡¨æ—¶é‡åˆ°é”™è¯¯: \n" + list_Shiki, 1, printSTNow());
 		}
 	}
 	if (console["BelieveOlivaDiceList"] != 0)
 	{
 		if (flag_Oliva = !Network::GET("benzenpenxil.xyz", "/Oliva-DiceList/", 80, list_Oliva) && mDiceList_Oliva.empty())
 		{
-			console.log("»ñÈ¡Oliva÷»ÄïÁĞ±íÊ±Óöµ½´íÎó: \n" + list_Oliva, 1, printSTNow());
+			console.log("è·å–Olivaéª°å¨˜åˆ—è¡¨æ—¶é‡åˆ°é”™è¯¯: \n" + list_Oliva, 1, printSTNow());
 		}
 	}
 	if (!flag_Shiki)
@@ -361,85 +352,53 @@ bool operator<(const Console::Clock clock, const SYSTEMTIME& st)
 	return st.wHour == clock.first && st.wHour == clock.second;
 }
 
-//¼òÒ×¼ÆÊ±Æ÷
-void ConsoleTimer()
-{
-	Console::Clock clockNow{stNow.wHour, stNow.wMinute};
-	long long perLastCPU = 0;
-	long long perLastRAM = 0;
-	while (Enabled)
+//ç®€æ˜“è®¡æ—¶å™¨
+	void ConsoleTimer()
 	{
-		GetLocalTime(&stNow);
-		//·ÖÖÓÊ±µã±ä¶¯
-		if (stTmp.wMinute != stNow.wMinute)
+		Console::Clock clockNow{stNow.wHour,stNow.wMinute};
+		while (Enabled) 
 		{
-			stTmp = stNow;
-			clockNow = {stNow.wHour, stNow.wMinute};
-			for (const auto& [clock,eve_type] : multi_range(console.mWorkClock, clockNow))
+			GetLocalTime(&stNow);
+			//åˆ†é’Ÿæ—¶ç‚¹å˜åŠ¨
+			if (stTmp.wMinute != stNow.wMinute)
 			{
-				switch (eve_type)
+				stTmp = stNow;
+				clockNow = {stNow.wHour, stNow.wMinute};
+				for (const auto& [clock,eve_type] : multi_range(console.mWorkClock, clockNow))
 				{
-				case ClockEvent::on:
-					if (console["DisabledGlobal"])
+					switch (eve_type)
 					{
-						console.set("DisabledGlobal", 0);
-						console.log(getMsg("strClockToWork"), 0b10000, "");
+					case ClockEvent::on:
+						if (console["DisabledGlobal"])
+						{
+							console.set("DisabledGlobal", 0);
+							console.log(getMsg("strClockToWork"), 0b10000, "");
+						}
+						break;
+					case ClockEvent::off:
+						if (!console["DisabledGlobal"])
+						{
+							console.set("DisabledGlobal", 1);
+							console.log(getMsg("strClockOffWork"), 0b10000, "");
+						}
+						break;
+					case ClockEvent::save:
+						dataBackUp();
+						console.log(GlobalMsg["strSelfName"] + "å®šæ—¶ä¿å­˜å®Œæˆâˆš", 1, printSTime(stTmp));
+						break;
+					case ClockEvent::clear:
+						if (clearGroup("black"))
+							console.log(GlobalMsg["strSelfName"] + "å®šæ—¶æ¸…ç¾¤å®Œæˆâˆš", 1, printSTNow());
+						break;
+					default: break;
 					}
-					break;
-				case ClockEvent::off:
-					if (!console["DisabledGlobal"])
-					{
-						console.set("DisabledGlobal", 1);
-						console.log(getMsg("strClockOffWork"), 0b10000, "");
-					}
-					break;
-				case ClockEvent::save:
-					dataBackUp();
-					console.log(GlobalMsg["strSelfName"] + "¶¨Ê±±£´æÍê³É¡Ì", 1, printSTime(stTmp));
-					break;
-				case ClockEvent::clear:
-					if (console && console["AutoClearBlack"] && clearGroup("black"))
-						console.log(GlobalMsg["strSelfName"] + "¶¨Ê±ÇåÈºÍê³É¡Ì", 1, printSTNow());
-					break;
-				default: break;
 				}
 			}
-			//ÕûµãÊÂ¼ş
-			if (stNow.wMinute % 10 == 0)
-			{
-				Cloud::update();
-			}
-			if (stNow.wMinute % 30 == 0)
-			{
-				if (console["SystemAlarmCPU"])
-				{
-					const long long perCPU = getWinCpuUsage();
-					if (perCPU > console["SystemAlarmCPU"] && perCPU > perLastCPU)console.log(
-						"¾¯¸æ£º" + GlobalMsg["strSelfName"] + "ËùÔÚÏµÍ³CPUÕ¼ÓÃ´ï" + to_string(perCPU) + "%", 0b1001,
-						printSTime(stNow));
-					else if (perLastCPU > console["SystemAlarmCPU"] && perCPU < console["SystemAlarmCPU"])console.log(
-						"ÌáĞÑ£º" + GlobalMsg["strSelfName"] + "ËùÔÚÏµÍ³CPUÕ¼ÓÃ½µÖÁ" + to_string(perCPU) + "%", 0b11,
-						printSTime(stNow));
-					perLastCPU = perCPU;
-				}
-				if (console["SystemAlarmRAM"])
-				{
-					const long long perRAM = getRamPort();
-					if (perRAM > console["SystemAlarmRAM"] && perRAM > perLastRAM)console.log(
-						"¾¯¸æ£º" + GlobalMsg["strSelfName"] + "ËùÔÚÏµÍ³ÄÚ´æÕ¼ÓÃ´ï" + to_string(perRAM) + "%", 0b1001,
-						printSTime(stNow));
-					else if (perLastRAM > console["SystemAlarmRAM"] && perRAM < console["SystemAlarmRAM"])console.log(
-						"ÌáĞÑ£º" + GlobalMsg["strSelfName"] + "ËùÔÚÏµÍ³ÄÚ´æÕ¼ÓÃ½µÖÁ" + to_string(perRAM) + "%", 0b11,
-						printSTime(stNow));
-					perLastRAM = perRAM;
-				}
-			}
+			this_thread::sleep_for(100ms);
 		}
-		this_thread::sleep_for(1000ms);
 	}
-}
 
-//Ò»¼üÇåÍË
+//ä¸€é”®æ¸…é€€
 int clearGroup(string strPara, long long fromQQ)
 {
 	int intCnt = 0;
@@ -450,7 +409,7 @@ int clearGroup(string strPara, long long fromQQ)
 	{
 		for (auto& [id, grp] : ChatList)
 		{
-			if (grp.isset("ºöÂÔ") || grp.isset("ÒÑÍË") || grp.isset("Î´½ø") || grp.isset("ÃâÇå"))continue;
+			if (grp.isset("å¿½ç•¥") || grp.isset("å·²é€€") || grp.isset("æœªè¿›") || grp.isset("å…æ¸…"))continue;
 			if (grp.isGroup && getGroupMemberInfo(id, console.DiceMaid).permissions == 1)
 			{
 				res << printGroup(id);
@@ -459,7 +418,7 @@ int clearGroup(string strPara, long long fromQQ)
 				this_thread::sleep_for(3s);
 			}
 		}
-		strReply = GlobalMsg["strSelfName"] + "É¸³ıÎŞÈºÈ¨ÏŞÈºÁÄ" + to_string(intCnt) + "¸ö:" + res.show();
+		strReply = GlobalMsg["strSelfName"] + "ç­›é™¤æ— ç¾¤æƒé™ç¾¤èŠ" + to_string(intCnt) + "ä¸ª:" + res.show();
 		console.log(strReply, 0b10, printSTNow());
 	}
 	else if (isdigit(static_cast<unsigned char>(strPara[0])))
@@ -469,7 +428,7 @@ int clearGroup(string strPara, long long fromQQ)
 		const time_t tNow = time(nullptr);
 		for (auto& [id, grp] : ChatList)
 		{
-			if (grp.isset("ºöÂÔ") || grp.isset("ÒÑÍË") || grp.isset("Î´½ø") || grp.isset("ÃâÇå"))continue;
+			if (grp.isset("å¿½ç•¥") || grp.isset("å·²é€€") || grp.isset("æœªè¿›") || grp.isset("å…æ¸…"))continue;
 			time_t tLast = grp.tLastMsg;
 			if (grp.isGroup)
 			{
@@ -482,13 +441,13 @@ int clearGroup(string strPara, long long fromQQ)
 			if (intDay > intDayLim)
 			{
 				strVar["day"] = to_string(intDay);
-				res << printGroup(id) + ":" + to_string(intDay) + "Ìì\n";
+				res << printGroup(id) + ":" + to_string(intDay) + "å¤©\n";
 				grp.leave(getMsg("strLeaveUnused", strVar));
 				intCnt++;
 				this_thread::sleep_for(2s);
 			}
 		}
-		strReply += GlobalMsg["strSelfName"] + "ÒÑÉ¸³ıÇ±Ë®" + strDayLim + "ÌìÈºÁÄ" + to_string(intCnt) + "¸ö¡Ì" + res.show();
+		strReply += GlobalMsg["strSelfName"] + "å·²ç­›é™¤æ½œæ°´" + strDayLim + "å¤©ç¾¤èŠ" + to_string(intCnt) + "ä¸ªâˆš" + res.show();
 		console.log(strReply, 0b10, printSTNow());
 	}
 	else if (strPara == "black")
@@ -498,11 +457,11 @@ int clearGroup(string strPara, long long fromQQ)
 			for (auto& [id, grp_name] : getGroupList())
 			{
 				Chat& grp = chat(id).group().name(grp_name);
-				if (grp.isset("ºöÂÔ") || grp.isset("ÒÑÍË") || grp.isset("Î´½ø") || grp.isset("ÃâÇå") || grp.isset("ÃâºÚ"))continue
+				if (grp.isset("å¿½ç•¥") || grp.isset("å·²é€€") || grp.isset("æœªè¿›") || grp.isset("å…æ¸…") || grp.isset("å…é»‘"))continue
 					;
 				if (blacklist->get_group_danger(id))
 				{
-					res << printGroup(id) + "£º" + "ºÚÃûµ¥Èº";
+					res << printGroup(id) + "ï¼š" + "é»‘åå•ç¾¤";
 					if (console["LeaveBlackGroup"])grp.leave(getMsg("strBlackGroup"));
 				}
 				vector<GroupMemberInfo> MemberList = getGroupMemberList(id);
@@ -516,15 +475,15 @@ int clearGroup(string strPara, long long fromQQ)
 						}
 						if (eachQQ.permissions > getGroupMemberInfo(id, getLoginQQ()).permissions)
 						{
-							res << printChat(grp) + "£º" + printQQ(eachQQ.QQID) + "¶Ô·½ÈºÈ¨ÏŞ½Ï¸ß";
-							grp.leave("·¢ÏÖºÚÃûµ¥¹ÜÀíÔ±" + printQQ(eachQQ.QQID) + "\n" + GlobalMsg["strSelfName"] + "½«Ô¤·ÀĞÔÍËÈº");
+							res << printChat(grp) + "ï¼š" + printQQ(eachQQ.QQID) + "å¯¹æ–¹ç¾¤æƒé™è¾ƒé«˜";
+							grp.leave("å‘ç°é»‘åå•ç®¡ç†å‘˜" + printQQ(eachQQ.QQID) + "\n" + GlobalMsg["strSelfName"] + "å°†é¢„é˜²æ€§é€€ç¾¤");
 							intCnt++;
 							break;
 						}
 						if (console["LeaveBlackQQ"])
 						{
-							res << printChat(grp) + "£º" + printQQ(eachQQ.QQID);
-							grp.leave("·¢ÏÖºÚÃûµ¥³ÉÔ±" + printQQ(eachQQ.QQID) + "\n" + GlobalMsg["strSelfName"] + "½«Ô¤·ÀĞÔÍËÈº");
+							res << printChat(grp) + "ï¼š" + printQQ(eachQQ.QQID);
+							grp.leave("å‘ç°é»‘åå•æˆå‘˜" + printQQ(eachQQ.QQID) + "\n" + GlobalMsg["strSelfName"] + "å°†é¢„é˜²æ€§é€€ç¾¤");
 							intCnt++;
 							break;
 						}
@@ -534,11 +493,11 @@ int clearGroup(string strPara, long long fromQQ)
 		}
 		catch (...)
 		{
-			console.log(strReply, 0b10, "ÌáĞÑ£º" + GlobalMsg["strSelfName"] + "Çå²éºÚÃûµ¥ÈºÁÄÊ±³ö´í£¡");
+			console.log(strReply, 0b10, "æé†’ï¼š" + GlobalMsg["strSelfName"] + "æ¸…æŸ¥é»‘åå•ç¾¤èŠæ—¶å‡ºé”™ï¼");
 		}
 		if (intCnt)
 		{
-			strReply = GlobalMsg["strSelfName"] + "ÒÑ°´ºÚÃûµ¥Çå²éÈºÁÄ" + to_string(intCnt) + "¸ö£º" + res.show();
+			strReply = GlobalMsg["strSelfName"] + "å·²æŒ‰é»‘åå•æ¸…æŸ¥ç¾¤èŠ" + to_string(intCnt) + "ä¸ªï¼š" + res.show();
 			console.log(strReply, 0b10, printSTNow());
 		}
 		else if (fromQQ)
@@ -550,10 +509,10 @@ int clearGroup(string strPara, long long fromQQ)
 	{
 		for (auto& [id,grp] : ChatList)
 		{
-			if (grp.isset("ºöÂÔ") || grp.isset("ÒÑÍË") || grp.isset("Î´½ø") || grp.isset("Ê¹ÓÃĞí¿É") || grp.isset("ÃâÇå"))continue;
+			if (grp.isset("å¿½ç•¥") || grp.isset("å·²é€€") || grp.isset("æœªè¿›") || grp.isset("ä½¿ç”¨è®¸å¯") || grp.isset("å…æ¸…"))continue;
 			if (grp.isGroup && getGroupMemberInfo(id, console.master()).permissions)
 			{
-				grp.set("Ê¹ÓÃĞí¿É");
+				grp.set("ä½¿ç”¨è®¸å¯");
 				continue;
 			}
 			res << printChat(grp);
@@ -561,11 +520,11 @@ int clearGroup(string strPara, long long fromQQ)
 			intCnt++;
 			this_thread::sleep_for(3s);
 		}
-		strReply = GlobalMsg["strSelfName"] + "É¸³ıÎŞĞí¿ÉÈºÁÄ" + to_string(intCnt) + "¸ö£º" + res.show();
+		strReply = GlobalMsg["strSelfName"] + "ç­›é™¤æ— è®¸å¯ç¾¤èŠ" + to_string(intCnt) + "ä¸ªï¼š" + res.show();
 		console.log(strReply, 1, printSTNow());
 	}
 	else
-		AddMsgToQueue("ÎŞ·¨Ê¶±ğÉ¸Ñ¡²ÎÊı¡Á", fromQQ);
+		AddMsgToQueue("æ— æ³•è¯†åˆ«ç­›é€‰å‚æ•°Ã—", fromQQ);
 	return intCnt;
 }
 
@@ -573,16 +532,16 @@ int clearGroup(string strPara, long long fromQQ)
 EVE_Menu(eventClearGroupUnpower)
 {
 	const int intGroupCnt = clearGroup("unpower");
-	const string strReply = "ÒÑÇåÍËÎŞÈ¨ÏŞÈºÁÄ" + to_string(intGroupCnt) + "¸ö¡Ì";
-	MessageBoxA(nullptr, strReply.c_str(), "Ò»¼üÇåÍË", MB_OK | MB_ICONINFORMATION);
+	const string strReply = "å·²æ¸…é€€æ— æƒé™ç¾¤èŠ" + to_string(intGroupCnt) + "ä¸ªâˆš";
+	MessageBoxA(nullptr, strReply.c_str(), "ä¸€é”®æ¸…é€€", MB_OK | MB_ICONINFORMATION);
 	return 0;
 }
 
 EVE_Menu(eventClearGroup30)
 {
 	const int intGroupCnt = clearGroup("30");
-	const string strReply = "ÒÑÇåÍË30ÌìÎ´Ê¹ÓÃÈºÁÄ" + to_string(intGroupCnt) + "¸ö¡Ì";
-	MessageBoxA(nullptr, strReply.c_str(), "Ò»¼üÇåÍË", MB_OK | MB_ICONINFORMATION);
+	const string strReply = "å·²æ¸…é€€30å¤©æœªä½¿ç”¨ç¾¤èŠ" + to_string(intGroupCnt) + "ä¸ªâˆš";
+	MessageBoxA(nullptr, strReply.c_str(), "ä¸€é”®æ¸…é€€", MB_OK | MB_ICONINFORMATION);
 	return 0;
 }
 
@@ -591,12 +550,12 @@ EVE_Menu(eventGlobalSwitch)
 	if (console["DisabledGlobal"])
 	{
 		console.set("DisabledGlobal", 0);
-		MessageBoxA(nullptr, "÷»ÄïÒÑ½áÊø¾²Ä¬¡Ì", "È«¾Ö¿ª¹Ø", MB_OK | MB_ICONINFORMATION);
+		MessageBoxA(nullptr, "éª°å¨˜å·²ç»“æŸé™é»˜âˆš", "å…¨å±€å¼€å…³", MB_OK | MB_ICONINFORMATION);
 	}
 	else
 	{
 		console.set("DisabledGlobal", 1);
-		MessageBoxA(nullptr, "÷»ÄïÒÑÈ«¾Ö¾²Ä¬¡Ì", "È«¾Ö¿ª¹Ø", MB_OK | MB_ICONINFORMATION);
+		MessageBoxA(nullptr, "éª°å¨˜å·²å…¨å±€é™é»˜âˆš", "å…¨å±€å¼€å…³", MB_OK | MB_ICONINFORMATION);
 	}
 
 	return 0;
@@ -605,36 +564,36 @@ EVE_Menu(eventGlobalSwitch)
 EVE_Request_AddFriend(eventAddFriend)
 {
 	if (!console["ListenFriendRequest"])return 0;
-	string strMsg = "ºÃÓÑÌí¼ÓÇëÇó£¬À´×Ô£º" + printQQ(fromQQ);
+	string strMsg = "å¥½å‹æ·»åŠ è¯·æ±‚ï¼Œæ¥è‡ªï¼š" + printQQ(fromQQ);
 	this_thread::sleep_for(3s);
 	if (blacklist->get_qq_danger(fromQQ))
 	{
-		strMsg += "£¬ÒÑ¾Ü¾ø£¨ÓÃ»§ÔÚºÚÃûµ¥ÖĞ£©";
+		strMsg += "ï¼Œå·²æ‹’ç»ï¼ˆç”¨æˆ·åœ¨é»‘åå•ä¸­ï¼‰";
 		setFriendAddRequest(responseFlag, 2, "");
 		console.log(strMsg, 0b10, printSTNow());
 	}
 	else if (trustedQQ(fromQQ))
 	{
-		strMsg += "£¬ÒÑÍ¬Òâ£¨ÊÜĞÅÈÎÓÃ»§£©";
+		strMsg += "ï¼Œå·²åŒæ„ï¼ˆå—ä¿¡ä»»ç”¨æˆ·ï¼‰";
 		setFriendAddRequest(responseFlag, 1, "");
 		AddMsgToQueue(getMsg("strAddFriendWhiteQQ"), fromQQ);
 		console.log(strMsg, 1, printSTNow());
 	}
 	else if (console["AllowStranger"] < 2 && !UserList.count(fromQQ))
 	{
-		strMsg += "£¬ÒÑ¾Ü¾ø£¨ÎŞÓÃ»§¼ÇÂ¼£©";
+		strMsg += "ï¼Œå·²æ‹’ç»ï¼ˆæ— ç”¨æˆ·è®°å½•ï¼‰";
 		setFriendAddRequest(responseFlag, 2, "");
 		console.log(strMsg, 1, printSTNow());
 	}
 	else if (console["AllowStranger"] < 1)
 	{
-		strMsg += "£¬ÒÑ¾Ü¾ø£¨·ÇĞÅÈÎÓÃ»§£©";
+		strMsg += "ï¼Œå·²æ‹’ç»ï¼ˆéä¿¡ä»»ç”¨æˆ·ï¼‰";
 		setFriendAddRequest(responseFlag, 2, "");
 		console.log(strMsg, 1, printSTNow());
 	}
 	else
 	{
-		strMsg += "£¬ÒÑÍ¬Òâ";
+		strMsg += "ï¼Œå·²åŒæ„";
 		setFriendAddRequest(responseFlag, 1, "");
 		AddMsgToQueue(getMsg("strAddFriend"), fromQQ);
 		console.log(strMsg, 1, printSTNow());

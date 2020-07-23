@@ -32,6 +32,7 @@ public:
 	long long DiceMaid = 0;
 	friend void ConsoleTimer();
 	friend class FromMsg;
+	friend class DiceJob;
 	//DiceSens DSens;
 	using Clock = std::pair<unsigned short, unsigned short>;
 	static const enumap<string> mClockEvent;
@@ -55,7 +56,7 @@ public:
 	}
 
 	static const std::map<std::string, int, less_ci> intDefault;
-	//Í¨ÖªÁĞ±í 1-ÈÕ³£»î¶¯/2-ÌáĞÑÊÂ¼ş/4-½ÓÊÕÏûÏ¢/8-¾¯¸æÄÚÈİ/16-ÓÃ»§ÍÆËÍ/32-÷»Äï¹ã²¥
+	//é€šçŸ¥åˆ—è¡¨ 1-æ—¥å¸¸æ´»åŠ¨/2-æé†’äº‹ä»¶/4-æ¥æ”¶æ¶ˆæ¯/8-è­¦å‘Šå†…å®¹/16-ç”¨æˆ·æ¨é€/32-éª°å¨˜å¹¿æ’­
 	int log(const std::string& msg, int lv, const std::string& strTime = "");
 	operator bool() const { return isMasterMode && masterQQ; }
 	[[nodiscard]] long long master() const { return masterQQ; }
@@ -97,7 +98,7 @@ public:
 	bool load()
 	{
 		string s;
-		//DSens.build({ {"nnÀÏ¹«",2 } });
+		//DSens.build({ {"nnè€å…¬",2 } });
 		if (!rdbuf(strPath, s))return false;
 		DDOM xml(s);
 		if (xml.count("mode"))isMasterMode = stoi(xml["mode"].strValue);
@@ -119,10 +120,10 @@ public:
 		loadNotice();
 		return true;
 	}
-
-	void save()
+	void save() 
 	{
-		DDOM xml("console", "");
+		mkDir("DiceData\\conf");
+		DDOM xml("console","");
 		xml.push(DDOM("mode", to_string(isMasterMode)));
 		xml.push(DDOM("master", to_string(masterQQ)));
 		if (!mWorkClock.empty())
@@ -155,14 +156,16 @@ private:
 	std::multimap<Clock, ClockEvent> mWorkClock{};
 	std::map<chatType, int> NoticeList{};
 };
+	extern Console console;
+	//extern DiceModManager modules;
 
 extern std::map<std::string, int, less_ci> ConsoleSafe;
 
 extern Console console;
 //extern DiceModManager modules;
-//÷»ÄïÁĞ±í
+//éª°å¨˜åˆ—è¡¨
 extern std::map<long long, long long> mDiceList;
-//»ñÈ¡÷»ÄïÁĞ±í
+//è·å–éª°å¨˜åˆ—è¡¨
 void getDiceList();
 
 struct fromMsg
@@ -172,30 +175,37 @@ struct fromMsg
 	long long fromGroup = 0;
 	fromMsg() = default;
 
-	fromMsg(std::string msg, long long QQ, long long Group) : strMsg(std::move(msg)), fromQQ(QQ), fromGroup(Group)
+	struct fromMsg
 	{
-	};
-};
+		std::string strMsg;
+		long long fromQQ = 0;
+		long long fromGroup = 0;
+		fromMsg() = default;
 
-//Í¨Öª
-//Ò»¼üÇåÍË
-extern int clearGroup(std::string strPara = "unpower", long long fromQQ = 0);
-//Á¬½ÓµÄÁÄÌì´°¿Ú
-extern std::map<chatType, chatType> mLinkedList;
-//µ¥Ïò×ª·¢ÁĞ±í
-extern std::multimap<chatType, chatType> mFwdList;
-//³ÌĞòÆô¶¯Ê±¼ä
-extern long long llStartTime;
-//µ±Ç°Ê±¼ä
-extern SYSTEMTIME stNow;
-std::string printClock(std::pair<int, int> clock);
-std::string printSTime(SYSTEMTIME st);
-std::string printSTNow();
-std::string printDate();
-std::string printDate(time_t tt);
-std::string printQQ(long long);
-std::string printGroup(long long);
-std::string printChat(chatType);
+		fromMsg(std::string msg, long long QQ, long long Group) : strMsg(std::move(msg)), fromQQ(QQ), fromGroup(Group)
+		{
+		};
+	};
+
+	//é€šçŸ¥
+	//ä¸€é”®æ¸…é€€
+	extern int clearGroup(std::string strPara = "unpower", long long fromQQ = 0);
+	//è¿æ¥çš„èŠå¤©çª—å£
+	extern std::map<chatType, chatType> mLinkedList;
+	//å•å‘è½¬å‘åˆ—è¡¨
+	extern std::multimap<chatType, chatType> mFwdList;
+	//ç¨‹åºå¯åŠ¨æ—¶é—´
+	extern long long llStartTime;
+	//å½“å‰æ—¶é—´
+	extern SYSTEMTIME stNow;
+	std::string printClock(std::pair<int, int> clock);
+	std::string printSTime(SYSTEMTIME st);
+	std::string printSTNow(); 
+	std::string printDate();
+	std::string printDate(time_t tt);
+	std::string printQQ(long long);
+	std::string printGroup(long long);
+	std::string printChat(chatType);
 void ConsoleTimer();
 
 class ThreadFactory
