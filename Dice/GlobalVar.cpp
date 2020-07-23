@@ -94,10 +94,10 @@ std::map<std::string, std::string> GlobalMsg
 	{"strPcGroupList","{nick}的各群角色列表：{show}"},
 	{"strPcNotExistErr","{self}无{nick}的角色卡记录，无法删除×"},
 	{"strPcCardFull","{nick}在{self}处的角色卡已达上限，请先清理多余角色卡×"},
-	{"strPcNameExist","{nick}已存在同名卡×"},
-	{"strPcNameNotExist","{nick}无该名称角色卡卡×"},
 	{"strPcNameInvalid","非法的角色卡名（存在冒号）×"},
 	{"strPcInitDelErr","{nick}的初始卡不可删除×"},
+	{"strPcNameExist","{nick}已存在同名卡×"},
+	{"strPcNameNotExist","{nick}无该名称角色卡卡×"},
 	{"strPcNameInvalid","非法的人物卡名（存在冒号）×"},
 	{"strPcInitDelErr","初始卡不可删除×"},
 	{"strPcNoteTooLong","备注长度不能超过255×"},
@@ -142,10 +142,10 @@ std::map<std::string, std::string> GlobalMsg
 	{"strEnDefaultName","属性或技能"},//默认文本
 	{"strEnValEmpty", "未对{self}设定待成长属性值，请先.st {attr} 属性值 或查看.help en×"},
 	{"strEnValInvalid", "{attr}值输入不正确,请输入1-99范围内的整数!"},
-	{"strSendMsg","{self}已将消息送出√"}, //Master定向发送的回执
-	{"strSendMasterMsg","消息{self}已发送给Master√"}, //向Master发送的回执
+	{"strSendMsg","{self}已将消息送出√"},//Master定向发送的回执
+	{"strSendMasterMsg","消息{self}已发送给Master√"},//向Master发送的回执
 	{"strSendMsgEmpty","发送消息内容为空×"},
-	{"strSendMsgInvalid","{self}没有可以发送的对象×"}, //没有Master
+	{"strSendMsgInvalid","{self}没有可以发送的对象×"},//没有Master
 	{"strDefaultCOCClr","默认检定房规已清除√"},
 	{"strDefaultCOCNotFound","默认检定房规不存在×"},
 	{"strDefaultCOCSet","默认检定房规已设置:"},
@@ -156,7 +156,7 @@ std::map<std::string, std::string> GlobalMsg
 	{"strNotMaster","你不是{self}的master！你想做什么？"},
 	{"strNotAdmin","你不是{self}的管理员×"},
 	{ "strAdminDismiss", "{strDismiss}" },					//管理员指令退群的回执
-	{"strDismiss",""},						//.dismiss退群前的回执
+	{"strDismiss", ""},						//.dismiss退群前的回执
 	{"strHlpSet","已为{key}设置词条√"},
 	{"strHlpReset","已清除{key}的词条√"},
 	{"strHlpNameEmpty","Master想要自定义什么词条呀？"},
@@ -312,7 +312,7 @@ std::map<std::string, std::string> GlobalMsg
 .help群管 查看群管指令
 .help设定 确认骰娘设定
 .help链接 查看源码文档
-官方论坛:https://forum.kokona.tech/
+官方论坛: https://forum.kokona.tech/
 论坛导航贴: https://kokona.tech)"
 	}
 };
