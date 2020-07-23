@@ -56,7 +56,7 @@ public:
 	}
 
 	static const std::map<std::string, int, less_ci> intDefault;
-	//Í¨ÖªÁĞ±í 1-ÈÕ³£»î¶¯/2-ÌáĞÑÊÂ¼ş/4-½ÓÊÕÏûÏ¢/8-¾¯¸æÄÚÈİ/16-ÓÃ»§ÍÆËÍ/32-÷»Äï¹ã²¥
+	//é€šçŸ¥åˆ—è¡¨ 1-æ—¥å¸¸æ´»åŠ¨/2-æé†’äº‹ä»¶/4-æ¥æ”¶æ¶ˆæ¯/8-è­¦å‘Šå†…å®¹/16-ç”¨æˆ·æ¨é€/32-éª°å¨˜å¹¿æ’­
 	int log(const std::string& msg, int lv, const std::string& strTime = "");
 	operator bool() const { return isMasterMode && masterQQ; }
 	[[nodiscard]] long long master() const { return masterQQ; }
@@ -98,7 +98,7 @@ public:
 	bool load()
 	{
 		string s;
-		//DSens.build({ {"nnÀÏ¹«",2 } });
+		//DSens.build({ {"nnè€å…¬",2 } });
 		if (!rdbuf(strPath, s))return false;
 		DDOM xml(s);
 		if (xml.count("mode"))isMasterMode = stoi(xml["mode"].strValue);
@@ -159,12 +159,21 @@ private:
 	extern Console console;
 	//extern DiceModManager modules;
 
-extern std::set<long long> ExceptGroups;
-void getExceptGroup();
-	//÷»ÄïÁĞ±í
-	extern std::map<long long, long long> mDiceList;
-	//»ñÈ¡÷»ÄïÁĞ±í
-	void getDiceList();
+extern std::map<std::string, int, less_ci> ConsoleSafe;
+
+extern Console console;
+//extern DiceModManager modules;
+//éª°å¨˜åˆ—è¡¨
+extern std::map<long long, long long> mDiceList;
+//è·å–éª°å¨˜åˆ—è¡¨
+void getDiceList();
+
+struct fromMsg
+{
+	std::string strMsg;
+	long long fromQQ = 0;
+	long long fromGroup = 0;
+	fromMsg() = default;
 
 	struct fromMsg
 	{
@@ -178,16 +187,16 @@ void getExceptGroup();
 		};
 	};
 
-	//Í¨Öª
-	//Ò»¼üÇåÍË
+	//é€šçŸ¥
+	//ä¸€é”®æ¸…é€€
 	extern int clearGroup(std::string strPara = "unpower", long long fromQQ = 0);
-	//Á¬½ÓµÄÁÄÌì´°¿Ú
+	//è¿æ¥çš„èŠå¤©çª—å£
 	extern std::map<chatType, chatType> mLinkedList;
-	//µ¥Ïò×ª·¢ÁĞ±í
+	//å•å‘è½¬å‘åˆ—è¡¨
 	extern std::multimap<chatType, chatType> mFwdList;
-	//³ÌĞòÆô¶¯Ê±¼ä
+	//ç¨‹åºå¯åŠ¨æ—¶é—´
 	extern long long llStartTime;
-	//µ±Ç°Ê±¼ä
+	//å½“å‰æ—¶é—´
 	extern SYSTEMTIME stNow;
 	std::string printClock(std::pair<int, int> clock);
 	std::string printSTime(SYSTEMTIME st);

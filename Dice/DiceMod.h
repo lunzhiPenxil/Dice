@@ -75,6 +75,8 @@ public:
 	DiceModManager();
 	friend void loadData();
 	string format(string, const map<string, string, less_ci>&, const char*) const;
+	vector<pair<char, char>> makeConsult(string word) const;
+	int getRecommendRank(string word1_in, string word2_in) const;
 	[[nodiscard]] string get_help(const string&) const;
 	void set_help(const string&, const string&);
 	void rm_help(const string&);
