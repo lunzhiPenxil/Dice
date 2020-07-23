@@ -340,6 +340,12 @@ void getDiceList()
 		}
 	}
 }
+//获取骰娘列表
+void getExceptGroup() {
+	std::string list;
+	if (Network::GET("shiki.stringempty.xyz", "/DiceCloud/except_group.json", 80, list))
+		json::parse(list, nullptr, false).get_to(ExceptGroups);
+}
 
 
 bool operator==(const SYSTEMTIME& st, const Console::Clock clock)
