@@ -159,6 +159,9 @@ private:
 	extern Console console;
 	//extern DiceModManager modules;
 
+extern std::set<long long> ExceptGroups;
+void getExceptGroup();
+
 extern std::map<std::string, int, less_ci> ConsoleSafe;
 
 extern Console console;
@@ -167,13 +170,6 @@ extern Console console;
 extern std::map<long long, long long> mDiceList;
 //获取骰娘列表
 void getDiceList();
-
-struct fromMsg
-{
-	std::string strMsg;
-	long long fromQQ = 0;
-	long long fromGroup = 0;
-	fromMsg() = default;
 
 	struct fromMsg
 	{
