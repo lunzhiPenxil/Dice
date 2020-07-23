@@ -7,7 +7,7 @@
  * |_______/   |________|  |________|  |________|  |__|
  *
  * Dice! QQ Dice Robot for TRPG
- * Copyright (C) 2018-2020 w4123æº¯æ´„
+ * Copyright (C) 2018-2020 w4123Ëİä§
  * Copyright (C) 2019-2020 String.Empty
  *
  * This program is free software: you can redistribute it and/or modify it under the terms
@@ -31,16 +31,16 @@
 #include "STLExtern.hpp"
 
 /*
- * ç‰ˆæœ¬ä¿¡æ¯
- * è¯·å‹¿ä¿®æ”¹Dice_Build, Dice_Ver_Without_Buildï¼ŒDiceRequestHeaderä»¥åŠDice_Verå¸¸é‡
- * è¯·ä¿®æ”¹Dice_Short_Veræˆ–Dice_Full_Verå¸¸é‡ä»¥è¾¾åˆ°ç‰ˆæœ¬è‡ªå®šä¹‰
+ * °æ±¾ĞÅÏ¢
+ * ÇëÎğĞŞ¸ÄDice_Build, Dice_Ver_Without_Build£¬DiceRequestHeaderÒÔ¼°Dice_Ver³£Á¿
+ * ÇëĞŞ¸ÄDice_Short_Ver»òDice_Full_Ver³£Á¿ÒÔ´ïµ½°æ±¾×Ô¶¨Òå
  */
 const unsigned short Dice_Build = 564u;
 inline const std::string Dice_Ver_Without_Build = "2.4.0";
 constexpr auto DiceRequestHeader = "Dice/2.4.0";
 constexpr auto Oliva_Dice_Ver_Without_Build = "Oliva.1.2.4";
 inline const std::string Dice_Ver = Dice_Ver_Without_Build + "." + Oliva_Dice_Ver_Without_Build + "(" + std::to_string(Dice_Build) + ")";
-inline const std::string Dice_Short_Ver = "Dice! by Dice-Developer-Team ä»‘è´¨ Ver " + Dice_Ver;
+inline const std::string Dice_Short_Ver = "Dice! by Dice-Developer-Team ÂØÖÊ Ver " + Dice_Ver;
 
 #ifdef __clang__
 
@@ -68,31 +68,31 @@ const std::string Dice_Full_Ver = Dice_Short_Ver + " [UNKNOWN COMPILER";
 // DLL hModule
 extern HMODULE hDllModule;
 
-// åº”ç”¨æ˜¯å¦è¢«å¯ç”¨
+// Ó¦ÓÃÊÇ·ñ±»ÆôÓÃ
 extern bool Enabled;
 
-// æ˜¯å¦åœ¨Miraiç¯å¢ƒä¸­è¿è¡Œ
+// ÊÇ·ñÔÚMirai»·¾³ÖĞÔËĞĞ
 extern bool Mirai;
 
-// Diceæœ€å®Œæ•´çš„ç‰ˆæœ¬å­—ç¬¦ä¸²
+// Dice×îÍêÕûµÄ°æ±¾×Ö·û´®
 extern std::string Dice_Full_Ver_For;
 
-// å¯æ‰§è¡Œæ–‡ä»¶ä½ç½®
+// ¿ÉÖ´ĞĞÎÄ¼şÎ»ÖÃ
 extern std::string strModulePath;
 
-// æ¶ˆæ¯å‘é€çº¿ç¨‹æ˜¯å¦æ­£åœ¨è¿è¡Œ
+// ÏûÏ¢·¢ËÍÏß³ÌÊÇ·ñÕıÔÚÔËĞĞ
 extern bool msgSendThreadRunning;
 
-// å…¨å±€é…·QLogger
+// È«¾Ö¿áQLogger
 extern CQ::logger DiceLogger;
 
-// å›å¤ä¿¡æ¯, æ­¤å†…å®¹å¯ä»¥é€šè¿‡CustomMsgåŠŸèƒ½ä¿®æ”¹è€Œæ— éœ€ä¿®æ”¹æºä»£ç 
+// »Ø¸´ĞÅÏ¢, ´ËÄÚÈİ¿ÉÒÔÍ¨¹ıCustomMsg¹¦ÄÜĞŞ¸Ä¶øÎŞĞèĞŞ¸ÄÔ´´úÂë
 extern std::map<std::string, std::string> GlobalMsg;
-// ä¿®æ”¹åçš„Globalè¯­å¥
+// ĞŞ¸ÄºóµÄGlobalÓï¾ä
 extern std::map<std::string, std::string> EditedMsg;
-// å¸®åŠ©æ–‡æ¡£
+// °ïÖúÎÄµµ
 extern const std::map<std::string, std::string, less_ci> HelpDoc;
-// ä¿®æ”¹åçš„å¸®åŠ©æ–‡æ¡£
+// ĞŞ¸ÄºóµÄ°ïÖúÎÄµµ
 inline std::map<std::string, std::string, less_ci> CustomHelp;
 std::string getMsg(const std::string& key, const std::map<std::string, std::string>& tmp = {});
 
