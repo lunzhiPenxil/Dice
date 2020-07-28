@@ -347,7 +347,20 @@ void getDiceList()
 void getExceptGroup() {
 	std::string list;
 	if (Network::GET("shiki.stringempty.xyz", "/DiceCloud/except_group.json", 80, list))
-		json::parse(list, nullptr, false).get_to(ExceptGroups);
+	{
+		try
+		{
+			json::parse(list, nullptr, false).get_to(ExceptGroups);
+		}
+		catch (...)
+		{
+			console.log("解析Shiki豁免群列表时遇到错误！", 1, printSTNow());
+		}
+	}
+	else
+	{
+		console.log("获取Shiki豁免群列表时遇到错误！", 1, printSTNow());
+	}
 }
 
 
