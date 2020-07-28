@@ -54,6 +54,7 @@ const std::map<std::string, int, less_ci>Console::intDefault{
 {"GroupClearLimit",20},
 {"CloudBlackShare",0},{"BelieveDiceList",0},{"CloudVisible",1},
 {"BelieveShikiDiceList",0},{"BelieveOlivaDiceList",0},{"BelieveThirdDiceList",0},
+{"BelieveShikiExceptGroups",0},
 {"SystemAlarmCPU",90},{"SystemAlarmRAM",90},{"SystemAlarmDisk",90},
 {"SendIntervalIdle",500},{"SendIntervalBusy",100},
 //自动保存事件间隔[min],自动图片清理间隔[h]
@@ -346,20 +347,23 @@ void getDiceList()
 //获取骰娘列表
 void getExceptGroup() {
 	std::string list;
-	if (Network::GET("shiki.stringempty.xyz", "/DiceCloud/except_group.json", 80, list))
+	if (console["BelieveShikiExceptGroups"] != 0)
 	{
-		try
+		if (Network::GET("shiki.stringempty.xyz", "/DiceCloud/except_group.json", 80, list))
 		{
-			json::parse(list, nullptr, false).get_to(ExceptGroups);
+			try
+			{
+				json::parse(list, nullptr, false).get_to(ExceptGroups);
+			}
+			catch (...)
+			{
+				console.log("解析Shiki豁免群列表时遇到错误！", 1, printSTNow());
+			}
 		}
-		catch (...)
+		else
 		{
-			console.log("解析Shiki豁免群列表时遇到错误！", 1, printSTNow());
+			console.log("获取Shiki豁免群列表时遇到错误！", 1, printSTNow());
 		}
-	}
-	else
-	{
-		console.log("获取Shiki豁免群列表时遇到错误！", 1, printSTNow());
 	}
 }
 
