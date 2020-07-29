@@ -1281,6 +1281,11 @@ int FromMsg::DiceReply()
 			}
 			return 1;
 		}
+		else if (strOpt == "black") {
+			cmd_key = "cloudblack";
+			sch.push_job(*this);
+			return 1;
+		}
 	}
 	else if (strLowerMessage.substr(intMsgCnt, 5) == "coc7d" || strLowerMessage.substr(intMsgCnt, 4) == "cocd")
 	{
@@ -1301,6 +1306,10 @@ int FromMsg::DiceReply()
 		intMsgCnt += 5;
 		long long llGroup(fromGroup);
 		readSkipSpace();
+		if (strMsg.length() == intMsgCnt) {
+			reply(fmt->get_help("group"));
+			return 1;
+		}
 		if (strLowerMessage.substr(intMsgCnt, 3) == "all")
 		{
 			if (trusted < 5)
@@ -1704,12 +1713,12 @@ int FromMsg::DiceReply()
 			return -1;
 		}
 		strVar["key"] = readUntilSpace();
-		vector<string>* Deck = nullptr;
 		if (strVar["key"].empty())
 		{
 			reply(GlobalMsg["strParaEmpty"]);
 			return -1;
 		}
+		vector<string>* Deck = nullptr;
 		CardDeck::mReplyDeck[strVar["key"]] = {};
 		Deck = &CardDeck::mReplyDeck[strVar["key"]];
 		while (intMsgCnt != strMsg.length())
@@ -1731,6 +1740,10 @@ int FromMsg::DiceReply()
 		intMsgCnt += 5;
 		while (isspace(static_cast<unsigned char>(strMsg[intMsgCnt])))
 			intMsgCnt++;
+		if (strMsg.length() == intMsgCnt) {
+			reply(fmt->get_help("rules"));
+			return 1;
+		}
 		if (strLowerMessage.substr(intMsgCnt, 3) == "set")
 		{
 			intMsgCnt += 3;
@@ -1815,6 +1828,10 @@ int FromMsg::DiceReply()
 		}
 		intMsgCnt += 4;
 		readSkipSpace();
+		if (strMsg.length() == intMsgCnt) {
+			reply(fmt->get_help("deck"));
+			return 1;
+		}
 		string strPara = readPara();
 		vector<string> *DeckPro = nullptr, *DeckTmp = nullptr;
 		if (intT != PrivateT && CardDeck::mGroupDeck.count(fromGroup))
@@ -2351,6 +2368,10 @@ int FromMsg::DiceReply()
 	{
 		intMsgCnt += 4;
 		readSkipSpace();
+		if (strMsg.length() == intMsgCnt) {
+			reply(fmt->get_help("send"));
+			return 1;
+		}
 		//先考虑Master带参数向指定目标发送
 		if (trusted > 2)
 		{
@@ -2455,6 +2476,18 @@ int FromMsg::DiceReply()
 				user.trust(intTrust);
 			}
 			reply(GlobalMsg["strUserTrusted"]);
+			return 1;
+		}
+		if (strOption == "diss") {
+			if (trusted < 4 && fromQQ != console.master()) {
+				reply(GlobalMsg["strNotAdmin"]);
+				return 1;
+			}
+			long long llTargetID(readID());
+			if (!llTargetID) {
+				reply(GlobalMsg["strQQIDEmpty"]);
+			}
+			else blacklist->add_black_qq(llTargetID, this);
 			return 1;
 		}
 		if (strOption == "kill")
@@ -2630,6 +2663,10 @@ int FromMsg::DiceReply()
 		intMsgCnt += 2;
 		while (isspace(static_cast<unsigned char>(strLowerMessage[intMsgCnt])))
 			intMsgCnt++;
+		if (strMsg.length() == intMsgCnt) {
+			reply(fmt->get_help("en"));
+			return 1;
+		}
 		strVar["attr"] = readAttrName();
 		string strCurrentValue = readDigit(false);
 		short nCurrentVal;
@@ -2925,6 +2962,10 @@ int FromMsg::DiceReply()
 	{
 		intMsgCnt += 2;
 		string strOption = readPara();
+		if (strOption.empty()) {
+			reply(fmt->get_help("pc"));
+			return 1;
+		}
 		Player& pl = getPlayer(fromQQ);
 		if (strOption == "tag")
 		{
@@ -3255,6 +3296,10 @@ int FromMsg::DiceReply()
 			isHidden = true;
 		}
 		readSkipSpace();
+		if (strMsg.length() == intMsgCnt) {
+			reply(fmt->get_help("rc"));
+			return 1;
+		}
 		int intRule = intT
 			? get(chat(fromGroup).intConf, string("rc房规"), 0)
 			: get(getUser(fromQQ).intConf, string("rc房规"), 0);
@@ -3560,8 +3605,11 @@ int FromMsg::DiceReply()
 		string SanCost = readUntilSpace();
 		while (isspace(static_cast<unsigned char>(strLowerMessage[intMsgCnt])))
 			intMsgCnt++;
-		if (SanCost.empty() || SanCost.find('/') == string::npos)
-		{
+		if (SanCost.empty()) {
+			reply(fmt->get_help("sc"));
+			return 1;
+		}
+		if(SanCost.find('/') == string::npos){
 			reply(GlobalMsg["strSanCostInvalid"]);
 			return 1;
 		}
@@ -3651,7 +3699,7 @@ int FromMsg::DiceReply()
 			intMsgCnt++;
 		if (intMsgCnt == strLowerMessage.length())
 		{
-			reply(GlobalMsg["strStErr"]);
+			reply(fmt->get_help("st"));
 			return 1;
 		}
 		if (strLowerMessage.substr(intMsgCnt, 3) == "clr")
