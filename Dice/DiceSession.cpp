@@ -35,6 +35,18 @@ bool DiceSession::table_clr(string key)
 	return false;
 }
 
+bool DiceSession::table_remove_item(string key, string item)
+{
+	if (mTable.count(key) && mTable[key].count(item))
+	{
+		mTable[key].erase(item);
+		if (mTable[key].empty())
+			mTable.erase(key);
+		return true;
+	}
+	return false;
+}
+
 int DiceSession::ob_enter(FromMsg* msg)
 {
 	if (sOB.count(msg->fromQQ))

@@ -126,6 +126,12 @@
     <ClCompile Include="DiceGUI.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="JrrpModule.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MD5.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="APPINFO.h">
@@ -282,6 +288,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="JrrpModule.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MD5.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
