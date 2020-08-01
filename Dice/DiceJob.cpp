@@ -9,6 +9,9 @@
 #include "BlackListManager.h"
 #include "GlobalVar.h"
 #include "CardDeck.h"
+#include "DiceNetwork.h"
+#include "Jsonio.h"
+
 #pragma warning(disable:28159)
 
 using namespace std;
@@ -311,6 +314,53 @@ void dice_update(DiceJob& job) {
 		break;
 	case 0:
 		job.note("更新Dice!" + job.strVar["ver"] + "版成功√\n可用.system reload 重启应用更新", 1);
+	}
+}
+
+void dice_api_update(DiceJob& job) {
+	string strURL("http://benzenpenxil.xyz/Oliva-Archives/");
+	const string strApiSaveLoc = "DiceData/update/DiceUpdateArchives.json";
+	if (job.strVar["ver"] == "list")
+	{
+		job.note("开始刷新更新源", 1);
+		switch (Cloud::DownloadFile(strURL.c_str(), strApiSaveLoc.c_str())) {
+		case -1:
+			job.echo("更新源获取失败:" + strURL);
+			break;
+		case -2:
+			job.note("更新源加载失败!更新源缓存未找到:" + strApiSaveLoc, 0b10);
+			break;
+		case 0:
+			nlohmann::json j_api = freadJson(strApiSaveLoc);
+			vector<string> public_list = UTF8toGBK(j_api["public"].get<vector<string>>());
+			string strNameTmp = UTF8toGBK(j_api["name"].get<string>());
+			string strCommentTmp = UTF8toGBK(j_api["comment"].get<string>());
+			string strPublicTmp;
+			strPublicTmp += "\n已指向:" + strNameTmp;
+			strPublicTmp += "\n可选的更新指令有:";
+			for (auto it : public_list) {
+				strPublicTmp += "\n[.cloud update " + it + "]";
+			}
+			job.echo("已成功刷新更新源:" + strPublicTmp);
+			job.echo("来自该更新源的公告:\n" + strCommentTmp);
+			job.note("已成功将更新源指向:" + strNameTmp, 1);
+			break;
+		}
+	}
+	else
+	{
+		job.note("测试更新模块:" + job.strVar["ver"] + "分支", 1);
+
+		nlohmann::json j_api = freadJson(strApiSaveLoc);
+		vector<string> public_list = UTF8toGBK(j_api["public"].get<vector<string>>());
+		if (count(public_list.begin(), public_list.end(), job.strVar["ver"]) > 0)
+		{
+			job.echo(job.strVar["ver"] + "分支:\n存在!");
+		}
+		else
+		{
+			job.echo(job.strVar["ver"] + "分支:\n不存在!");
+		}
 	}
 }
 

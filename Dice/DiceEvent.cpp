@@ -1271,14 +1271,8 @@ int FromMsg::DiceReply()
 		if (strOpt == "update")
 		{
 			strVar["ver"] = readPara();
-			if (strVar["ver"].empty())
-			{
-				Cloud::checkUpdate(this);
-			}
-			else if (strVar["ver"] == "dev" || strVar["ver"] == "release") {
-				cmd_key = "update";
-				sch.push_job(*this);
-			}
+			cmd_key = "apiupdate";
+			sch.push_job(*this);
 			return 1;
 		}
 		else if (strOpt == "black") {

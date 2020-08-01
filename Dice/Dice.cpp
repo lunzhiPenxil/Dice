@@ -192,6 +192,7 @@ EVE_Enable(eventEnable)
 	mkDir(DiceDir + "\\conf");
 	mkDir(DiceDir + "\\user");
 	mkDir(DiceDir + "\\audit");
+	mkDir(DiceDir + "\\update");
 	if (!console.load())
 	{
 		ifstream ifstreamMaster(strFileLoc + "Master.RDconf");
