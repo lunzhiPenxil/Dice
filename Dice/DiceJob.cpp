@@ -332,34 +332,68 @@ void dice_api_update(DiceJob& job) {
 			break;
 		case 0:
 			nlohmann::json j_api = freadJson(strApiSaveLoc);
-			vector<string> public_list = UTF8toGBK(j_api["public"].get<vector<string>>());
-			string strNameTmp = UTF8toGBK(j_api["name"].get<string>());
-			string strCommentTmp = UTF8toGBK(j_api["comment"].get<string>());
-			string strPublicTmp;
-			strPublicTmp += "\n已指向:" + strNameTmp;
-			strPublicTmp += "\n可选的更新指令有:";
-			for (auto it : public_list) {
-				strPublicTmp += "\n[.cloud update " + it + "]";
+			if (j_api != nlohmann::json())
+			{
+				try
+				{
+					vector<string> public_list = UTF8toGBK(j_api["public"].get<vector<string>>());
+					string strNameTmp = UTF8toGBK(j_api["name"].get<string>());
+					string strCommentTmp = UTF8toGBK(j_api["comment"].get<string>());
+					string strPublicTmp;
+					strPublicTmp += "\n已指向:" + strNameTmp;
+					strPublicTmp += "\n可选的更新指令有:";
+					for (auto it : public_list)
+					{
+						strPublicTmp += "\n[.cloud update " + it + "]";
+					}
+					job.echo("已成功刷新更新源:" + strPublicTmp);
+					job.echo("来自该更新源的公告:\n" + strCommentTmp);
+					job.note("已成功将更新源指向:" + strNameTmp, 1);
+				}
+				catch (...)
+				{
+					job.note("更新源缓存加载异常!", 1);
+				}
 			}
-			job.echo("已成功刷新更新源:" + strPublicTmp);
-			job.echo("来自该更新源的公告:\n" + strCommentTmp);
-			job.note("已成功将更新源指向:" + strNameTmp, 1);
+			else
+			{
+				job.note("更新源缓存异常!", 1);
+			}
 			break;
 		}
 	}
 	else
 	{
-		job.note("测试更新模块:" + job.strVar["ver"] + "分支", 1);
+		//job.note("测试更新模块:" + job.strVar["ver"] + "分支", 1);
 
 		nlohmann::json j_api = freadJson(strApiSaveLoc);
-		vector<string> public_list = UTF8toGBK(j_api["public"].get<vector<string>>());
-		if (count(public_list.begin(), public_list.end(), job.strVar["ver"]) > 0)
+		if (j_api != nlohmann::json())
 		{
-			job.echo(job.strVar["ver"] + "分支:\n存在!");
+			try
+			{
+				vector<string> public_list = UTF8toGBK(j_api["public"].get<vector<string>>());
+				if (count(public_list.begin(), public_list.end(), job.strVar["ver"]) > 0)
+				{
+					string strNameTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["name"].get<string>());
+					string strCommentTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["comment"].get<string>());
+					string strVersionTypeTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["versiontype"].get<string>());
+					string strVersionTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["version"].get<string>());
+					string strDownloadTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["download"].get<string>());
+					job.echo("即将更新:[" + strNameTmp + "]\n分支说明:\n" + strCommentTmp + "\n分支版本:" + strVersionTmp + "\n更新链接:" + strDownloadTmp);
+				}
+				else
+				{
+					job.echo(job.strVar["ver"] + "分支:\n不存在!");
+				}
+			}
+			catch (...)
+			{
+				job.note("更新源缓存加载异常!", 1);
+			}
 		}
 		else
 		{
-			job.echo(job.strVar["ver"] + "分支:\n不存在!");
+			job.note("更新源缓存异常!", 1);
 		}
 	}
 }
