@@ -319,7 +319,18 @@ void dice_update(DiceJob& job) {
 
 void dice_api_update(DiceJob& job) {
 	string strURL("http://benzenpenxil.xyz/Oliva-Archives/");
-	const string strApiSaveLoc = "DiceData/update/DiceUpdateArchives.json";
+	char** path = new char* ();
+	_get_pgmptr(path);
+	string strAppPath(*path);
+	string strApiSaveLoc;
+	if (Mirai)
+	{
+		strApiSaveLoc = "Dice" + to_string(console.DiceMaid) + "\\update\\DiceUpdateArchives.json";
+	}
+	else
+	{
+		strApiSaveLoc = "DiceData\\update\\DiceUpdateArchives.json";
+	}
 	if (job.strVar["ver"] == "list")
 	{
 		job.note("开始刷新更新源", 1);
