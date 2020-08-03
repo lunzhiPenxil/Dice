@@ -1276,8 +1276,14 @@ int FromMsg::DiceReply()
 		if (strOpt == "update")
 		{
 			strVar["ver"] = readPara();
-			cmd_key = "apiupdate";
-			sch.push_job(*this);
+			if (strVar["ver"].empty())
+			{
+				Cloud::checkUpdate(this);
+			}
+			else if (strVar["ver"] == "dev" || strVar["ver"] == "release") {
+				cmd_key = "update";
+				sch.push_job(*this);
+			}
 			return 1;
 		}
 		else if (strOpt == "black") {
@@ -3303,9 +3309,9 @@ int FromMsg::DiceReply()
 			? get(chat(fromGroup).intConf, string("rc房规"), 0)
 			: get(getUser(fromQQ).intConf, string("rc房规"), 0);
 		int intTurnCnt = 1;
-		if (strMsg.find("#") != string::npos)
+		if (strMsg.find('#') != string::npos)
 		{
-			string strTurnCnt = strMsg.substr(intMsgCnt, strMsg.find("#") - intMsgCnt);
+			string strTurnCnt = strMsg.substr(intMsgCnt, strMsg.find('#') - intMsgCnt);
 			//#能否识别有效
 			if (strTurnCnt.empty())intMsgCnt++;
 			else if ((strTurnCnt.length() == 1 && isdigit(static_cast<unsigned char>(strTurnCnt[0]))) || strTurnCnt ==
@@ -3454,7 +3460,7 @@ int FromMsg::DiceReply()
 		{
 			strReply = format(GlobalMsg["strRollSkill"], {strVar["pc"], strVar["attr"]});
 		}
-		else strReply = format(GlobalMsg["strRollSkillReason"], {strVar["pc"], strVar["attr"], strVar["reason"] });
+		else strReply = format(GlobalMsg["strRollSkillReason"], {strVar["pc"], strVar["attr"], strVar["reason"]});
 		ResList Res;
 		string strAns;
 		if (intTurnCnt == 1)
