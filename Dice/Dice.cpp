@@ -910,9 +910,9 @@ EVE_Menu(eventGUI)
 	return GUIMain();
 }
 
-EVE_Disable(eventDisable)
-{
+void global_exit() {
 	Enabled = false;
+	threads.exit();
 	threads = {};
 	dataBackUp();
 	sch.end();
@@ -924,6 +924,11 @@ EVE_Disable(eventDisable)
 	console.reset();
 	EditedMsg.clear();
 	blacklist.reset();
+}
+
+EVE_Disable(eventDisable)
+{
+	global_exit();
 	return 0;
 }
 
@@ -931,7 +936,7 @@ EVE_Exit(eventExit)
 {
 	if (!Enabled)
 		return 0;
-	dataBackUp();
+	global_exit();
 	return 0;
 }
 

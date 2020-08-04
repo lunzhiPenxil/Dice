@@ -73,7 +73,7 @@ void jobHandle() {
 			cvJobWaited.notify_one();
 		}
 		else{
-			cvJob.wait(lock_queue, []() {return !queueJob.empty(); });
+			cvJob.wait_for(lock_queue, 2s, []() {return !queueJob.empty(); });
 		}
 	}
 }
@@ -129,7 +129,6 @@ void DiceScheduler::add_job_until(time_t cloc, const char* job_name) {
 	std::unique_lock<std::mutex> lock_queue(mtJobWaited);
 	queueJobWaited.emplace(cloc, job_name);
 }
-std::unique_ptr<std::thread> threadJobs;
 
 bool DiceScheduler::is_job_cold(const char* cmd) {
 	return untilJobs[cmd] > time(NULL);
@@ -139,10 +138,8 @@ void DiceScheduler::refresh_cold(const char* cmd, time_t until) {
 }
 
 void DiceScheduler::start() {
-	threadJobs = std::make_unique<std::thread>(jobHandle);
-	threadJobs->detach();
-	std::thread thWaited(jobWait);
-	thWaited.detach();
+	threads(jobHandle);
+	threads(jobWait);
 	push_job("heartbeat");
 	push_job("syscheck");
 	if (console["AutoSaveInterval"] > 0)add_job_for(console["AutoSaveInterval"] * 60, "autosave");
@@ -150,7 +147,6 @@ void DiceScheduler::start() {
 	else add_job_for(60 * 60, "clrimage");
 }
 void DiceScheduler::end() {
-	threadJobs.reset();
 }
 
 void DiceToday::daily_clear() {
