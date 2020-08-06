@@ -132,6 +132,9 @@
     <ClCompile Include="MD5.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="S3PutObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="APPINFO.h">
@@ -296,11 +299,16 @@
     <ClInclude Include="MD5.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="S3PutObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.json">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="packages.config" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="CQP.lib">

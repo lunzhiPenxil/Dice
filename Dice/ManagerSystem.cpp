@@ -10,6 +10,7 @@
 #include "CardDeck.h"
 #include "GlobalVar.h"
 
+string dirExe;
 string DiceDir = "DiceData";
  //被引用的图片列表
 unordered_set<string> sReferencedImage;
@@ -105,6 +106,13 @@ void filter_CQcode(string& nick, long long fromGroup)
 			{
 				nick.replace(posL, posR - posL + 1, "@");
 			}
+		}
+		else return;
+	}
+	while ((posL = nick.find(CQ_IMAGE)) != string::npos) {
+		//检查at格式
+		if (size_t posR = nick.find(']', posL); posR != string::npos) {
+			nick.replace(posL, posR - posL + 1, "[图片]");
 		}
 		else return;
 	}

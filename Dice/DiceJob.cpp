@@ -12,6 +12,7 @@
 #include "CardDeck.h"
 #include "DiceNetwork.h"
 #include "Jsonio.h"
+#include "S3PutObject.h"
 
 #pragma warning(disable:28159)
 
@@ -106,7 +107,7 @@ void cq_restart(DiceJob& job) {
 		return;
 	}
 	string command = "taskkill /f /pid " + to_string(ppid) + "\nstart .\\" + strSelfName + " /account " + to_string(console.DiceMaid);
-	if (Mirai) command = "taskkill /f /pid " + to_string(ppid) + "\nstart .\\MiraiOK.exe";
+	if (Mirai) command = "taskkill /f /pid " + to_string(ppid) + " /t\nstart " + dirExe + "MiraiOK.exe";
 	ofstream fout("reload.bat");
 	fout << command << std::endl;
 	fout.close();
@@ -137,7 +138,7 @@ void mirai_reload(DiceJob& job){
 	HMODULE hModule = LoadLibraryA("CQP.dll");
 	cq_reload_type cq_reload = (cq_reload_type)GetProcAddress(hModule, "CQ_reload");
 	if (!cq_reload) {
-		job.note("重载MiraiNative失败×\n版本过旧，请升级", 0b10);
+		job.note("重载MiraiNative失败×\n使用了过旧或不适配的CQP.dll\n请保证更新适配版本的MiraiNative并删除旧CQP.dll", 0b10);
 		return;
 	}
 	cq_reload(getAuthCode());
@@ -260,7 +261,7 @@ void clear_group(DiceJob& job) {
 		for (auto& [id, grp] : ChatList) {
 			if (grp.isset("忽略") || grp.isset("已退") || grp.isset("未进") || grp.isset("免清"))continue;
 			time_t tLast = grp.tLastMsg;
-			if (int tLMT; grp.isGroup && (tLMT = getGroupMemberInfo(id, console.DiceMaid).LastMsgTime) > 0)tLast = tLMT;
+			if (int tLMT; grp.isGroup && (tLMT = getGroupMemberInfo(id, console.DiceMaid).LastMsgTime) > 0 && tLMT > tLast)tLast = tLMT;
 			if (!tLast)continue;
 			int intDay = (int)(tNow - tLast) / 86400;
 			if (intDay > intDayLim) {
@@ -496,7 +497,26 @@ void dice_cloudblack(DiceJob& job) {
 		blacklist->loadJson(DiceDir + "/conf/CloudBlackList.json", true);
 	}
 }
+
+void log_put(DiceJob& job) {
+	job["ret"] = put_s3_object("dicelogger",
+							   job.strVar["log_file"],
+							   job.strVar["log_path"],
+							   "ap-southeast-1");
+	if (job["ret"] == "SUCCESS") {
+		job.echo(getMsg("strLogUpSuccess", job.strVar));
+		return;
+	}
+	else if (++job.cntExec > 5) {
+		job.echo(getMsg("strLogUpFailure",job.strVar));
+	}
+	else {
+		sch.add_job_for(2 * 60, job);
+	}
+}
+
 string print_master() {
+	if (!console.master())return "（无主）";
 	return printQQ(console.master());
 }
 

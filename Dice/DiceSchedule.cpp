@@ -17,7 +17,8 @@ unordered_map<string, cmd> mCommand = {
 	{"heartbeat",cloud_beat},
 	{"update",dice_update},
 	{"apiupdate",dice_api_update},
-	{"cloudblack",dice_cloudblack}
+	{"cloudblack",dice_cloudblack},
+	{"uplog",log_put}
 };
 
 
@@ -177,4 +178,12 @@ void DiceToday::load() {
 	}
 	if (jFile.count("global")) { jFile["global"].get_to(cntGlobal); }
 	if (jFile.count("user_cnt")) { jFile["user_cnt"].get_to(cntUser); }
+}
+
+string printTTime(time_t tt) {
+	char timestamp[20];
+	tm t{};
+	if (!tt || localtime_s(&t, &tt))return "1970-00-00 00:00:00";
+	sprintf_s(timestamp, "%04d-%02d-%02d %02d:%02d:%02d", t.tm_year + 1900, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+	return timestamp;
 }

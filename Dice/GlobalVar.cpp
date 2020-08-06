@@ -48,6 +48,15 @@ std::map<std::string, std::string> GlobalMsg
 	{"strParaIllegal","参数非法×"},			//偷懒用万能回复
 	{"stranger","用户"},			//{nick}无法获取非空昵称时的称呼
 	{"strAdminOptionEmpty","找{self}有什么事么？{nick}"},			//
+	{"strLogNew","{self}开始新日志记录√\n请适时用.log off暂停或.log end完成记录"},
+	{"strLogOn","{self}开始日志记录√\n可使用.log off暂停记录"},
+	{"strLogOnAlready","{self}正在记录中！"},
+	{"strLogOff","{self}已暂停日志记录√\n可使用.log on恢复记录"},
+	{"strLogOffAlready","{self}已经暂停记录！"},
+	{"strLogEnd","{self}已完成日志记录√\n正在上传日志文件{log_file}"},
+	{"strLogNullErr","{self}无日志记录或已结束！"},
+	{"strLogUpSuccess","{self}已完成日志上传√\n请访问 https://logpainter.kokona.tech/?s3={log_file} 以查看记录"},
+	{"strLogUpFailure","很遗憾，{self}无法成功上传日志文件。如需获取可联系Master:{master_QQ}\n错误原因 {ret}"},
 	{"strGMTableShow","{self}记录的{table_name}列表："},
 	{"strGMTableNotExist","{self}没有保存的{table_name}记录"},
 	{"strUserTrustShow","{user}在{self}处的信任级别为{trust}"},
@@ -56,7 +65,7 @@ std::map<std::string, std::string> GlobalMsg
 	{"strUserTrustIllegal","将目标权限修改为{trust}是非法的×"},
 	{"strUserNotFound","{self}无{user}的用户记录"},
 	{"strGroupAuthorized","A roll to the table turns to a dice fumble!\nDice Roller {strSelfName}√\n本群已授权许可，请尽情使用本骰娘√\n请遵守协议使用，服务结束后使用.dismiss送出!" },
-	{"strGroupLicenseDeny","本群未获{self}许可使用，自动在群内静默。\n请先.help协议 阅读并同意协议后向运营方申请许可使用，\n否则请管理员使用!dismiss送出{self}\n可按以下格式填写并发送申请:\n!authorize 申请用途:[*请写入理由*] 我已了解Dice!基本用法，仔细阅读并保证遵守{strSelfName}的用户协议，如需停用指令使用[*请写入指令*]，用后使用[*请写入指令*]送出群" },
+	{"strGroupLicenseDeny","本群未获{self}许可使用，自动在群内静默。\n请先.help协议 阅读并同意协议后向运营方申请许可使用，\n否则请管理员使用!dismiss送出{self}\n可按以下格式填写并发送申请:\n!authorize 申请用途:[ **请写入理由** ] 我已了解Dice!基本用法，仔细阅读并保证遵守{strSelfName}的用户协议，如需停用指令使用[ **请写入指令** ]，用后使用[ **请写入指令** ]送出群" },
 	{"strGroupLicenseApply","此群未通过自助授权×\n许可申请已发送√" },
 	{"strGroupSetOn","现已开启{self}在此群的“{option}”选项√"},			//群内开关和遥控开关通用此文本
 	{"strGroupSetOnAlready","{self}已在此群设置了{option}！"},			
@@ -243,7 +252,6 @@ std::map<std::string, std::string> GlobalMsg
 	{"strZeroDiceErr", "咦?我的骰子呢?"},
 	{"strRollTimeExceeded", "掷骰轮数超过了最大轮数限制!"},
 	{"strRollTimeErr", "异常的掷骰轮数"},
-	{"strObPrivate", "你想看什么呀？"},
 	{"strDismissPrivate", "滚！"},
 	{"strWelcomePrivate", "你在这欢迎谁呢？"},
 	{"strWelcomeMsgClearNotice", "已清除本群的入群欢迎词√"},
@@ -277,6 +285,8 @@ std::map<std::string, std::string> GlobalMsg
 	{"strPreserve", "{self}私有私用，勿扰勿怪\n如需申请许可请发送!authorize +[群号] [申请理由]"},
 	{"strJrrp", "{nick}今天的人品值是: {res}"},
 	{"strJrrpErr", "JRRP获取失败! 错误信息: \n{res}"},
+	{ "strFriendDenyNotUser", "很遗憾，你没有使用{self}的记录" },
+	{ "strFriendDenyNoTrust", "很遗憾，你不是{self}信任的用户" },
 	{"strAddFriendWhiteQQ", "{strAddFriend}"}, //白名单用户添加好友时回复此句
 	{
 		"strAddFriend",
@@ -320,6 +330,7 @@ std::map<std::string, std::string> GlobalMsg
 std::map<std::string, std::string> EditedMsg;
 const std::map<std::string, std::string, less_ci> HelpDoc = {
 {"更新",R"(
+565:.log日志记录
 564:多功能优化，牌数牌堆等
 563:优化指令帮助
 562:新增GUI
@@ -344,7 +355,9 @@ const std::map<std::string, std::string, less_ci> HelpDoc = {
 查看源码:https://github.com/lunzhiPenxil/Dice/tree/Oliva
 官方在线文档:https://v2docs.kokona.tech/
 青果扩充核心文档:https://oliva.dicer.wiki/)"},
-{"设定","Master：{master_QQ}\n.me使用：禁止\n.jrrp使用：允许\n邀请处理：黑名单制，非禁即入\n讨论组使用：允许\n移出反制：拉黑群和操作者\n禁言反制：默认拉黑群和群主\n刷屏反制：警告\n邀请人责任：有限连带\n窥屏可能：有\n其他插件：无\n骰娘个人群:（未设置）\n官方(水)群: 624807593 941980833 882747577\n私骰分流群：863062599\n开发交流群：1029435374"},
+{"设定","Master：{master_QQ}\n好友申请：需要使用记录\n入群邀请：黑名单制，非黑即入\n讨论组使用：允许\n移出反制：拉黑群和操作者\n禁言反制：默认拉黑群和群主\n刷屏反制：警告\n邀请人责任：有限连带\n窥屏可能：有\n其他插件：{其他插件}\n骰娘用户群:{骰娘用户群}\n官方(水)群: 882747577\n私骰分享群：863062599 192499947\n开发交流群：1029435374"},
+{"骰娘用户群","【未设置】"},
+{"其他插件","【未设置】"},
 {"作者","Copyright (C) 2018-2020 w4123溯洄\nCopyright (C) 2019-2020 String.Empty"},
 {"指令",R"(at骰娘后接指令可以指定骰娘单独响应，如at骰娘.bot off
 多数指令需要后接参数，请.help对应指令 获取详细信息，如.help jrrp
@@ -380,6 +393,14 @@ R"([第三页]其他指令
 .welcome 入群欢迎
 .me 第三人称动作
 为了避免未预料到的指令误判，请尽可能在参数之间使用空格)"},
+{"master",R"(当前Master:{master_QQ}
+Master拥有最高权限，且可以调整任意信任)"},
+{"log",R"(跑团日志记录
+.log new 新建日志并开始记录
+.log on 开始记录
+.log off 暂停记录
+.log end 完成记录并发送日志文件
+)"},
 {"deck","该指令可以设置默认牌堆，使用.draw不指定牌堆名时将使用此牌堆。该牌堆不会放回直到抽完最后一张后洗牌。\n.deck set 公共牌堆名 设置默认牌堆\n.deck set 正整数1-100 设置指定长度的数列\n.deck show 查看剩余卡牌\n.deck reset 重置剩余卡牌\n.deck new 自定义牌堆（用空格或|分割）（白名单限定）\n.deck new 有弹|无弹|无弹|无弹|无弹|无弹\n除show外其他群内操作需要管理权限"},
 {"退群","&dismiss"},
 {"退群指令","&dismiss"},
