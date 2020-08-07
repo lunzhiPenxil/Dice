@@ -28,13 +28,13 @@
 using std::string;
 
 std::map<string, string> GlobalChar{
-	{"FormFeed","\f…"},
+	{"FormFeed","\f"},
 };
 
 std::map<string, GobalTex> strFuncs{
 	{"master_QQ",print_master},
-	{"扩展牌堆",list_extern_deck},
-	{"全牌堆列表",list_deck},
+	{"list_extern_deck",list_extern_deck},
+	{"list_all_deck",list_deck},
 };
 
 std::string format(std::string str, const std::initializer_list<const std::string>& replace_str)
@@ -78,4 +78,28 @@ std::string to_binary(int b)
 		if (b & (1 << i))res << std::to_string(i);
 	}
 	return res.dot("+").show();
+}
+
+std::string ResList::show()const {
+	std::string s, strHead, strSepa;
+	unsigned int lenPage(0), cntPage(0);
+	if (intMaxLen > intLineLen || isLineBreak) {
+		strHead = "\n";
+		strSepa = strLongSepa;
+	}
+	else {
+		strSepa = sDot;
+	}
+	for (auto it = vRes.begin(); it != vRes.end(); it++) {
+		//超过上限后分页
+		if (lenPage > intPageLen) {
+			if (cntPage++ == 0)s = "\f[第" + std::to_string(cntPage++) + "页]" + (strHead.empty() ? "\n" : "") + s;
+			s += "\f[第" + std::to_string(cntPage) + "页]\n" + *it;
+			lenPage = 0;
+		}
+		else if (it == vRes.begin())s = strHead + *it;
+		else s += strSepa + *it;
+		lenPage += it->length();
+	}
+	return s;
 }
