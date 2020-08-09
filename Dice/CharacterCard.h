@@ -950,3 +950,4 @@ inline map<long long, Player> PList;
 Player& getPlayer(long long qq);
 
 void getPCName(FromMsg&);
+string getPCName_B(FromMsg&);

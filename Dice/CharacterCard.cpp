@@ -39,3 +39,8 @@ void getPCName(FromMsg& msg)
 		? PList[msg.fromQQ][msg.fromGroup].Name
 		: msg["nick"];
 }
+
+string getPCName_B(FromMsg& msg)
+{
+	return (PList.count(msg.fromQQ) && PList[msg.fromQQ][msg.fromGroup].Name != "½ÇÉ«¿¨") ? PList[msg.fromQQ][msg.fromGroup].Name : msg["nick"];
+}

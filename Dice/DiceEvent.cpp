@@ -3256,8 +3256,22 @@ int FromMsg::DiceReply()
 	intSkillB /= intDifficultyB;
 	RD rdMainDice("1D100");
 	int intResA, intResB;
-	string strPCA = getPCName(playerA, fromGroup);
-	string strPCB = getPCName(playerB, fromGroup);
+	string strPCA;
+	string strPCB;
+	if (!PList.count(playerA) && PList[playerA][fromGroup].Name != "角色卡") {
+		strPCA = PList[playerA][fromGroup].Name;
+	}
+	else
+	{
+		strPCA = getName(playerA);
+	}
+	if (!PList.count(playerB) && PList[playerB][fromGroup].Name != "角色卡") {
+		strPCB = PList[playerB][fromGroup].Name;
+	}
+	else
+	{
+		strPCB = getName(playerB);
+	}
 	rdMainDice.Roll();
 	intResA = RollSuccessLevel(rdMainDice.intTotal, intSkillA, intRule);
 	strReply = strPCA + "的" + strSkillA + "与" + strPCB + "的" + strSkillB + "对抗：\n";
