@@ -761,7 +761,7 @@ int FromMsg::DiceReply()
 	while (isspace(static_cast<unsigned char>(strMsg[intMsgCnt])))
 		intMsgCnt++;
 	strVar["nick"] = getName(fromQQ, fromGroup);
-	strVar["pc"] = getPCName(fromQQ, fromGroup);
+	getPCName(*this);
 	strVar["at"] = intT ? "[CQ:at,qq=" + to_string(fromQQ) + "]" : strVar["nick"];
 	isAuth = trusted > 3 || intT != GroupT || getGroupMemberInfo(fromGroup, fromQQ).permissions > 1 || pGrp->inviter == fromQQ;
 	//Ö¸ÁîÆ¥Åä
@@ -4370,7 +4370,7 @@ int FromMsg::CustomReply()
 		if (strVar.empty())
 		{
 			strVar["nick"] = getName(fromQQ, fromGroup);
-			strVar["pc"] = getPCName(fromQQ, fromGroup);
+			getPCName(*this);
 			strVar["at"] = fromChat.second != msgtype::Private ? "[CQ:at,qq=" + to_string(fromQQ) + "]" : strVar["nick"];
 		}
 		reply(CardDeck::drawCard(deck->second, true));
