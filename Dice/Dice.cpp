@@ -209,6 +209,7 @@ EVE_Enable(eventEnable)
 	mkDir(DiceDir + "\\user");
 	mkDir(DiceDir + "\\audit");
 	mkDir(DiceDir + "\\update");
+	mkDir(DiceDir + "\\cnmods");
 	if (!console.load())
 	{
 		ifstream ifstreamMaster(strFileLoc + "Master.RDconf");

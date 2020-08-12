@@ -481,6 +481,72 @@ void dice_api_update(DiceJob& job) {
 	}
 }
 
+void dice_cnmods_api(DiceJob& job) {
+	string strURL("https://www.cnmods.net/index/moduleListPage.do?title=" + UrlEncode(GBKtoUTF8(job.strVar["name"])) + "&page=" + GBKtoUTF8(job.strVar["page"]));
+	char** path = new char* ();
+	_get_pgmptr(path);
+	string strAppPath(*path);
+	string strApiSaveLoc;
+	if (Mirai)
+	{
+		strApiSaveLoc = "Dice" + to_string(console.DiceMaid) + "\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
+	}
+	else
+	{
+		strApiSaveLoc = "DiceData\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
+	}
+	switch (Cloud::DownloadFile(strURL.c_str(), strApiSaveLoc.c_str())) {
+	case -1:
+		job.echo("魔都模组访问失败");
+		break;
+	case -2:
+		job.echo("魔都模组缓存故障");
+		break;
+	case 0:
+		nlohmann::json j_api = freadJson(strApiSaveLoc);
+		if (j_api != nlohmann::json())
+		{
+			try
+			{
+				string strPublicTmp;
+				if (job.strVar["name"] == "")
+				{
+					strPublicTmp = "魔都推荐:";
+					job.strVar["name"] = "魔都推荐";
+				}
+				else
+				{
+					strPublicTmp = "[" + job.strVar["name"] + "]的魔都模组搜索结果:";
+				}
+				int intCountThisPage = 0;
+				for (auto it : j_api["data"]["list"])
+				{
+					intCountThisPage += 1;
+					strPublicTmp += "\n" + UTF8toGBK(it["title"].get<string>());
+				}
+				strPublicTmp += "\n---[" + job.strVar["page"] + "/" + to_string(j_api["data"]["totalPages"].get<long long>()) + "]---";
+				if (intCountThisPage > 0)
+				{
+					job.echo(strPublicTmp);
+				}
+				else
+				{
+					job.echo("没有关于[" + job.strVar["name"] + "]的魔都模组搜索结果");
+				}
+			}
+			catch (...)
+			{
+				job.echo("魔都模组数据解析错误");
+			}
+		}
+		else
+		{
+			job.echo("魔都模组数据解析失败");
+		}
+		break;
+	}
+}
+
 //获取云不良记录
 void dice_cloudblack(DiceJob& job) {
 	job.echo("开始获取云端记录"); 

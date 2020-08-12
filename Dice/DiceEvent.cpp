@@ -4372,6 +4372,31 @@ int FromMsg::DiceReply()
 		}
 		return 1;
 	}
+	else if (strLowerMessage.substr(intMsgCnt, 6) == "cnmods")
+	{
+		intMsgCnt += 6;
+		strVar["name"] = readPara();
+		int intPageNum = 1;
+		switch (readNum(intPageNum))
+		{
+		case 0:
+			if (intPageNum == 0)
+			{
+				reply(GlobalMsg["strNumCannotBeZero"]);
+				return 1;
+			}
+			break;
+		case -1: break;
+		case -2:
+			reply(GlobalMsg["strParaIllegal"]);
+			console.log("提醒:" + printQQ(fromQQ) + "对" + GlobalMsg["strSelfName"] + "使用了非法指令参数\n" + strMsg, 1,
+				printSTNow());
+			return 1;
+		}
+		strVar["page"] = to_string(intPageNum);
+		cmd_key = "apicnmods";
+		sch.push_job(*this);
+	}
 	return 0;
 }
 
