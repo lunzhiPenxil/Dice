@@ -482,49 +482,104 @@ void dice_api_update(DiceJob& job) {
 }
 
 void dice_cnmods_api(DiceJob& job) {
-	string strURL("https://www.cnmods.net/index/moduleListPage.do?title=" + UrlEncode(GBKtoUTF8(job.strVar["name"])) + "&page=" + GBKtoUTF8(job.strVar["page"]));
 	char** path = new char* ();
 	_get_pgmptr(path);
 	string strAppPath(*path);
-	string strApiSaveLoc;
-	if (Mirai)
+	string strApiSaveLoc, strApiGetLoc;
+	if (job.strVar["mode"] == "search")
 	{
-		strApiSaveLoc = "Dice" + to_string(console.DiceMaid) + "\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
+		string strURL("https://www.cnmods.net/index/moduleListPage.do?title=" + UrlEncode(GBKtoUTF8(job.strVar["name"])) + "&page=" + GBKtoUTF8(job.strVar["page"]));
+		if (Mirai)
+		{
+			strApiSaveLoc = "Dice" + to_string(console.DiceMaid) + "\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
+		}
+		else
+		{
+			strApiSaveLoc = "DiceData\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
+		}
+		switch (Cloud::DownloadFile(strURL.c_str(), strApiSaveLoc.c_str())) {
+		case -1:
+			job.echo("魔都模组访问失败");
+			break;
+		case -2:
+			job.echo("魔都模组缓存故障");
+			break;
+		case 0:
+			nlohmann::json j_api = freadJson(strApiSaveLoc);
+			if (j_api != nlohmann::json())
+			{
+				try
+				{
+					string strPublicTmp;
+					if (job.strVar["name"] == "")
+					{
+						strPublicTmp = "魔都推荐:";
+						job.strVar["name"] = "魔都推荐";
+					}
+					else
+					{
+						strPublicTmp = "[" + job.strVar["name"] + "]的魔都模组搜索结果:";
+					}
+					int intCountThisPage = 0;
+					for (auto it : j_api["data"]["list"])
+					{
+						intCountThisPage += 1;
+						strPublicTmp += "\n["+ to_string(intCountThisPage) + "]" + UTF8toGBK(it["title"].get<string>());
+					}
+					strPublicTmp += "\n---[" + job.strVar["page"] + "/" + to_string(j_api["data"]["totalPages"].get<long long>()) + "]---";
+					if (intCountThisPage > 0)
+					{
+						job.echo(strPublicTmp);
+					}
+					else
+					{
+						job.echo("没有关于[" + job.strVar["name"] + "]的魔都模组搜索结果");
+					}
+				}
+				catch (...)
+				{
+					job.echo("魔都模组数据解析错误");
+				}
+			}
+			else
+			{
+				job.echo("魔都模组数据解析失败");
+			}
+			break;
+		}
 	}
-	else
+	else if (job.strVar["mode"] == "get")
 	{
-		strApiSaveLoc = "DiceData\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
-	}
-	switch (Cloud::DownloadFile(strURL.c_str(), strApiSaveLoc.c_str())) {
-	case -1:
-		job.echo("魔都模组访问失败");
-		break;
-	case -2:
-		job.echo("魔都模组缓存故障");
-		break;
-	case 0:
+		if (Mirai)
+		{
+			strApiSaveLoc = "Dice" + to_string(console.DiceMaid) + "\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
+		}
+		else
+		{
+			strApiSaveLoc = "DiceData\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
+		}
 		nlohmann::json j_api = freadJson(strApiSaveLoc);
 		if (j_api != nlohmann::json())
 		{
 			try
 			{
 				string strPublicTmp;
-				if (job.strVar["name"] == "")
-				{
-					strPublicTmp = "魔都推荐:";
-					job.strVar["name"] = "魔都推荐";
-				}
-				else
-				{
-					strPublicTmp = "[" + job.strVar["name"] + "]的魔都模组搜索结果:";
-				}
 				int intCountThisPage = 0;
 				for (auto it : j_api["data"]["list"])
 				{
 					intCountThisPage += 1;
-					strPublicTmp += "\n" + UTF8toGBK(it["title"].get<string>());
+					if (to_string(intCountThisPage) == job.strVar["page"])
+					{
+						strPublicTmp += "以下是搜索结果:\n\n";
+						strPublicTmp += "[CQ:share,url=https://www.cnmods.net/#/moduleDetail/index?keyId=";
+						strPublicTmp += to_string(it["keyId"].get<long long>());
+						strPublicTmp += ",title=";
+						strPublicTmp += UTF8toGBK(it["title"].get<string>()) + " - 魔都模组";
+						strPublicTmp += ",content=";
+						strPublicTmp += UTF8toGBK(it["opinion"].get<string>());
+						strPublicTmp += ",image=https://www.cnmods.net/modu.ico]";
+					}
 				}
-				strPublicTmp += "\n---[" + job.strVar["page"] + "/" + to_string(j_api["data"]["totalPages"].get<long long>()) + "]---";
 				if (intCountThisPage > 0)
 				{
 					job.echo(strPublicTmp);
@@ -543,7 +598,6 @@ void dice_cnmods_api(DiceJob& job) {
 		{
 			job.echo("魔都模组数据解析失败");
 		}
-		break;
 	}
 }
 

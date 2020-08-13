@@ -4375,6 +4375,7 @@ int FromMsg::DiceReply()
 	else if (strLowerMessage.substr(intMsgCnt, 6) == "cnmods")
 	{
 		intMsgCnt += 6;
+		strVar["mode"] = readPara();
 		strVar["name"] = readPara();
 		int intPageNum = 1;
 		switch (readNum(intPageNum))
