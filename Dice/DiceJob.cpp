@@ -486,7 +486,7 @@ void dice_cnmods_api(DiceJob& job) {
 	_get_pgmptr(path);
 	string strAppPath(*path);
 	string strApiSaveLoc, strApiGetLoc;
-	if (job.strVar["mode"] == "search")
+	if ((job.strVar["mode"] == "search" && job.strVar["name"] != "") || (job.strVar["mode"] == "roll" && job.strVar["name"] == ""))
 	{
 		string strURL("https://www.cnmods.net/index/moduleListPage.do?title=" + UrlEncode(GBKtoUTF8(job.strVar["name"])) + "&page=" + GBKtoUTF8(job.strVar["page"]));
 		if (Mirai)
@@ -586,7 +586,7 @@ void dice_cnmods_api(DiceJob& job) {
 				}
 				else
 				{
-					job.echo("没有关于[" + job.strVar["name"] + "]的魔都模组搜索结果");
+					job.echo("不存在的项目");
 				}
 			}
 			catch (...)
@@ -596,7 +596,7 @@ void dice_cnmods_api(DiceJob& job) {
 		}
 		else
 		{
-			job.echo("魔都模组数据解析失败");
+			job.echo("魔都模组数据解析失败。\n或许你应当先试试查找模组。");
 		}
 	}
 }

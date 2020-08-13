@@ -38,7 +38,7 @@
 const unsigned short Dice_Build = 565u;
 inline const std::string Dice_Ver_Without_Build = "2.4.1beta1";
 constexpr auto DiceRequestHeader = "Dice/2.4.0";
-constexpr auto Oliva_Dice_Ver_Without_Build = "Oliva.1.2.5";
+constexpr auto Oliva_Dice_Ver_Without_Build = "Oliva.1.2.6";
 inline const std::string Dice_Ver = Dice_Ver_Without_Build + "." + Oliva_Dice_Ver_Without_Build + "(" + std::to_string(Dice_Build) + ")";
 inline const std::string Dice_Short_Ver = "Dice! by Dice-Developer-Team ¬ÿ÷  Ver " + Dice_Ver;
 
