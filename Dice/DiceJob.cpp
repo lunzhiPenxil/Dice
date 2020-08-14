@@ -13,6 +13,7 @@
 #include "DiceNetwork.h"
 #include "Jsonio.h"
 #include "S3PutObject.h"
+#include "RD.h"
 
 #pragma warning(disable:28159)
 
@@ -486,7 +487,7 @@ void dice_cnmods_api(DiceJob& job) {
 	_get_pgmptr(path);
 	string strAppPath(*path);
 	string strApiSaveLoc, strApiGetLoc;
-	if ((job.strVar["mode"] == "search" && job.strVar["name"] != "") || (job.strVar["mode"] == "roll" && job.strVar["name"] == ""))
+	if (job.strVar["mode"] == "search" && job.strVar["name"] != "")
 	{
 		string strURL("https://www.cnmods.net/index/moduleListPage.do?title=" + UrlEncode(GBKtoUTF8(job.strVar["name"])) + "&page=" + GBKtoUTF8(job.strVar["page"]));
 		if (Mirai)
@@ -597,6 +598,123 @@ void dice_cnmods_api(DiceJob& job) {
 		else
 		{
 			job.echo("魔都模组数据解析失败。\n或许你应当先试试查找模组。");
+		}
+	}
+	else if (job.strVar["mode"] == "roll")
+	{
+		string strURL("https://www.cnmods.net/index/moduleListPage.do");
+		if (Mirai)
+		{
+			strApiSaveLoc = "Dice" + to_string(console.DiceMaid) + "\\cnmods\\cnmods_roll_" + to_string(job.fromQQ) + ".json";
+		}
+		else
+		{
+			strApiSaveLoc = "DiceData\\cnmods\\cnmods_roll_" + to_string(job.fromQQ) + ".json";
+		}
+		bool flagApiOn = FALSE;
+		long long intRollPage = 1;
+		long long intTotalPages = 0;
+		long long intTotalElements = 0;
+		switch (Cloud::DownloadFile(strURL.c_str(), strApiSaveLoc.c_str())) {
+		case -1:
+			job.echo("魔都模组访问失败");
+			break;
+		case -2:
+			job.echo("魔都模组缓存故障");
+			break;
+		case 0:
+			nlohmann::json j_api = freadJson(strApiSaveLoc);
+			if (j_api != nlohmann::json())
+			{
+				try
+				{
+					intTotalPages = j_api["data"]["totalPages"].get<long long>();
+					intTotalElements = j_api["data"]["totalElements"].get<long long>();
+					if (intTotalPages > 0 && intTotalElements > 0)
+					{
+						RD rdRollPage("1D" + to_string(intTotalPages));
+						rdRollPage.Roll();
+						intRollPage = rdRollPage.intTotal;
+						flagApiOn = TRUE;
+					}
+				}
+				catch (...)
+				{
+					job.echo("魔都模组数据解析错误");
+				}
+			}
+			else
+			{
+				job.echo("魔都模组数据解析失败");
+			}
+			break;
+		}
+		if (flagApiOn)
+		{
+			string strURL2("https://www.cnmods.net/index/moduleListPage.do?page=" + to_string(intRollPage));
+			int intRollCount = 1;
+			switch (Cloud::DownloadFile(strURL2.c_str(), strApiSaveLoc.c_str())) {
+			case -1:
+				job.echo("魔都模组访问失败");
+				break;
+			case -2:
+				job.echo("魔都模组缓存故障");
+				break;
+			case 0:
+				nlohmann::json j_api = freadJson(strApiSaveLoc);
+				if (j_api != nlohmann::json())
+				{
+					try
+					{
+						int intCountThisPage = 0;
+						string strPublicTmp;
+						for (auto it : j_api["data"]["list"])
+						{
+							intCountThisPage += 1;
+						}
+						if (intCountThisPage > 0)
+						{
+							RD rdRollCount("1D" + to_string(intCountThisPage));
+							rdRollCount.Roll();
+							intRollCount = rdRollCount.intTotal;
+							intCountThisPage = 0;
+							for (auto it : j_api["data"]["list"])
+							{
+								intCountThisPage += 1;
+								if (to_string(intCountThisPage) == to_string(intRollCount))
+								{
+									strPublicTmp += "以下是抽取结果:\n\n";
+									strPublicTmp += "[CQ:share,url=https://www.cnmods.net/#/moduleDetail/index?keyId=";
+									strPublicTmp += to_string(it["keyId"].get<long long>());
+									strPublicTmp += ",title=";
+									strPublicTmp += UTF8toGBK(it["title"].get<string>()) + " - 魔都模组";
+									strPublicTmp += ",content=";
+									strPublicTmp += UTF8toGBK(it["opinion"].get<string>());
+									strPublicTmp += ",image=https://www.cnmods.net/modu.ico]";
+								}
+							}
+							job.echo(strPublicTmp);
+						}
+						else
+						{
+							job.echo("魔都模组抽取失败");
+						}
+					}
+					catch (...)
+					{
+						job.echo("魔都模组数据解析错误");
+					}
+				}
+				else
+				{
+					job.echo("魔都模组数据解析失败");
+				}
+				break;
+			}
+		}
+		else
+		{
+			job.echo("魔都模组数据接口未开放");
 		}
 	}
 }
