@@ -717,6 +717,10 @@ void dice_cnmods_api(DiceJob& job) {
 			job.echo("魔都模组数据接口未开放");
 		}
 	}
+	else
+	{
+		job.echo("魔都模组模块:\n[.cnmods roll]在线抽取一个模组\n[.cnmods search [名称] ([页码])]在线查找模组\n[.cnmods get [编号]]获取对应模组");
+	}
 }
 
 //获取云不良记录
