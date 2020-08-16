@@ -432,14 +432,7 @@ void dice_api_update(DiceJob& job) {
 	_get_pgmptr(path);
 	string strAppPath(*path);
 	string strApiSaveLoc;
-	if (Mirai)
-	{
-		strApiSaveLoc = "Dice" + to_string(console.DiceMaid) + "\\update\\DiceUpdateArchives.json";
-	}
-	else
-	{
-		strApiSaveLoc = "DiceData\\update\\DiceUpdateArchives.json";
-	}
+	strApiSaveLoc = DiceDir + "\\update\\DiceUpdateArchives.json";
 	if (job.strVar["ver"] == "list")
 	{
 		job.note("开始刷新更新源", 1);
@@ -526,14 +519,7 @@ void dice_cnmods_api(DiceJob& job) {
 	if (job.strVar["mode"] == "search" && job.strVar["name"] != "")
 	{
 		string strURL("https://www.cnmods.net/index/moduleListPage.do?title=" + UrlEncode(GBKtoUTF8(job.strVar["name"])) + "&page=" + GBKtoUTF8(job.strVar["page"]));
-		if (Mirai)
-		{
-			strApiSaveLoc = "Dice" + to_string(console.DiceMaid) + "\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
-		}
-		else
-		{
-			strApiSaveLoc = "DiceData\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
-		}
+		strApiSaveLoc = DiceDir + "\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
 		switch (Cloud::DownloadFile(strURL.c_str(), strApiSaveLoc.c_str())) {
 		case -1:
 			job.echo("魔都模组访问失败");
@@ -587,14 +573,7 @@ void dice_cnmods_api(DiceJob& job) {
 	}
 	else if (job.strVar["mode"] == "get")
 	{
-		if (Mirai)
-		{
-			strApiSaveLoc = "Dice" + to_string(console.DiceMaid) + "\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
-		}
-		else
-		{
-			strApiSaveLoc = "DiceData\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
-		}
+		strApiSaveLoc = DiceDir + "\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
 		nlohmann::json j_api = freadJson(strApiSaveLoc);
 		if (j_api != nlohmann::json())
 		{
@@ -639,14 +618,7 @@ void dice_cnmods_api(DiceJob& job) {
 	else if (job.strVar["mode"] == "roll")
 	{
 		string strURL("https://www.cnmods.net/index/moduleListPage.do");
-		if (Mirai)
-		{
-			strApiSaveLoc = "Dice" + to_string(console.DiceMaid) + "\\cnmods\\cnmods_roll_" + to_string(job.fromQQ) + ".json";
-		}
-		else
-		{
-			strApiSaveLoc = "DiceData\\cnmods\\cnmods_roll_" + to_string(job.fromQQ) + ".json";
-		}
+		strApiSaveLoc = DiceDir + "\\cnmods\\cnmods_roll_" + to_string(job.fromQQ) + ".json";
 		bool flagApiOn = FALSE;
 		long long intRollPage = 1;
 		long long intTotalPages = 0;
