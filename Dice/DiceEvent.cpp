@@ -1118,6 +1118,7 @@ int FromMsg::DiceReply()
 			case 2:
 			{
 				fmt->get_help(this);
+				break;
 			}
 			default:
 			{
