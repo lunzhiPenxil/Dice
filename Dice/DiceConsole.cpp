@@ -45,6 +45,7 @@ const std::map<std::string, int, less_ci>Console::intDefault{
 {"DisabledGlobal",0},{"DisabledBlock",0},{"DisabledListenAt",1},
 {"DisabledMe",1},{"DisabledJrrp",0},{"DisabledDeck",1},{"DisabledDraw",0},{"DisabledSend",0},
 {"LocalJrrp",1},{"LocalJrrpMin",1},{"LocalJrrpRange",100},{"JrrpDashesRange",25},
+{"HelpMode",1},
 {"Private",0},{"CheckGroupLicense",0},{"LeaveDiscuss",0},
 {"ListenGroupRequest",1},{"ListenGroupAdd",1},
 {"ListenFriendRequest",1},{"ListenFriendAdd",1},{"AllowStranger",1},

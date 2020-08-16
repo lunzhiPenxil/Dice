@@ -1089,7 +1089,49 @@ int FromMsg::DiceReply()
 				return 1;
 			}
 		}
-		fmt->get_help(this);
+		switch (console["HelpMode"])
+		{
+			case 0:
+			{
+				if (strVar["help_word"].empty())
+				{
+					reply(string(Dice_Short_Ver) + "\n" + GlobalMsg["strHlpMsg"]);
+				}
+				else
+				{
+					reply(fmt->get_help(strVar["help_word"]));
+				}
+				break;
+			}
+			case 1:
+			{
+				if (strVar["help_word"].empty())
+				{
+					reply(string(Dice_Short_Ver) + "\n" + GlobalMsg["strHlpMsg"]);
+				}
+				else
+				{
+					reply(fmt->get_help_oliva(strVar["help_word"]));
+				}
+				break;
+			}
+			case 2:
+			{
+				fmt->get_help(this);
+			}
+			default:
+			{
+				if (strVar["help_word"].empty())
+				{
+					reply(string(Dice_Short_Ver) + "\n" + GlobalMsg["strHlpMsg"]);
+				}
+				else
+				{
+					reply(fmt->get_help(strVar["help_word"]));
+				}
+				break;
+			}
+		}
 		return true;
 	}
 	else if (intT == GroupT && ((console["CheckGroupLicense"] && pGrp->isset("Œ¥…Û∫À")) || (console["CheckGroupLicense"] == 2 && 
