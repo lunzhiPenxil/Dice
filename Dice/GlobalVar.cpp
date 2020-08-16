@@ -174,7 +174,7 @@ std::map<std::string, std::string> GlobalMsg
 	{"strHlpReset","已清除{key}的词条√"},
 	{"strHlpNameEmpty","Master想要自定义什么词条呀？"},
 	{"strHlpNotFound","{self}未找到指定的帮助信息×"},
-	{"strHlpRecommend","已为您找到以下近似条目："},
+	{"strHlpRecommend","已为您找到以下近似条目:"},
 	{"strHelpNotFound","{self}未找到名为{help_word}的词条×"},
 	{"strHelpSuggestion","{self}猜{nick}想要查找的是:{res}"},
 	{"strClockToWork","{self}已按时启用√"},

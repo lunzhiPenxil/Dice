@@ -329,7 +329,7 @@ void getDiceList()
 	}
 	if (!flag_Shiki)
 	{
-		readJson(list_Shiki, mDiceList_Shiki);
+		readJson_old(list_Shiki, mDiceList_Shiki);
 		for (auto it_mDiceList : mDiceList_Shiki)
 		{
 			mDiceList.insert(it_mDiceList);
@@ -337,7 +337,7 @@ void getDiceList()
 	}
 	if (!flag_Oliva)
 	{
-		readJson(list_Oliva, mDiceList_Oliva);
+		readJson_old(list_Oliva, mDiceList_Oliva);
 		for (auto it_mDiceList : mDiceList_Oliva)
 		{
 			mDiceList.insert(it_mDiceList);

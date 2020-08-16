@@ -50,6 +50,15 @@ string DiceModManager::format(string s, const map<string, string, less_ci>& dict
 	return s;
 }
 
+string DiceModManager::get_help(const string& key) const
+{
+	if (const auto it = helpdoc.find(key); it != helpdoc.end())
+	{
+		return format(it->second, helpdoc);
+	}
+	return "{strHlpNotFound}";
+}
+
 vector<pair<char, char>> DiceModManager::makeConsult(string word) const
 {
 	vector<pair<char, char>> vResult;
