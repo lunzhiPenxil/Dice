@@ -2,8 +2,8 @@
   "ret": 1,
   "apiver": 9,
   "name": "Dice!",
-  "version": "2.4.1beta1.Oliva.1.2.5",
-  "version_id": 565,
+  "version": "2.4.1beta1.Oliva.1.2.6",
+  "version_id": 566,
   "author": "Dice-Developer-Team 仑质",
   "description": "跑团用骰子 本程序使用AGPLv3开源协议授权 Copyright (c) 2018-2020 Dice-Developer-Team 仑质",
   "event": [
@@ -94,20 +94,8 @@
   ],
   "menu": [
     {
-      "name": "更新Dice!",
-      "function": "eventDiceUpdate"
-    },
-    {
       "name": "Master模式切换",
       "function": "eventMasterMode"
-    },
-    {
-      "name": "清退非管理群聊",
-      "function": "eventClearGroupUnpower"
-    },
-    {
-      "name": "清退不活跃群聊",
-      "function": "eventClearGroup30"
     },
     {
       "name": "全局开关",

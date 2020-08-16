@@ -11,6 +11,8 @@ unordered_map<string, cmd> mCommand = {
 	{"syscheck",check_system},
 	{"autosave",auto_save},
 	{"clrimage",clear_image},
+	{"clrgroup",clear_group},
+	{"lsgroup",list_group},
 	{"reload",mirai_reload},
 	{"remake",cq_restart},
 	{"die",cq_exit},
@@ -22,6 +24,9 @@ unordered_map<string, cmd> mCommand = {
 	{"uplog",log_put}
 };
 
+DiceJobDetail::DiceJobDetail(const char* cmd, bool isFromSelf, unordered_map<string, string> vars) :cmd_key(cmd), strVar(vars) {
+	if (isFromSelf)fromQQ = console.DiceMaid;
+}
 
 void DiceJob::exec() {
 	if (auto it = mCommand.find(cmd_key); it != mCommand.end()) {
@@ -30,6 +35,7 @@ void DiceJob::exec() {
 	else return;
 }
 void DiceJob::echo(const std::string& msg) {
+	if (!fromChat.first)return;
 	switch (fromChat.second) {
 	case CQ::msgtype::Private:
 		CQ::sendPrivateMsg(fromQQ, msg);
@@ -41,6 +47,9 @@ void DiceJob::echo(const std::string& msg) {
 		CQ::sendDiscussMsg(fromChat.first, msg);
 		break;
 	}
+}
+void DiceJob::reply(const std::string& msg) {
+	AddMsgToQueue(format(msg, GlobalMsg, strVar), fromChat);
 }
 void DiceJob::note(const std::string& strMsg, int note_lv = 0b1) {
 	ofstream fout(DiceDir + "/audit/log" + to_string(console.DiceMaid) + "_" + printDate() + ".txt", ios::out | ios::app);
@@ -92,6 +101,7 @@ void jobWait() {
 		today->daily_clear();
 	}
 }
+
 //将任务加入执行队列
 void DiceScheduler::push_job(const DiceJobDetail& job) {
 	if (!Enabled)return;
@@ -101,11 +111,11 @@ void DiceScheduler::push_job(const DiceJobDetail& job) {
 	}
 	cvJob.notify_one();
 }
-void DiceScheduler::push_job(const char* job_name) {
+void DiceScheduler::push_job(const char* job_name, bool isSelf, unordered_map<string,string>vars) {
 	if (!Enabled)return; 
 	{
 		std::unique_lock<std::mutex> lock_queue(mtQueueJob);
-		queueJob.emplace(job_name);
+		queueJob.emplace(job_name, isSelf, vars);
 	}
 	cvJob.notify_one();
 }
@@ -153,8 +163,8 @@ void DiceScheduler::end() {
 
 void DiceToday::daily_clear() {
 	GetLocalTime(&stNow);
-	if (stToday.wDay != stNow.wDay) {
-		stToday = stNow;
+	if (stToday.tm_mday != stNow.wDay) {
+		stToday.tm_mday = stNow.wDay;
 		cntGlobal.clear();
 		cntUser.clear();
 	}
@@ -162,7 +172,7 @@ void DiceToday::daily_clear() {
 
 void DiceToday::save() {
 	json jFile;
-	jFile["date"] = { stToday.wYear,stToday.wMonth,stToday.wDay };
+	jFile["date"] = { stToday.tm_year + 1900,stToday.tm_mon + 1,stToday.tm_mday };
 	jFile["global"] = cntGlobal;
 	jFile["user_cnt"] = cntUser;
 	fwriteJson(pathFile, jFile);
@@ -170,13 +180,16 @@ void DiceToday::save() {
 void DiceToday::load() {
 	json jFile = freadJson(pathFile);
 	if (jFile.is_null()) {
-		GetLocalTime(&stToday);
+		time_t tt = time(nullptr);
+		stToday = *localtime(&tt);
 		return;
 	}
 	if (jFile.count("date")) {
-		jFile["date"][0].get_to(stToday.wYear);
-		jFile["date"][1].get_to(stToday.wMonth);
-		jFile["date"][2].get_to(stToday.wDay);
+		jFile["date"][0].get_to(stToday.tm_year);
+		stToday.tm_year -= 1900;
+		jFile["date"][1].get_to(stToday.tm_mon);
+		stToday.tm_mon -= 1;
+		jFile["date"][2].get_to(stToday.tm_mday);
 	}
 	if (jFile.count("global")) { jFile["global"].get_to(cntGlobal); }
 	if (jFile.count("user_cnt")) { jFile["user_cnt"].get_to(cntUser); }
