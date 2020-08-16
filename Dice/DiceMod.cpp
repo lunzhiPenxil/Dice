@@ -137,7 +137,7 @@ int DiceModManager::getRecommendRank(string word1_in, string word2_in) const
 	return iRank;
 }
 
-string DiceModManager::get_help(const string& key) const
+string DiceModManager::get_help_oliva(const string& key) const
 {
 	if (auto it = helpdoc.find(key); it != helpdoc.end())
 	{

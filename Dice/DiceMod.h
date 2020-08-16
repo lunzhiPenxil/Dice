@@ -82,7 +82,7 @@ public:
 	vector<pair<char, char>> makeConsult(string word) const;
 	int getRecommendRank(string word1_in, string word2_in) const;
     unordered_map<string, size_t>cntHelp;
-	[[nodiscard]] string get_help(const string&) const;
+	[[nodiscard]] string get_help_oliva(const string&) const;
     void get_help(DiceJobDetail*);
 	void set_help(const string&, const string&);
 	void rm_help(const string&);
