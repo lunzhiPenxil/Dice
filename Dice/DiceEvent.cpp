@@ -4431,6 +4431,7 @@ int FromMsg::DiceReply()
 	}
 	else if (strLowerMessage.substr(intMsgCnt, 6) == "cnmods")
 	{
+		if (console["CnmodsMode"] == 0)return 0;
 		intMsgCnt += 6;
 		strVar["mode"] = readPara();
 		strVar["name"] = readPara();

@@ -516,7 +516,7 @@ void dice_cnmods_api(DiceJob& job) {
 	_get_pgmptr(path);
 	string strAppPath(*path);
 	string strApiSaveLoc, strApiGetLoc;
-	if (job.strVar["mode"] == "search" && job.strVar["name"] != "")
+	if ((job.strVar["mode"] == "search" && job.strVar["name"] != "") || (job.strVar["mode"] == "luck" && job.strVar["name"] == ""))
 	{
 		string strURL("https://www.cnmods.net/index/moduleListPage.do?title=" + UrlEncode(GBKtoUTF8(job.strVar["name"])) + "&page=" + GBKtoUTF8(job.strVar["page"]));
 		strApiSaveLoc = DiceDir + "\\cnmods\\cnmods_search_" + to_string(job.fromQQ) + ".json";
@@ -586,17 +586,60 @@ void dice_cnmods_api(DiceJob& job) {
 					intCountThisPage += 1;
 					if (to_string(intCountThisPage) == job.strVar["page"])
 					{
-						strPublicTmp += "以下是搜索结果:\n\n";
-						strPublicTmp += "[CQ:share,url=https://www.cnmods.net/#/moduleDetail/index?keyId=";
-						strPublicTmp += to_string(it["keyId"].get<long long>());
-						strPublicTmp += ",title=";
-						strPublicTmp += UTF8toGBK(it["title"].get<string>()) + " - 魔都模组";
-						strPublicTmp += ",content=";
-						strPublicTmp += UTF8toGBK(it["opinion"].get<string>());
-						strPublicTmp += ",image=https://www.cnmods.net/modu.ico]";
+						switch (console["CnmodsMode"])
+						{
+							default:
+							case 1:
+							{
+								strPublicTmp += "以下是搜索结果:\n\n";
+								strPublicTmp += "[CQ:share,url=https://www.cnmods.net/#/moduleDetail/index?keyId=";
+								strPublicTmp += to_string(it["keyId"].get<long long>());
+								strPublicTmp += ",title=";
+								strPublicTmp += UTF8toGBK(it["title"].get<string>()) + " - 魔都模组";
+								strPublicTmp += ",content=";
+								strPublicTmp += UTF8toGBK(it["opinion"].get<string>());
+								strPublicTmp += ",image=https://www.cnmods.net/modu.ico]";
+								break;
+							}
+							case 2:
+							{
+								strPublicTmp += "以下是搜索结果:\n";
+								strPublicTmp += "\n";
+								strPublicTmp += UTF8toGBK(it["title"].get<string>());
+								strPublicTmp += "\n作者: ";
+								strPublicTmp += UTF8toGBK(it["article"].get<string>());
+								strPublicTmp += "\n发布日期: ";
+								strPublicTmp += UTF8toGBK(it["releaseDate"].get<string>());
+								strPublicTmp += "\n规则书: ";
+								strPublicTmp += it["moduleType"].get<string>() == "" ? "未指定" : UTF8toGBK(it["moduleType"].get<string>());
+								strPublicTmp += it["moduleVersion"].get<string>() == "" ? "" : "-" + UTF8toGBK(it["moduleVersion"].get<string>());
+								strPublicTmp += "\n难度: ";
+								strPublicTmp += UTF8toGBK(it["freeLevel"].get<string>());
+								strPublicTmp += "\n类型: ";
+								strPublicTmp += UTF8toGBK(it["structure"].get<string>());
+								strPublicTmp += "\n时代: ";
+								strPublicTmp += UTF8toGBK(it["moduleAge"].get<string>());
+								strPublicTmp += "\n地区: ";
+								strPublicTmp += UTF8toGBK(it["occurrencePlace"].get<string>());
+								strPublicTmp += "\n时长: ";
+								strPublicTmp += to_string(it["minDuration"].get<long long>());
+								strPublicTmp += "-";
+								strPublicTmp += to_string(it["maxDuration"].get<long long>());
+								strPublicTmp += "\n人数: ";
+								strPublicTmp += to_string(it["minAmount"].get<long long>());
+								strPublicTmp += "-";
+								strPublicTmp += to_string(it["maxAmount"].get<long long>());
+								strPublicTmp += "\n原创性: ";
+								strPublicTmp += it["original"].get<bool>() == true ? "原创作品": "翻译作品";
+								strPublicTmp += "\n简介: ";
+								strPublicTmp += UTF8toGBK(it["opinion"].get<string>());
+								strPublicTmp += "\n魔都页面: \nhttps://www.cnmods.net/#/moduleDetail/index?keyId=";
+								strPublicTmp += to_string(it["keyId"].get<long long>());
+							}
+						}
 					}
 				}
-				if (intCountThisPage > 0)
+				if (intCountThisPage > 0 && strPublicTmp.length() > 0)
 				{
 					job.echo(strPublicTmp);
 				}
@@ -691,14 +734,57 @@ void dice_cnmods_api(DiceJob& job) {
 								intCountThisPage += 1;
 								if (to_string(intCountThisPage) == to_string(intRollCount))
 								{
-									strPublicTmp += "以下是抽取结果:\n\n";
-									strPublicTmp += "[CQ:share,url=https://www.cnmods.net/#/moduleDetail/index?keyId=";
-									strPublicTmp += to_string(it["keyId"].get<long long>());
-									strPublicTmp += ",title=";
-									strPublicTmp += UTF8toGBK(it["title"].get<string>()) + " - 魔都模组";
-									strPublicTmp += ",content=";
-									strPublicTmp += UTF8toGBK(it["opinion"].get<string>());
-									strPublicTmp += ",image=https://www.cnmods.net/modu.ico]";
+									switch (console["CnmodsMode"])
+									{
+										default:
+										case 1:
+										{
+											strPublicTmp += "以下是搜索结果:\n\n";
+											strPublicTmp += "[CQ:share,url=https://www.cnmods.net/#/moduleDetail/index?keyId=";
+											strPublicTmp += to_string(it["keyId"].get<long long>());
+											strPublicTmp += ",title=";
+											strPublicTmp += UTF8toGBK(it["title"].get<string>()) + " - 魔都模组";
+											strPublicTmp += ",content=";
+											strPublicTmp += UTF8toGBK(it["opinion"].get<string>());
+											strPublicTmp += ",image=https://www.cnmods.net/modu.ico]";
+											break;
+										}
+										case 2:
+										{
+											strPublicTmp += "以下是搜索结果:\n";
+											strPublicTmp += "\n";
+											strPublicTmp += UTF8toGBK(it["title"].get<string>());
+											strPublicTmp += "\n作者: ";
+											strPublicTmp += UTF8toGBK(it["article"].get<string>());
+											strPublicTmp += "\n发布日期: ";
+											strPublicTmp += UTF8toGBK(it["releaseDate"].get<string>());
+											strPublicTmp += "\n规则书: ";
+											strPublicTmp += it["moduleType"].get<string>() == "" ? "未指定" : UTF8toGBK(it["moduleType"].get<string>());
+											strPublicTmp += it["moduleVersion"].get<string>() == "" ? "" : "-" + UTF8toGBK(it["moduleVersion"].get<string>());
+											strPublicTmp += "\n难度: ";
+											strPublicTmp += UTF8toGBK(it["freeLevel"].get<string>());
+											strPublicTmp += "\n类型: ";
+											strPublicTmp += UTF8toGBK(it["structure"].get<string>());
+											strPublicTmp += "\n时代: ";
+											strPublicTmp += UTF8toGBK(it["moduleAge"].get<string>());
+											strPublicTmp += "\n地区: ";
+											strPublicTmp += UTF8toGBK(it["occurrencePlace"].get<string>());
+											strPublicTmp += "\n时长: ";
+											strPublicTmp += to_string(it["minDuration"].get<long long>());
+											strPublicTmp += "-";
+											strPublicTmp += to_string(it["maxDuration"].get<long long>());
+											strPublicTmp += "\n人数: ";
+											strPublicTmp += to_string(it["minAmount"].get<long long>());
+											strPublicTmp += "-";
+											strPublicTmp += to_string(it["maxAmount"].get<long long>());
+											strPublicTmp += "\n原创性: ";
+											strPublicTmp += it["original"].get<bool>() == true ? "原创作品" : "翻译作品";
+											strPublicTmp += "\n简介: ";
+											strPublicTmp += UTF8toGBK(it["opinion"].get<string>());
+											strPublicTmp += "\n魔都页面: \nhttps://www.cnmods.net/#/moduleDetail/index?keyId=";
+											strPublicTmp += to_string(it["keyId"].get<long long>());
+										}
+									}
 								}
 							}
 							job.echo(strPublicTmp);
@@ -727,7 +813,7 @@ void dice_cnmods_api(DiceJob& job) {
 	}
 	else
 	{
-		job.echo("魔都模组模块:\n[.cnmods roll]在线抽取一个模组\n[.cnmods search [名称] ([页码])]在线查找模组\n[.cnmods get [编号]]获取对应模组");
+		job.echo("魔都模组模块:\n[.cnmods roll]在线抽取一个模组\n[.cnmods luck ([页码])]查看魔都推荐\n[.cnmods search [名称] ([页码])]在线查找模组\n[.cnmods get [编号]]获取对应模组");
 	}
 }
 
