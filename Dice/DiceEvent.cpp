@@ -858,9 +858,12 @@ int FromMsg::DiceReply()
 	}
 	if (strLowerMessage.substr(intMsgCnt, 7) == "warning")
 	{
-		intMsgCnt += 7;
-		string strWarning = readRest();
-		AddWarning(strWarning, fromQQ, fromGroup);
+		if (console["DisabledListenWarning"] != 0)
+		{
+			intMsgCnt += 7;
+			string strWarning = readRest();
+			AddWarning(strWarning, fromQQ, fromGroup);
+		}
 		return 1;
 	}
 	if (strLowerMessage.substr(intMsgCnt, 6) == "master" && console.isMasterMode)
