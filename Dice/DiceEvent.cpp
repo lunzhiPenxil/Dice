@@ -858,7 +858,7 @@ int FromMsg::DiceReply()
 	}
 	if (strLowerMessage.substr(intMsgCnt, 7) == "warning")
 	{
-		if (console["DisabledListenWarning"] != 0)
+		if (console["DisabledListenWarning"] == 0)
 		{
 			intMsgCnt += 7;
 			string strWarning = readRest();
