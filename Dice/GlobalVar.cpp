@@ -175,7 +175,7 @@ std::map<std::string, std::string> GlobalMsg
 	{"strHlpNameEmpty","Master想要自定义什么词条呀？"},
 	{"strHlpNotFound","{self}未找到指定的帮助信息×"},
 	{"strHlpRecommend","已为您找到以下近似条目:"},
-	{"strHelpNotFound","{self}未找到名为{help_word}的词条×"},
+	{"strHelpNotFound","{self}未找到【{help_word}】相关的词条×"},
 	{"strHelpSuggestion","{self}猜{nick}想要查找的是:{res}"},
 	{"strClockToWork","{self}已按时启用√"},
 	{"strClockOffWork","{self}已按时关闭√"},
@@ -296,7 +296,7 @@ std::map<std::string, std::string> GlobalMsg
 	{"strAddFriendWhiteQQ", "{strAddFriend}"}, //白名单用户添加好友时回复此句
 	{
 		"strAddFriend",
-		R"(欢迎使用{strSelfName}！
+		R"(欢迎选择{strSelfName}的免费掷骰服务！
 .help协议 确认服务协议
 .help指令 查看指令列表
 .help设定 确认骰娘设定
@@ -305,7 +305,7 @@ std::map<std::string, std::string> GlobalMsg
 	}, //同意添加好友时额外发送的语句
 	{
 		"strAddGroup",
-		R"(欢迎使用{strSelfName}！
+		R"(欢迎选择{strSelfName}的免费掷骰服务！
 请使用.dismiss QQ号（或后四位） 使{self}退群退讨论组
 .bot on/off QQ号（或后四位） //开启或关闭指令
 .group +/-禁用回复 //禁用或启用回复
@@ -363,6 +363,7 @@ const std::map<std::string, std::string, less_ci> HelpDoc = {
 青果扩充核心文档:https://oliva.dicer.wiki/)"},
 {"设定","Master：{master_QQ}\n好友申请：需要使用记录\n入群邀请：黑名单制，非黑即入\n讨论组使用：允许\n移出反制：拉黑群和操作者\n禁言反制：默认拉黑群和群主\n刷屏反制：警告\n邀请人责任：有限连带\n窥屏可能：有\n其他插件：{其他插件}\n骰娘用户群:{骰娘用户群}\n官方(水)群: 882747577\n私骰分享群：863062599 192499947\n开发交流群：1029435374"},
 {"骰娘用户群","【未设置】"},
+{"窥屏可能","无"},
 {"其他插件","【未设置】"},
 {"作者","Copyright (C) 2018-2020 w4123溯洄\nCopyright (C) 2019-2020 String.Empty"},
 {"指令",R"(at骰娘后接指令可以指定骰娘单独响应，如at骰娘.bot off
@@ -541,7 +542,17 @@ Master拥有最高权限，且可以调整任意信任)"},
 例:.group +禁用回复 //关闭本群自定义回复
 群管词条:停用指令/禁用回复/禁用jrrp/禁用draw/禁用me/禁用help/禁用ob/拦截消息/许可使用/免清/免黑)"
 	},
+	{"消息链接","&link"},
+	{"link",R"(消息链接.link
+.link [转发方向] [对象窗口] 建立本窗口与对象窗口的转发
+.link close 关闭链接
+.link start 开启上次关闭的链接
+[转发方向]:to=转发本窗口消息到对象窗口;from=转发对象窗口消息到本窗口;with=双向转发
+[对象窗口]:群/讨论组=[群号];私聊窗口=q[QQ号]
+例:.link with q1605271653 //建立双向私聊链接
+.link from 754494359 //接收目标群的消息转发)"},
 	{"溯洄", "孕育万千骰娘生机之母，萌妹吃鱼之神，正五棱双角锥体对的监护人，一切诡秘的窥见者，拟人者主宰，时空舞台外的逆流者，永转的命运之轮"},
+	{"投喂","&投食"},
 	{"投食", "投食Shiki，请选择https://afdian.net/@dice_shiki\n投食溯洄，可选择https://afdian.net/@suhuiw4123\n投食{self}，可选择……充超会？"},
 	{"愚者正位", "憧憬自然的地方、毫无目的地前行、喜欢尝试挑战新鲜事物、四处流浪。美好的梦想。"},
 	{
