@@ -4461,7 +4461,7 @@ int FromMsg::DiceReply()
 		}
 		else
 		{
-			strVar["mode"] == "";
+			strVar["mode"] = "";
 			strVar["name"] = "";
 			intPageNum = 1;
 		}
