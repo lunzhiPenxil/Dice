@@ -4447,7 +4447,7 @@ int FromMsg::DiceReply()
 			strVar["name"] = "";
 			intPageNum = 1;
 		}
-		if (strVar["mode"] == "luck" || strVar["mode"] == "get")
+		else if (strVar["mode"] == "luck" || strVar["mode"] == "get")
 		{
 			strVar["name"] = "";
 			readSkipSpace();
@@ -4457,7 +4457,7 @@ int FromMsg::DiceReply()
 		{
 			strVar["name"] = readUntilSpace();
 			readSkipSpace();
-			intPageNum = readNum(intPageNum);
+			intRvReadNum = readNum(intPageNum);
 		}
 		else
 		{
