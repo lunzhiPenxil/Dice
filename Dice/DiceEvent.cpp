@@ -4439,10 +4439,34 @@ int FromMsg::DiceReply()
 	{
 		if (console["CnmodsMode"] == 0)return 0;
 		intMsgCnt += 6;
-		strVar["mode"] = readPara();
-		strVar["name"] = readPara();
+		strVar["mode"] = readUntilSpace();
+		int intRvReadNum = 0;
 		int intPageNum = 1;
-		switch (readNum(intPageNum))
+		if (strVar["mode"] == "roll")
+		{
+			strVar["name"] = "";
+			intPageNum = 1;
+		}
+		if (strVar["mode"] == "luck" || strVar["mode"] == "get")
+		{
+			strVar["name"] = "";
+			readSkipSpace();
+			intRvReadNum = readNum(intPageNum);
+		}
+		else if (strVar["mode"] == "search")
+		{
+			strVar["name"] = readUntilSpace();
+			readSkipSpace();
+			intPageNum = readNum(intPageNum);
+		}
+		else
+		{
+			strVar["mode"] == "";
+			strVar["name"] = "";
+			intPageNum = 1;
+		}
+		
+		switch (intRvReadNum)
 		{
 		case 0:
 			if (intPageNum == 0)
@@ -4459,6 +4483,7 @@ int FromMsg::DiceReply()
 			return 1;
 		}
 		strVar["page"] = to_string(intPageNum);
+		
 		cmd_key = "apicnmods";
 		sch.push_job(*this);
 	}
