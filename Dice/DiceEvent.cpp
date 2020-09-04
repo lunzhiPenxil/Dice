@@ -4577,6 +4577,7 @@ int FromMsg::readNum(int& num)
 		intMsgCnt++;
 	}
 	if (strNum.length() > 9)return -2;
+	if (strNum.empty() || strNum == "-")return -3;
 	num = stoi(strNum);
 	return 0;
 }
