@@ -3,6 +3,7 @@
  * Copyright (C) 2019 String.Empty
  */
 #include <fstream>
+#include <regex>
 #include "CardDeck.h"
 #include "json.hpp"
 #include "RandomGenerator.h"
@@ -1041,6 +1042,13 @@ namespace CardDeck
 	std::map<std::string, std::string> PublicComplexDeck{
 		//{"调查员背景","个人描述：{个人描述}\n思想信念：{思想信念}\n重要之人：{重要之人}\n重要之人理由：{重要之人理由}\n意义非凡之地：{意义非凡之地}\n宝贵之物：{宝贵之物}\n特点：{调查员特点}"}
 	};
+
+	bool isRegexMatch(std::string strRegex, std::string strInput)
+	{
+		std::regex regStrRegex(strRegex);
+		std::smatch smatchResult;
+		return std::regex_match(strInput, regStrRegex);
+	}
 
 	//返回0：未找到;1：公共牌组;2：自然数列
 	int findDeck(std::string strDeckName)

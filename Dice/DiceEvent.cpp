@@ -4493,17 +4493,77 @@ int FromMsg::DiceReply()
 int FromMsg::CustomReply()
 {
 	const string strKey = readRest();
-	if (auto deck = CardDeck::mReplyDeck.find(strKey); deck != CardDeck::mReplyDeck.end()
-		|| (!isDisabled && (deck = CardDeck::mReplyDeck.find(strMsg)) != CardDeck::mReplyDeck.end()))
+
+	bool isInReplyDeck = FALSE;
+	bool isInReplyDeckWithDot = FALSE;
+	bool isRegexMatchWithReplyDeck = FALSE;
+
+	auto deck_tmp_1 = CardDeck::mReplyDeck.find(strKey);
+	if (deck_tmp_1 != CardDeck::mReplyDeck.end())
 	{
+		isInReplyDeck = TRUE;
+	}
+	else
+	{
+		isInReplyDeck = FALSE;
+	}
+
+	auto deck_tmp_2 = CardDeck::mReplyDeck.find(strMsg);
+	if (deck_tmp_2 != CardDeck::mReplyDeck.end())
+	{
+		isInReplyDeckWithDot = TRUE;
+	}
+	else
+	{
+		isInReplyDeckWithDot = FALSE;
+	}
+
+	std::pair<std::string, std::vector<std::string>> deck_tmp_3;
+	for (auto deck_this : CardDeck::mReplyDeck)
+	{
+		try
+		{
+			if (CardDeck::isRegexMatch(deck_this.first, strMsg))
+			{
+				isRegexMatchWithReplyDeck = TRUE;
+				deck_tmp_3.first = deck_this.first;
+				deck_tmp_3.second = deck_this.second;
+				break;
+			}
+		}
+		catch (...)
+		{
+			
+		}
+		
+	}
+
+	if (isInReplyDeck || (!isDisabled && isInReplyDeckWithDot) || isRegexMatchWithReplyDeck)
+	{
+		std::pair<std::string, std::vector<std::string>> deck;
+		if (isInReplyDeck)
+		{
+			deck.first = deck_tmp_1->first;
+			deck.second = deck_tmp_1->second;
+		}
+		else if (!isDisabled && isInReplyDeckWithDot)
+		{
+			deck.first = deck_tmp_2->first;
+			deck.second = deck_tmp_2->second;
+		}
+		else if (isRegexMatchWithReplyDeck)
+		{
+			deck = deck_tmp_3;
+		}
+		
 		if (strVar.empty())
 		{
 			strVar["nick"] = getName(fromQQ, fromGroup);
 			getPCName(*this);
 			strVar["at"] = fromChat.second != msgtype::Private ? "[CQ:at,qq=" + to_string(fromQQ) + "]" : strVar["nick"];
 		}
-		reply(CardDeck::drawCard(deck->second, true));
-		AddFrq(fromQQ, fromTime, fromChat);
+		reply(CardDeck::drawCard(deck.second, true));
+		//AddFrq(fromQQ, fromTime, fromChat);
 		return 1;
 	}
 	return 0;
