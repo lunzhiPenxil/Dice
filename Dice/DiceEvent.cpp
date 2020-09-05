@@ -4519,27 +4519,36 @@ int FromMsg::CustomReply()
 	}
 
 	std::pair<std::string, std::vector<std::string>> deck_tmp_3;
-	for (auto deck_this : CardDeck::mReplyDeck)
+	if (!(isInReplyDeck || (!isDisabled && isInReplyDeckWithDot)))
 	{
-		try
+		for (auto deck_this : CardDeck::mReplyDeck)
 		{
-			if (CardDeck::isRegexMatch(deck_this.first, strMsg))
+			try
 			{
-				isRegexMatchWithReplyDeck = TRUE;
-				deck_tmp_3.first = deck_this.first;
-				deck_tmp_3.second = deck_this.second;
-				break;
+				if (CardDeck::isRegexMatch(deck_this.first, strMsg))
+				{
+					isRegexMatchWithReplyDeck = TRUE;
+					deck_tmp_3.first = deck_this.first;
+					deck_tmp_3.second = deck_this.second;
+					break;
+				}
+			}
+			catch (...)
+			{
+
 			}
 		}
-		catch (...)
-		{
-			
-		}
-		
 	}
 
 	if (isInReplyDeck || (!isDisabled && isInReplyDeckWithDot) || isRegexMatchWithReplyDeck)
 	{
+		if (strVar.empty())
+		{
+			strVar["nick"] = getName(fromQQ, fromGroup);
+			getPCName(*this);
+			strVar["at"] = fromChat.second != msgtype::Private ? "[CQ:at,qq=" + to_string(fromQQ) + "]" : strVar["nick"];
+		}
+
 		std::pair<std::string, std::vector<std::string>> deck;
 		if (isInReplyDeck)
 		{
@@ -4554,16 +4563,22 @@ int FromMsg::CustomReply()
 		else if (isRegexMatchWithReplyDeck)
 		{
 			deck = deck_tmp_3;
+			for (auto &tmp_this : deck.second)
+			{
+				try
+				{
+					tmp_this = CardDeck::doRegexReplace(deck.first, strMsg, tmp_this);
+				}
+				catch (...)
+				{
+
+				}
+			}
+			
 		}
-		
-		if (strVar.empty())
-		{
-			strVar["nick"] = getName(fromQQ, fromGroup);
-			getPCName(*this);
-			strVar["at"] = fromChat.second != msgtype::Private ? "[CQ:at,qq=" + to_string(fromQQ) + "]" : strVar["nick"];
-		}
+
 		reply(CardDeck::drawCard(deck.second, true));
-		//AddFrq(fromQQ, fromTime, fromChat);
+		AddFrq(fromQQ, fromTime, fromChat);
 		return 1;
 	}
 	return 0;

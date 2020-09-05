@@ -1046,8 +1046,13 @@ namespace CardDeck
 	bool isRegexMatch(std::string strRegex, std::string strInput)
 	{
 		std::regex regStrRegex(strRegex);
-		std::smatch smatchResult;
 		return std::regex_match(strInput, regStrRegex);
+	}
+
+	string doRegexReplace(std::string strRegex, std::string strInput, std::string strfmt)
+	{
+		std::regex regStrRegex(strRegex);
+		return std::regex_replace(strInput, regStrRegex, strfmt);
 	}
 
 	//返回0：未找到;1：公共牌组;2：自然数列
