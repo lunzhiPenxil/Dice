@@ -335,7 +335,17 @@ std::map<std::string, std::string> GlobalMsg
 
 std::map<std::string, std::string> EditedMsg;
 const std::map<std::string, std::string, less_ci> HelpDoc = {
-{"更新",R"(
+{"更新",R"([Oliva分支更新]
+1.2.7:正则匹配自定义Reply
+1.2.6:CNMODS魔都模组查询
+1.2.5:自定义更新源(暂时搁置)
+1.2.4:云黑名单漏洞修复
+1.2.3:重写Jrrp牌堆
+1.2.2:漏洞修复
+1.2.1:本地Jrrp
+1.2.0:多种特殊检定
+1.1.3:模糊匹配.help最终稳定
+[Shiki分支更新]
 566:.help查询建议
 565:.log日志记录
 564:多功能优化，牌数牌堆等
