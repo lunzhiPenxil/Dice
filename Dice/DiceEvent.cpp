@@ -4499,43 +4499,52 @@ int FromMsg::CustomReply()
 	bool isRegexMatchWithReplyDeck = FALSE;
 
 	auto deck_tmp_1 = CardDeck::mReplyDeck.find(strKey);
-	if (deck_tmp_1 != CardDeck::mReplyDeck.end())
+	if (console["ReplyMode"] == 2 || console["ReplyMode"] == 1)
 	{
-		isInReplyDeck = TRUE;
-	}
-	else
-	{
-		isInReplyDeck = FALSE;
+		if (deck_tmp_1 != CardDeck::mReplyDeck.end())
+		{
+			isInReplyDeck = TRUE;
+		}
+		else
+		{
+			isInReplyDeck = FALSE;
+		}
 	}
 
 	auto deck_tmp_2 = CardDeck::mReplyDeck.find(strMsg);
-	if (deck_tmp_2 != CardDeck::mReplyDeck.end())
+	if (console["ReplyMode"] == 2 || console["ReplyMode"] == 1)
 	{
-		isInReplyDeckWithDot = TRUE;
-	}
-	else
-	{
-		isInReplyDeckWithDot = FALSE;
+		if (deck_tmp_2 != CardDeck::mReplyDeck.end())
+		{
+			isInReplyDeckWithDot = TRUE;
+		}
+		else
+		{
+			isInReplyDeckWithDot = FALSE;
+		}
 	}
 
 	std::pair<std::string, std::vector<std::string>> deck_tmp_3;
-	if (!(isInReplyDeck || (!isDisabled && isInReplyDeckWithDot)))
+	if (console["ReplyMode"] == 3 || console["ReplyMode"] == 1)
 	{
-		for (auto deck_this : CardDeck::mReplyDeck)
+		if (!(isInReplyDeck || (!isDisabled && isInReplyDeckWithDot)))
 		{
-			try
+			for (auto deck_this : CardDeck::mReplyDeck)
 			{
-				if (CardDeck::isRegexMatch(deck_this.first, strMsg))
+				try
 				{
-					isRegexMatchWithReplyDeck = TRUE;
-					deck_tmp_3.first = deck_this.first;
-					deck_tmp_3.second = deck_this.second;
-					break;
+					if (CardDeck::isRegexMatch(deck_this.first, strMsg))
+					{
+						isRegexMatchWithReplyDeck = TRUE;
+						deck_tmp_3.first = deck_this.first;
+						deck_tmp_3.second = deck_this.second;
+						break;
+					}
 				}
-			}
-			catch (...)
-			{
+				catch (...)
+				{
 
+				}
 			}
 		}
 	}
@@ -4574,7 +4583,6 @@ int FromMsg::CustomReply()
 
 				}
 			}
-			
 		}
 
 		reply(CardDeck::drawCard(deck.second, true));
@@ -4631,7 +4639,10 @@ bool FromMsg::DiceFilter()
 		if (fromChat.second != msgtype::Private)chat(fromGroup).update(fromTime);
 		return 1;
 	}
-	if (groupset(fromGroup, "禁用回复") < 1 && !isDisabled && CustomReply())return true;
+	if (groupset(fromGroup, "禁用回复") < 1 
+		&& !isDisabled
+		&& (console["ReplyMode"] == 1 || console["ReplyMode"] == 2 || console["ReplyMode"] == 3) 
+		&& CustomReply())return true;
 	if (isDisabled)return console["DisabledBlock"];
 	return false;
 }
