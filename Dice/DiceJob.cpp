@@ -618,7 +618,7 @@ void dice_cnmods_api(DiceJob& job) {
 							default:
 							case 1:
 							{
-								if (frame != QQFrame::Mirai)
+								if (frame == QQFrame::Mirai)
 								{
 									strPublicTmp += "以下是搜索结果:\n\n";
 								}
@@ -769,7 +769,7 @@ void dice_cnmods_api(DiceJob& job) {
 										default:
 										case 1:
 										{
-											if (frame != QQFrame::Mirai)
+											if (frame == QQFrame::Mirai)
 											{
 												strPublicTmp += "以下是搜索结果:\n\n";
 											}
