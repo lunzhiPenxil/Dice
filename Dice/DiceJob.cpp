@@ -771,7 +771,7 @@ void dice_cnmods_api(DiceJob& job) {
 										{
 											if (frame == QQFrame::Mirai)
 											{
-												strPublicTmp += "以下是搜索结果:\n\n";
+												strPublicTmp += "以下是抽取结果:\n\n";
 											}
 											strPublicTmp += "[CQ:share,url=https://www.cnmods.net/#/moduleDetail/index?keyId=";
 											strPublicTmp += to_string(it["keyId"].get<long long>());
@@ -784,7 +784,7 @@ void dice_cnmods_api(DiceJob& job) {
 										}
 										case 2:
 										{
-											strPublicTmp += "以下是搜索结果:\n";
+											strPublicTmp += "以下是抽取结果:\n";
 											strPublicTmp += "\n";
 											strPublicTmp += UTF8toGBK(it["title"].get<string>());
 											strPublicTmp += "\n作者: ";
