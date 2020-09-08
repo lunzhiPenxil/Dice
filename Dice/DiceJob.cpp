@@ -14,6 +14,7 @@
 #include "Jsonio.h"
 #include "S3PutObject.h"
 #include "RD.h"
+#include "GlobalVar.h"
 
 #pragma warning(disable:28159)
 
@@ -617,7 +618,10 @@ void dice_cnmods_api(DiceJob& job) {
 							default:
 							case 1:
 							{
-								strPublicTmp += "以下是搜索结果:\n\n";
+								if (frame != QQFrame::Mirai)
+								{
+									strPublicTmp += "以下是搜索结果:\n\n";
+								}
 								strPublicTmp += "[CQ:share,url=https://www.cnmods.net/#/moduleDetail/index?keyId=";
 								strPublicTmp += to_string(it["keyId"].get<long long>());
 								strPublicTmp += ",title=";
@@ -765,7 +769,10 @@ void dice_cnmods_api(DiceJob& job) {
 										default:
 										case 1:
 										{
-											strPublicTmp += "以下是搜索结果:\n\n";
+											if (frame != QQFrame::Mirai)
+											{
+												strPublicTmp += "以下是搜索结果:\n\n";
+											}
 											strPublicTmp += "[CQ:share,url=https://www.cnmods.net/#/moduleDetail/index?keyId=";
 											strPublicTmp += to_string(it["keyId"].get<long long>());
 											strPublicTmp += ",title=";
