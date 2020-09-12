@@ -5,6 +5,9 @@
 #include "RD.h"
 #include "CardDeck.h"
 #include "MD5.h"
+
+#pragma warning(disable:4996)
+
 namespace JrrpModule
 {
 	using std::unique;

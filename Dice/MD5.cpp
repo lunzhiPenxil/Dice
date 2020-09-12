@@ -31,6 +31,8 @@ documentation and/or software.
 
 */
 
+#pragma warning(disable:4996)
+
 /* interface header */
 #include "md5.h"  
 
