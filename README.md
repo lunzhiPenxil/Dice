@@ -1,25 +1,25 @@
-﻿# Dice!
+# Dice!
 QQ Dice Robot For TRPG Based on CoolQ/Mirai
 
-[![License](https://img.shields.io/github/license/Dice-Developer-Team/Dice.svg)](http://www.gnu.org/licenses)
-[![Build status](https://ci.appveyor.com/api/projects/status/7uq2qi3348ny1tfv?svg=true)](https://ci.appveyor.com/project/w4123/dice-ovf7o)
-[![Downloads](https://img.shields.io/github/downloads/Dice-Developer-Team/dice/total.svg)](https://github.com/Dice-Developer-Team/Dice/releases)
-[![GitHub contributors](https://img.shields.io/github/contributors/Dice-Developer-Team/dice.svg)](https://github.com/Dice-Developer-Team/Dice/graphs/contributors)
-[![GitHub last commit](https://img.shields.io/github/last-commit/Dice-Developer-Team/dice.svg)](https://github.com/Dice-Developer-Team/Dice/commits)
+[![License](https://img.shields.io/github/license/lunzhiPenxil/Dice.svg)](http://www.gnu.org/licenses)
+[![Build status](https://ci.appveyor.com/api/projects/status/k1kxb3dpnd2ng88m/branch/Oliva?svg=true)](https://ci.appveyor.com/project/lunzhiPenxil/olivadice/branch/Oliva)
+[![Downloads](https://img.shields.io/github/downloads/lunzhiPenxil/dice/total.svg)](https://github.com/lunzhiPenxil/Dice/releases)
+[![GitHub contributors](https://img.shields.io/github/contributors/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/Dice/graphs/contributors)
+[![GitHub last commit](https://img.shields.io/github/last-commit/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/Dice/commits)
 
 ## 简介
 
-Dice!是一款基于酷Q的QQ跑团掷骰机器人 交流QQ群:882747577或941980833或624807593(已满)
+Dice!是一款基于酷Q的QQ跑团掷骰机器人
 
 主页: <http://kokona.tech/>
 
-Latest Stable Release: [![GitHub release](https://img.shields.io/github/release/Dice-Developer-Team/dice.svg)](https://github.com/w4123/Dice-Developer-Team/releases) [![GitHub Release Date](https://img.shields.io/github/release-date/Dice-Developer-Team/dice.svg)](https://github.com/Dice-Developer-Team/Dice/releases)
+Latest Stable Release: [![GitHub release](https://img.shields.io/github/release/lunzhiPenxil/dice.svg)](https://github.com/w4123/lunzhiPenxil/releases) [![GitHub Release Date](https://img.shields.io/github/release-date/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/Dice/releases)
 
-Latest Release: [![GitHub release](https://img.shields.io/github/release-pre/Dice-Developer-Team/dice.svg)](https://github.com/Dice-Developer-Team/Dice/releases) [![GitHub Release Date](https://img.shields.io/github/release-date-pre/Dice-Developer-Team/dice.svg)](https://github.com/Dice-Developer-Team/Dice/releases)
+Latest Release: [![GitHub release](https://img.shields.io/github/release-pre/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/Dice/releases) [![GitHub Release Date](https://img.shields.io/github/release-date-pre/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/Dice/releases)
 
 ## 开发者
 
-贡献者:w4123溯洄 Shiki jh123111 緋色月下、スイカを食う
+贡献者:w4123溯洄 Shiki jh123111 緋色月下、スイカを食う 仑质
 
 感谢:Flandre Cirno 回転 他是王家乐。白いとう 哞哞哞哞哞哞哞哞哞哞哞哞 丸子 黯星 一盏大师 初音py2001 Coxxs orzFly 等(排名不分先后)(如有缺漏请务必联系溯洄:QQ1840686745) 
 
@@ -45,7 +45,7 @@ Latest Release: [![GitHub release](https://img.shields.io/github/release-pre/Dic
 
 Dice! QQ Dice Robot for TRPG
 
-Copyright (C) 2018-2020 w4123溯洄 Shiki
+Copyright (C) 2018-2020 w4123溯洄 Shiki 仑质
 
 This program is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
