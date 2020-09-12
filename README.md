@@ -1,5 +1,5 @@
 # Dice!
-QQ Dice Robot For TRPG Based on CoolQ/Mirai
+QQ Dice Robot For TRPG Based on CoolQ/Mirai/CQXQ
 
 [![License](https://img.shields.io/github/license/lunzhiPenxil/Dice.svg)](http://www.gnu.org/licenses)
 [![Build status](https://ci.appveyor.com/api/projects/status/k1kxb3dpnd2ng88m/branch/Oliva?svg=true)](https://ci.appveyor.com/project/lunzhiPenxil/olivadice/branch/Oliva)
@@ -9,9 +9,11 @@ QQ Dice Robot For TRPG Based on CoolQ/Mirai
 
 ## 简介
 
-Dice!是一款基于酷Q的QQ跑团掷骰机器人
+Dice!是一款基于酷Q的QQ跑团掷骰机器人，而这是由仑质维护的Oliva分支。
 
-主页: <http://kokona.tech/>
+主页:    
+<http://kokona.tech/>   
+<https://oliva.dicer.wiki/>   
 
 Latest Stable Release: [![GitHub release](https://img.shields.io/github/release/lunzhiPenxil/dice.svg)](https://github.com/w4123/lunzhiPenxil/releases) [![GitHub Release Date](https://img.shields.io/github/release-date/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/Dice/releases)
 
