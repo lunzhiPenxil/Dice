@@ -340,6 +340,7 @@ std::map<std::string, std::string> GlobalMsg
 std::map<std::string, std::string> EditedMsg;
 const std::map<std::string, std::string, less_ci> HelpDoc = {
 {"更新",R"([Oliva分支更新]
+1.2.8:自定义心跳标准
 1.2.7:正则匹配自定义Reply
 1.2.6:CNMODS魔都模组查询
 1.2.5:自定义更新源(暂时搁置)
