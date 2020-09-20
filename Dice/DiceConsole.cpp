@@ -46,6 +46,7 @@ const std::map<std::string, int, less_ci>Console::intDefault{
 {"DisabledMe",1},{"DisabledJrrp",0},{"DisabledDeck",1},{"DisabledDraw",0},{"DisabledSend",0},
 {"DisabledListenWarning",0},
 {"LocalJrrp",1},{"LocalJrrpMin",1},{"LocalJrrpRange",100},{"JrrpDashesRange",25},
+{"PulseMode",0},
 {"HelpMode",1},
 {"CnmodsMode",1},
 {"ReplyMode",3},

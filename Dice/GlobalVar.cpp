@@ -42,6 +42,10 @@ CQ::logger DiceLogger("Dice!");
 
 std::map<std::string, std::string> GlobalMsg
 {
+	{"strConfigPulseHost","api.dice.center"},
+	{"strConfigPulseXpath","/dicestatusup/"},
+	{"strConfigPulsePort","80"},
+	{"strConfigPulseToken","NULL"},
 	{"strConfSetToUnsafe","已经切换至存在缺陷的功能！请确保知晓这个操作可能导致的后果！"},
 	{"strParaEmpty","参数不能为空×"},			//偷懒用万能回复
 	{"strParaIllegal","参数非法×"},			//偷懒用万能回复

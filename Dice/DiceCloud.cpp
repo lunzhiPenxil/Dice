@@ -25,16 +25,49 @@ namespace Cloud
 {
 	void update()
 	{
-		const string strVer = GBKtoUTF8(string(Dice_Ver));
-		const string data = "DiceQQ=" + to_string(console.DiceMaid) + "&masterQQ=" + to_string(console.master()) + "&Ver=" +
-			strVer + "&isGlobalOn=" + to_string(!console["DisabledGlobal"]) + "&isPublic=" +
-			to_string(!console["Private"]) + "&isVisible=" + to_string(console["CloudVisible"]);
-		char* frmdata = new char[data.length() + 1];
-		strcpy_s(frmdata, data.length() + 1, data.c_str());
-		string temp;
-		Network::POST("shiki.stringempty.xyz", "/DiceCloud/update.php", 80, frmdata, temp);
-		//AddMsgToQueue(temp, masterQQ);
-		delete[] frmdata;
+		//Shiki心跳
+		if (console["PulseMode"] & (0x001 << 0))
+		{
+			const string strVer = GBKtoUTF8(string(Dice_Ver));
+			const string data = "DiceQQ=" + to_string(console.DiceMaid) + "&masterQQ=" + to_string(console.master()) + "&Ver=" +
+				strVer + "&isGlobalOn=" + to_string(!console["DisabledGlobal"]) + "&isPublic=" +
+				to_string(!console["Private"]) + "&isVisible=" + to_string(console["CloudVisible"]);
+			char* frmdata = new char[data.length() + 1];
+			strcpy_s(frmdata, data.length() + 1, data.c_str());
+			string temp;
+			Network::POST("shiki.stringempty.xyz", "/DiceCloud/update.php", 80, frmdata, temp);
+			//AddMsgToQueue(temp, masterQQ);
+			delete[] frmdata;
+		}
+		//自定义心跳标准
+		if (console["PulseMode"] & (0x001 << 1) && GlobalMsg["strConfigPulseToken"] != "NULL")
+		{
+			const time_t TimeStamp = time(NULL);
+			const string strVer = GBKtoUTF8(string(Dice_Ver));
+			const string data =
+				"token=" + GlobalMsg["strConfigPulseToken"] +
+				"&user_id=" + to_string(console.DiceMaid) +
+				"&time_ts=" + to_string(TimeStamp) + "000" +
+				"&version=Dice! " + strVer +
+				"&name=" + UrlEncode(GBKtoUTF8(GlobalMsg["strSelfName"])) +
+				"&masterid=" + to_string(console.master()) +
+				"&interval=330" +
+				"&isGlobalOn=" + to_string(!console["DisabledGlobal"]) +
+				"&isPublic=" + to_string(!console["Private"]) +
+				"&isVisible=" + to_string(console["CloudVisible"]);
+			char* frmdata = new char[data.length() + 1];
+			strcpy_s(frmdata, data.length() + 1, data.c_str());
+			int port = 80;
+			if (GlobalMsg["strConfigPulsePort"].length() <= 5)
+			{
+				port = stoi(GlobalMsg["strConfigPulsePort"]);
+			}
+			string temp;
+			Network::POST(GlobalMsg["strConfigPulseHost"].c_str(), GlobalMsg["strConfigPulseXpath"].c_str(), port, frmdata, temp);
+			//AddMsgToQueue(temp, console.master());
+			delete[] frmdata;
+		}
+		
 	}
 
 	int checkWarning(const char* warning)
