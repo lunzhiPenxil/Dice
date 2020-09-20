@@ -43,6 +43,8 @@ namespace Cloud
 		if (console["PulseMode"] & (0x001 << 1) && GlobalMsg["strConfigPulseToken"] != "NULL")
 		{
 			const time_t TimeStamp = time(NULL);
+			const long long interval = 5 * 60;
+			const long long waitfor = 30;
 			const string strVer = GBKtoUTF8(string(Dice_Ver));
 			const string data =
 				"token=" + GlobalMsg["strConfigPulseToken"] +
@@ -51,7 +53,7 @@ namespace Cloud
 				"&version=Dice! " + strVer +
 				"&name=" + UrlEncode(GBKtoUTF8(GlobalMsg["strSelfName"])) +
 				"&masterid=" + to_string(console.master()) +
-				"&interval=330" +
+				"&interval" + to_string(interval + waitfor) +
 				"&isGlobalOn=" + to_string(!console["DisabledGlobal"]) +
 				"&isPublic=" + to_string(!console["Private"]) +
 				"&isVisible=" + to_string(console["CloudVisible"]);
