@@ -53,7 +53,7 @@ namespace Cloud
 				"&version=Dice! " + strVer +
 				"&name=" + UrlEncode(GBKtoUTF8(GlobalMsg["strSelfName"])) +
 				"&masterid=" + to_string(console.master()) +
-				"&interval" + to_string(interval + waitfor) +
+				"&interval=" + to_string(interval + waitfor) +
 				"&isGlobalOn=" + to_string(!console["DisabledGlobal"]) +
 				"&isPublic=" + to_string(!console["Private"]) +
 				"&isVisible=" + to_string(console["CloudVisible"]);
