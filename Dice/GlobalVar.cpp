@@ -391,7 +391,7 @@ Shiki:
 {"骰娘用户群","【未设置】"},
 {"窥屏可能","无"},
 {"其他插件","【未设置】"},
-{"作者","Copyright (C) 2018-2020 w4123溯洄\nCopyright (C) 2019-2020 String.Empty\nCopyright (C) 2019-2020 仑质"},
+{"作者","Copyright (C) 2018-2020 w4123溯洄\nCopyright (C) 2019-2020 String.Empty\nCopyright (C) 2019-2020 lunzhiPenxil仑质"},
 {"指令",R"(at骰娘后接指令可以指定骰娘单独响应，如at骰娘.bot off
 多数指令需要后接参数，请.help对应指令 获取详细信息，如.help jrrp
 控制指令:
