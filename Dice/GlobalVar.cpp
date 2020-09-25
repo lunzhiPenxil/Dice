@@ -116,8 +116,10 @@ std::map<std::string, std::string> GlobalMsg
 	{"strPcInitDelErr","{nick}的初始卡不可删除×"},
 	{"strPcNoteTooLong","备注长度不能超过255×"},
 	{"strPcTextTooLong","文本长度不能超过48×"},
-	{"strSensNote","发现指令中带敏感词，{self}已记录并上报！"},
-	{"strSensWarn","发现指令中带敏感词，{self}拒绝响应且已上报！"},
+	{"strCensorCaution","提醒：{nick}的指令包含敏感词，{self}已上报"},
+	{"strCensorWarning","警告：{nick}的指令包含敏感词，{self}已记录并上报！"},
+	{"strCensorDanger","警告：{nick}的指令包含敏感词，{self}拒绝指令并已上报！"},
+	//{"strCensorCritical","警告：{nick}的指令包含敏感词，{self}已记录并上报！"},
 	{"strSpamFirstWarning","你短时间内对{self}指令次数过多！请善用多轮掷骰和复数生成指令（刷屏初次警告）"},
 	{"strSpamFinalWarning","请暂停你的一切指令，避免因高频指令被{self}拉黑！（刷屏最终警告）"},
 	{"strReplySet","{self}对关键词{key}的回复已设置√"},
@@ -339,7 +341,14 @@ std::map<std::string, std::string> GlobalMsg
 
 std::map<std::string, std::string> EditedMsg;
 const std::map<std::string, std::string, less_ci> HelpDoc = {
-{"更新",R"([Oliva分支更新]
+{"更新",R"(Oliva:
+1.2.8:自定义心跳标准
+Shiki:
+567:敏感词检测
+输入以下指令查看详情:
+[.help Oliva更新]
+[.help Shiki更新])"},
+{"Oliva更新",R"([Oliva分支更新]
 1.2.8:自定义心跳标准
 1.2.7:正则匹配自定义Reply
 1.2.6:CNMODS魔都模组查询
@@ -349,8 +358,9 @@ const std::map<std::string, std::string, less_ci> HelpDoc = {
 1.2.2:漏洞修复
 1.2.1:本地Jrrp
 1.2.0:多种特殊检定
-1.1.3:模糊匹配.help最终稳定
-[Shiki分支更新]
+1.1.3:模糊匹配.help最终稳定)"},
+{"Shiki更新",R"([Shiki分支更新]
+567:敏感词检测
 566:.help查询建议
 565:.log日志记录
 564:多功能优化，牌数牌堆等
