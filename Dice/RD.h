@@ -109,6 +109,62 @@ private:
 			vintRes.push_back(intTmpRes);
 			return 0;
 		}
+		else if (dice.find('c') != std::string::npos)
+		{
+			vBnP.push_back(DX_Dice);
+			std::string strDiceCnt = dice.substr(0, dice.find('c'));
+			for (auto i : strDiceCnt)
+				if (!isdigit(static_cast<unsigned char>(i)))
+					return Input_Err;
+			if (strDiceCnt.length() > 3)
+				return DiceTooBig_Err;
+			std::string strAddVal = dice.substr(dice.find('c') + 1);
+			for (auto i : strAddVal)
+				if (!isdigit(static_cast<unsigned char>(i)))
+					return Input_Err;
+			if (strAddVal.length() > 2)
+				return AddDiceVal_Err;
+			int intDiceCnt = stoi(strDiceCnt);
+			const int AddDiceVal = stoi(strAddVal);
+			if (intDiceCnt == 0)
+				return ZeroDice_Err;
+			if (AddDiceVal < 2)
+				return AddDiceVal_Err;
+			std::vector<int> vintTmpRes;
+			int intTmpRes = 0;
+			while (intDiceCnt != 0)
+			{
+				vintTmpRes.push_back(intDiceCnt);
+				int intTmpMax = 0;
+				int AddNum = 0;
+				int intCnt = intDiceCnt;
+				while (intDiceCnt--)
+				{
+					int intTmpResOnce = RandomGenerator::Randint(1, 10);
+					vintTmpRes.push_back(intTmpResOnce);
+					intTmpMax = intTmpResOnce > intTmpMax ? intTmpResOnce : intTmpMax;
+					if (intTmpResOnce >= AddDiceVal)
+						AddNum++;
+				}
+				if (intCnt > 10)sort(vintTmpRes.end() - intCnt, vintTmpRes.end());
+				intDiceCnt = AddNum;
+				if (AddNum != 0)
+				{
+					intTmpRes += 10;
+				}
+				else
+				{
+					intTmpRes += intTmpMax;
+				}
+			}
+			if (boolNegative)
+				intTotal -= intTmpRes;
+			else
+				intTotal += intTmpRes;
+			vvintRes.push_back(vintTmpRes);
+			vintRes.push_back(intTmpRes);
+			return 0;
+		}
 		if (dice[dice.length() - 1] == 'F')
 		{
 			vBnP.push_back(Fudge_Dice);
@@ -452,6 +508,10 @@ public:
 			{
 				i = tolower(static_cast<unsigned char>(i));
 			}
+			else if (i == 'c' || i == 'C')
+			{
+				i = tolower(static_cast<unsigned char>(i));
+			}
 			else
 			{
 				i = toupper(static_cast<unsigned char>(i));
@@ -462,6 +522,7 @@ public:
 		if (strDice.empty())
 			strDice.append("D" + (std::to_string(defaultDice)));
 		if (strDice[0] == 'a')strDice.insert(0, "10");
+		if (strDice[0] == 'c')strDice.insert(0, "10");
 		if (strDice[0] == 'D' && strDice[1] == 'F')
 			strDice.insert(0, "4");
 		if (strDice[0] == 'F')
@@ -503,6 +564,14 @@ public:
 			strDice.insert(strDice.find("-a") + 1, "10");
 		while (strDice.find("+a") != std::string::npos)
 			strDice.insert(strDice.find("+a") + 1, "10");
+		while (strDice.find("c-") != std::string::npos)
+			strDice.insert(strDice.find("c-") + 1, "10");
+		while (strDice.find("c+") != std::string::npos)
+			strDice.insert(strDice.find("c+") + 1, "10");
+		while (strDice.find("-c") != std::string::npos)
+			strDice.insert(strDice.find("-a") + 1, "10");
+		while (strDice.find("+c") != std::string::npos)
+			strDice.insert(strDice.find("+c") + 1, "10");
 		if (*(strDice.end() - 1) == 'D')
 			strDice.append(std::to_string(defaultDice));
 		if (*(strDice.end() - 1) == 'K')
@@ -510,6 +579,7 @@ public:
 		if (*strDice.begin() == '+')
 			strDice.erase(strDice.begin());
 		if (strDice[strDice.length() - 1] == 'a')strDice.append("10");
+		if (strDice[strDice.length() - 1] == 'c')strDice.append("10");
 	}
 
 	mutable std::vector<std::vector<int>> vvintRes{};
@@ -694,6 +764,56 @@ public:
 					if (isCnt)
 					{
 						int Cnt[11] = {0};
+						for (int a = intWWPos + 1; a <= intWWPos + (*i)[intWWPos]; a++)
+						{
+							Cnt[(*i)[a]]++;
+						}
+						for (int i2 = 1, c = 0; i2 <= 10; i2++)
+						{
+							if (Cnt[i2])
+							{
+								strReturnString.append("(" + std::to_string(i2) + ":" + std::to_string(Cnt[i2]) + "),");
+								c++;
+								if (c % 3 == 1)strReturnString += '\n';
+							}
+						}
+						if (strReturnString[strReturnString.length() - 1] == '\n')strReturnString.pop_back();
+						if (strReturnString[strReturnString.length() - 1] == ',')strReturnString.pop_back();
+					}
+					else
+						for (int a = intWWPos + 1; a <= intWWPos + (*i)[intWWPos]; a++)
+						{
+							strReturnString.append(std::to_string((*i)[a]));
+							if (a != intWWPos + (*i)[intWWPos])
+								strReturnString.append(",");
+						}
+					strReturnString.append("}");
+					intWWPos = intWWPos + (*i)[intWWPos] + 1;
+					if (intWWPos == i->size())
+					{
+						break;
+					}
+				}
+				if (vvintRes.size() != 1 && i->size() != (*i)[0] + 1)
+					strReturnString.append(" }");
+			}
+			else if (vBnP[distance(vvintRes.begin(), i)] == DX_Dice)
+			{
+				bool isCnt = false;
+				if (i->size() >= 100)isCnt = true;
+				if (vvintRes.size() != 1 && i->size() != (*i)[0] + 1)
+					strReturnString.append("{ ");
+				int intWWPos = 0;
+				while (true)
+				{
+					if (intWWPos)
+					{
+						strReturnString += isCnt ? "\n¼Ó÷»" + std::to_string((*i)[intWWPos]) + "£º" : "+";
+					}
+					strReturnString.append("{");
+					if (isCnt)
+					{
+						int Cnt[11] = { 0 };
 						for (int a = intWWPos + 1; a <= intWWPos + (*i)[intWWPos]; a++)
 						{
 							Cnt[(*i)[a]]++;

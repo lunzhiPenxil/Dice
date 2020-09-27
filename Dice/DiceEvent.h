@@ -217,7 +217,7 @@ public:
 			|| strLowerMessage[intMsgCnt] == 'p' || strLowerMessage[intMsgCnt] == 'b'
 			|| strLowerMessage[intMsgCnt] == 'f'
 			|| strLowerMessage[intMsgCnt] == '+' || strLowerMessage[intMsgCnt] == '-'
-			|| strLowerMessage[intMsgCnt] == 'a'
+			|| strLowerMessage[intMsgCnt] == 'a' || strLowerMessage[intMsgCnt] == 'c'
 			|| strLowerMessage[intMsgCnt] == 'x' || strLowerMessage[intMsgCnt] == '*' || strMsg[intMsgCnt] == '/'
 			|| strLowerMessage[intMsgCnt] == '#')
 		{

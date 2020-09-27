@@ -40,6 +40,7 @@
 #define P_Dice 2
 #define Fudge_Dice 3
 #define WW_Dice 4
+#define DX_Dice 5
 //Message Type
 #define PrivateMsg 0
 #define GroupMsg 1

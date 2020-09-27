@@ -4097,6 +4097,268 @@ int FromMsg::DiceReply()
 		}
 		if (boolAdda10)
 			strMainDice.insert(strFirstDice.length(), "a10");
+		for (auto strMainDiceTmp = strMainDice.begin(); strMainDiceTmp != strMainDice.end(); strMainDiceTmp++)
+		{
+			if (*strMainDiceTmp == 'c' || *strMainDiceTmp == 'C')
+			{
+				*strMainDiceTmp = 'a';
+			}
+		}
+		RD rdMainDice(strMainDice, intDefaultDice);
+
+		const int intFirstTimeRes = rdMainDice.Roll();
+		if (intFirstTimeRes != 0)
+		{
+			if (intFirstTimeRes == Value_Err)
+			{
+				reply(GlobalMsg["strValueErr"]);
+				return 1;
+			}
+			if (intFirstTimeRes == Input_Err)
+			{
+				reply(GlobalMsg["strInputErr"]);
+				return 1;
+			}
+			if (intFirstTimeRes == ZeroDice_Err)
+			{
+				reply(GlobalMsg["strZeroDiceErr"]);
+				return 1;
+			}
+			if (intFirstTimeRes == ZeroType_Err)
+			{
+				reply(GlobalMsg["strZeroTypeErr"]);
+				return 1;
+			}
+			if (intFirstTimeRes == DiceTooBig_Err)
+			{
+				reply(GlobalMsg["strDiceTooBigErr"]);
+				return 1;
+			}
+			if (intFirstTimeRes == TypeTooBig_Err)
+			{
+				reply(GlobalMsg["strTypeTooBigErr"]);
+				return 1;
+			}
+			if (intFirstTimeRes == AddDiceVal_Err)
+			{
+				reply(GlobalMsg["strAddDiceValErr"]);
+				return 1;
+			}
+			reply(GlobalMsg["strUnknownErr"]);
+			return 1;
+		}
+		if (!boolDetail && intTurnCnt != 1)
+		{
+			if (strVar["reason"].empty())strReply = GlobalMsg["strRollMuiltDice"];
+			else strReply = GlobalMsg["strRollMuiltDiceReason"];
+			vector<int> vintExVal;
+			strVar["res"] = "{ ";
+			while (intTurnCnt--)
+			{
+				// 此处返回值无用
+				// ReSharper disable once CppExpressionWithoutSideEffects
+				rdMainDice.Roll();
+				strVar["res"] += to_string(rdMainDice.intTotal);
+				if (intTurnCnt != 0)
+					strVar["res"] = ",";
+				if ((rdMainDice.strDice == "D100" || rdMainDice.strDice == "1D100") && (rdMainDice.intTotal <= 5 ||
+					rdMainDice.intTotal >= 96))
+					vintExVal.push_back(rdMainDice.intTotal);
+			}
+			strVar["res"] += " }";
+			if (!vintExVal.empty())
+			{
+				strVar["res"] += ",极值: ";
+				for (auto it = vintExVal.cbegin(); it != vintExVal.cend(); ++it)
+				{
+					strVar["res"] += to_string(*it);
+					if (it != vintExVal.cend() - 1)strVar["res"] += ",";
+				}
+			}
+			if (!isHidden || intT == PrivateT)
+			{
+				reply();
+			}
+			else
+			{
+				strReply = format(strReply, GlobalMsg, strVar);
+				strReply = "在" + printChat(fromChat) + "中 " + strReply;
+				AddMsgToQueue(strReply, fromQQ, msgtype::Private);
+				for (auto qq : gm->session(fromSession).get_ob())
+				{
+					if (qq != fromQQ)
+					{
+						AddMsgToQueue(strReply, qq, msgtype::Private);
+					}
+				}
+			}
+		}
+		else
+		{
+			while (intTurnCnt--)
+			{
+				// 此处返回值无用
+				// ReSharper disable once CppExpressionWithoutSideEffects
+				rdMainDice.Roll();
+				strVar["res"] = boolDetail ? rdMainDice.FormCompleteString() : rdMainDice.FormShortString();
+				if (strVar["reason"].empty())
+					strReply = format(GlobalMsg["strRollDice"], {strVar["pc"], strVar["res"]});
+				else strReply = format(GlobalMsg["strRollDiceReason"], {strVar["pc"], strVar["res"], strVar["reason"]});
+				if (!isHidden || intT == PrivateT)
+				{
+					reply();
+				}
+				else
+				{
+					strReply = format(strReply, GlobalMsg, strVar);
+					strReply = "在" + printChat(fromChat) + "中 " + strReply;
+					AddMsgToQueue(strReply, fromQQ, msgtype::Private);
+					for (auto qq : gm->session(fromSession).get_ob())
+					{
+						if (qq != fromQQ)
+						{
+							AddMsgToQueue(strReply, qq, msgtype::Private);
+						}
+					}
+				}
+			}
+		}
+		if (isHidden)
+		{
+			reply(GlobalMsg["strRollHidden"], {strVar["pc"]});
+		}
+		return 1;
+	}
+	else if (strLowerMessage.substr(intMsgCnt, 2) == "dx")
+	{
+		intMsgCnt += 2;
+		bool boolDetail = true;
+		if (strLowerMessage[intMsgCnt] == 'x')
+		{
+			intMsgCnt++;
+			boolDetail = false;
+		}
+		bool isHidden = false;
+		if (strLowerMessage[intMsgCnt] == 'h')
+		{
+			isHidden = true;
+			intMsgCnt += 1;
+		}
+		if (intT == 0)isHidden = false;
+		string strMainDice = readDice();
+		readSkipSpace();
+		strVar["reason"] = strMsg.substr(intMsgCnt);
+		int intTurnCnt = 1;
+		const int intDefaultDice = get(getUser(fromQQ).intConf, string("默认骰"), 100);
+		if (strMainDice.find('#') != string::npos)
+		{
+			string strTurnCnt = strMainDice.substr(0, strMainDice.find('#'));
+			if (strTurnCnt.empty())
+				strTurnCnt = "1";
+			strMainDice = strMainDice.substr(strMainDice.find('#') + 1);
+			RD rdTurnCnt(strTurnCnt, intDefaultDice);
+			const int intRdTurnCntRes = rdTurnCnt.Roll();
+			if (intRdTurnCntRes != 0)
+			{
+				if (intRdTurnCntRes == Value_Err)
+				{
+					reply(GlobalMsg["strValueErr"]);
+					return 1;
+				}
+				if (intRdTurnCntRes == Input_Err)
+				{
+					reply(GlobalMsg["strInputErr"]);
+					return 1;
+				}
+				if (intRdTurnCntRes == ZeroDice_Err)
+				{
+					reply(GlobalMsg["strZeroDiceErr"]);
+					return 1;
+				}
+				if (intRdTurnCntRes == ZeroType_Err)
+				{
+					reply(GlobalMsg["strZeroTypeErr"]);
+					return 1;
+				}
+				if (intRdTurnCntRes == DiceTooBig_Err)
+				{
+					reply(GlobalMsg["strDiceTooBigErr"]);
+					return 1;
+				}
+				if (intRdTurnCntRes == TypeTooBig_Err)
+				{
+					reply(GlobalMsg["strTypeTooBigErr"]);
+					return 1;
+				}
+				if (intRdTurnCntRes == AddDiceVal_Err)
+				{
+					reply(GlobalMsg["strAddDiceValErr"]);
+					return 1;
+				}
+				reply(GlobalMsg["strUnknownErr"]);
+				return 1;
+			}
+			if (rdTurnCnt.intTotal > 10)
+			{
+				reply(GlobalMsg["strRollTimeExceeded"]);
+				return 1;
+			}
+			if (rdTurnCnt.intTotal <= 0)
+			{
+				reply(GlobalMsg["strRollTimeErr"]);
+				return 1;
+			}
+			intTurnCnt = rdTurnCnt.intTotal;
+			if (strTurnCnt.find('d') != string::npos)
+			{
+				string strTurnNotice = strVar["pc"] + "的掷骰轮数: " + rdTurnCnt.FormShortString() + "轮";
+				if (!isHidden || intT == PrivateT)
+				{
+					reply(strTurnNotice);
+				}
+				else
+				{
+					strTurnNotice = "在" + printChat(fromChat) + "中 " + strTurnNotice;
+					AddMsgToQueue(strTurnNotice, fromQQ, msgtype::Private);
+					for (auto qq : gm->session(fromSession).get_ob())
+					{
+						if (qq != fromQQ)
+						{
+							AddMsgToQueue(strTurnNotice, qq, msgtype::Private);
+						}
+					}
+				}
+			}
+		}
+		if (strMainDice.empty())
+		{
+			reply(GlobalMsg["strEmptyWWDiceErr"]);
+			return 1;
+		}
+		string strFirstDice = strMainDice.substr(0, strMainDice.find('+') < strMainDice.find('-')
+			                                            ? strMainDice.find('+')
+			                                            : strMainDice.find('-'));
+		strFirstDice = strFirstDice.substr(0, strFirstDice.find('x') < strFirstDice.find('*')
+			                                      ? strFirstDice.find('x')
+			                                      : strFirstDice.find('*'));
+		bool boolAdda10 = true;
+		for (auto i : strFirstDice)
+		{
+			if (!isdigit(static_cast<unsigned char>(i)))
+			{
+				boolAdda10 = false;
+				break;
+			}
+		}
+		if (boolAdda10)
+			strMainDice.insert(strFirstDice.length(), "c10");
+		for (auto strMainDiceTmp = strMainDice.begin(); strMainDiceTmp != strMainDice.end(); strMainDiceTmp++)
+		{
+			if (*strMainDiceTmp == 'a' || *strMainDiceTmp == 'A')
+			{
+				*strMainDiceTmp = 'c';
+			}
+		}
 		RD rdMainDice(strMainDice, intDefaultDice);
 
 		const int intFirstTimeRes = rdMainDice.Roll();
