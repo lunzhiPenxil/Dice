@@ -343,7 +343,7 @@ std::map<std::string, std::string> GlobalMsg
 std::map<std::string, std::string> EditedMsg;
 const std::map<std::string, std::string, less_ci> HelpDoc = {
 {"更新",R"(Oliva:
-1.2.8:自定义心跳标准
+1.2.9:新增dx掷骰指令
 Shiki:
 567:敏感词检测
 输入以下指令查看详情:
