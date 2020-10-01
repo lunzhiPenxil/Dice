@@ -11,8 +11,8 @@ QQ Dice Robot For TRPG Based on CoolQ/Mirai/XQ
 
 Dice!是一款基于酷Q的QQ跑团掷骰机器人，而这是由仑质维护的Oliva分支。
 
-欢迎加入开发群: [青果铺]661366095    
-或是官方骰娘[小青果酱]的用户群: [青果批发车间]828786809    
+欢迎加入开发群: [青果铺] `661366095`    
+或是官方骰娘[小青果酱]的用户群: [青果批发车间] `828786809`    
 
 论坛: <https://forum.kokona.tech>   
 主页: <https://kokona.tech/>   
