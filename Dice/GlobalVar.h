@@ -37,7 +37,7 @@
  * 请修改Dice_Short_Ver或Dice_Full_Ver常量以达到版本自定义
  */
 const unsigned short Dice_Build = 567u;
-inline const std::string Dice_Ver_Without_Build = "2.4.1beta3";
+inline const std::string Dice_Ver_Without_Build = "2.4.1";
 constexpr auto DiceRequestHeader = "Dice/2.4.1";
 constexpr auto Oliva_Dice_Ver_Without_Build = "Oliva.1.2.9";
 inline const std::string Dice_Ver = Dice_Ver_Without_Build + "." + Oliva_Dice_Ver_Without_Build + "(" + std::to_string(Dice_Build) + ")";

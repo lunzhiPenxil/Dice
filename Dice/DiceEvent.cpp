@@ -16,6 +16,7 @@
 #include "JrrpModule.h"
 #include "MD5.h"
 #include <time.h>
+#include <memory>
 
 //#pragma warning(disable:28159)
 using namespace std;
@@ -181,11 +182,58 @@ int FromMsg::AdminEvent(const string& strOption)
 	{
 		getDiceList();
 		strReply = "当前骰娘列表：";
-		for (auto it : mDiceList)
+		for (auto& [diceQQ, masterQQ] : mDiceList)
 		{
-			strReply += "\n" + printQQ(it.first);
+			strReply += "\n" + printQQ(diceQQ);
 		}
 		reply();
+		return 1;
+	}
+	if (strOption == "censor") {
+		readSkipSpace();
+		if (strMsg[intMsgCnt] == '+') {
+			intMsgCnt++;
+			strVar["danger_level"] = readToColon();
+			Censor::Level danger_level = censor.get_level(strVar["danger_level"]);
+			readSkipColon();
+			ResList res;
+			while (intMsgCnt != strMsg.length()) {
+				string item = readItem();
+				if (!item.empty()) {
+					censor.add_word(item, danger_level);
+					res << item;
+				}
+			}
+			if (res.empty()) {
+				reply("{nick}未输入待添加敏感词！");
+			}
+			else {
+				note("{nick}已添加{danger_level}级敏感词" + to_string(res.size()) + "个:" + res.show(), 1);
+			}
+		}
+		else if (strMsg[intMsgCnt] == '-') {
+			intMsgCnt++;
+			ResList res,resErr;
+			while (intMsgCnt != strMsg.length()) {
+				string item = readItem();
+				if (!item.empty()) {
+					if (censor.rm_word(item))
+						res << item;
+					else
+						resErr << item;
+				}
+			}
+			if (res.empty()) {
+				reply("{nick}未输入待移除敏感词！");
+			}
+			else {
+				note("{nick}已移除敏感词" + to_string(res.size()) + "个:" + res.show(), 1);
+			}
+			if (!resErr.empty())
+				reply("{nick}移除不存在敏感词" + to_string(resErr.size()) + "个:" + resErr.show());
+		}
+		else
+			reply(fmt->get_help("censor"));
 		return 1;
 	}
 	if (strOption == "only")
@@ -1147,10 +1195,10 @@ int FromMsg::DiceReply()
 			case 2:
 			{
 				if (frame == QQFrame::Mirai) {
-					std::thread th(&DiceModManager::_help, fmt.get(), this);
+					std::thread th(&DiceModManager::_help, fmt.get(), shared_from_this());
 					th.detach();
 				}
-				else fmt->_help(this);
+				else fmt->_help(shared_from_this());
 				break;
 			}
 			default:
@@ -1623,6 +1671,11 @@ int FromMsg::DiceReply()
 		}
 		if (Command == "diver")
 		{
+			bool bForKick = false;
+			if (strLowerMessage.substr(intMsgCnt, 5) == "4kick") {
+				bForKick = true;
+				intMsgCnt += 5;
+			}
 			std::priority_queue<std::pair<time_t, string>> qDiver;
 			time_t tNow = time(nullptr);
 			const int intTDay = 24 * 60 * 60;
@@ -1632,7 +1685,8 @@ int FromMsg::DiceReply()
 				time_t intLastMsg = (tNow - each.LastMsgTime) / intTDay;
 				if (!each.LastMsgTime || intLastMsg > 30)
 				{
-					qDiver.emplace(intLastMsg, each.Nick + "(" + to_string(each.QQID) + ")");
+					qDiver.emplace(intLastMsg, (bForKick ? to_string(each.QQID)
+												: (each.Nick + "(" + to_string(each.QQID) + ")")));
 				}
 			}
 			if (qDiver.empty())
@@ -1644,11 +1698,13 @@ int FromMsg::DiceReply()
 			ResList res;
 			while (!qDiver.empty())
 			{
-				res << qDiver.top().second + to_string(qDiver.top().first) + "天";
+				res << (bForKick ? qDiver.top().second
+						: (qDiver.top().second + to_string(qDiver.top().first) + "天"));
 				if (++intCnt > 15 && intCnt > intSize / 80)break;
 				qDiver.pop();
 			}
-			reply("潜水成员列表:" + res.show());
+			bForKick ? reply("(.group " + to_string(llGroup) + " kick " + res.show(1))
+				:reply("潜水成员列表:" + res.show(1));
 			return 1;
 		}
 		if (int intPms = getGroupMemberInfo(llGroup, fromQQ).permissions; Command == "pause")
@@ -2277,7 +2333,7 @@ int FromMsg::DiceReply()
 			}
 			if (Command == "off")
 			{
-				if (getGroupMemberInfo(fromGroup, fromQQ).permissions >= 2)
+				if (isAuth)
 				{
 					if (groupset(fromGroup, "禁用jrrp") < 1)
 					{
@@ -4937,6 +4993,11 @@ bool FromMsg::DiceFilter()
 		&& CustomReply())return true;
 	if (isDisabled)return console["DisabledBlock"];
 	return false;
+}
+
+void FromMsg::readSkipColon() {
+	readSkipSpace();
+	while (intMsgCnt < strMsg.length() && (strMsg[intMsgCnt] == ':' || strMsg[intMsgCnt] == '='))intMsgCnt++;
 }
 
 int FromMsg::readNum(int& num)
