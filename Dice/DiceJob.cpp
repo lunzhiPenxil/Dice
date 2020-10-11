@@ -482,7 +482,7 @@ void dice_api_update(DiceJob& job) {
 	string strAppPath(*path);
 	string strApiSaveLoc;
 	strApiSaveLoc = DiceDir + "\\update\\DiceUpdateArchives.json";
-	if (job.strVar["ver"] == "list")
+	if (job.strVar["ver"] == "list" || job.strVar["ver"] == "")
 	{
 		job.note("开始刷新更新源", 1);
 		switch (Cloud::DownloadFile(strURL.c_str(), strApiSaveLoc.c_str())) {
@@ -526,9 +526,14 @@ void dice_api_update(DiceJob& job) {
 	}
 	else
 	{
-		//job.note("测试更新模块:" + job.strVar["ver"] + "分支", 1);
-
 		nlohmann::json j_api = freadJson(strApiSaveLoc);
+		string strNameTmp = "";
+		string strCommentTmp = "";
+		string strVersionTypeTmp = "";
+		string strVersionTmp = "";
+		string strDownloadTmp = "";
+		string strDownloadTmp_dll = "";
+		string strDownloadTmp_json = "";
 		if (j_api != nlohmann::json())
 		{
 			try
@@ -536,29 +541,192 @@ void dice_api_update(DiceJob& job) {
 				vector<string> public_list = UTF8toGBK(j_api["public"].get<vector<string>>());
 				if (count(public_list.begin(), public_list.end(), job.strVar["ver"]) > 0)
 				{
-					string strNameTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["name"].get<string>());
-					string strCommentTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["comment"].get<string>());
-					string strVersionTypeTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["versiontype"].get<string>());
-					string strVersionTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["version"].get<string>());
-					string strDownloadTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["download"].get<string>());
-					job.echo("即将更新:[" + strNameTmp + "]\n分支说明:\n" + strCommentTmp + "\n分支版本:" + strVersionTmp + "\n更新链接:" + strDownloadTmp);
+					strNameTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["name"].get<string>());
+					strCommentTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["comment"].get<string>());
+					strVersionTypeTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["versiontype"].get<string>());
+					strVersionTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["version"].get<string>());
+					strDownloadTmp = UTF8toGBK(j_api["data"][job.strVar["ver"]]["download"].get<string>());
+					strDownloadTmp_dll = UTF8toGBK(j_api["data"][job.strVar["ver"]]["download_dll"].get<string>());
+					strDownloadTmp_json = UTF8toGBK(j_api["data"][job.strVar["ver"]]["download_json"].get<string>());
+					//job.echo("即将更新:[" + strNameTmp + "]\n分支说明:\n" + strCommentTmp + "\n分支版本:" + strVersionTmp + "\n更新dll:" + strDownloadTmp + "\n更新json:" + strDownloadTmp_json);
 				}
 				else
 				{
 					job.echo(job.strVar["ver"] + "分支:\n不存在!");
+					return;
 				}
 			}
 			catch (...)
 			{
 				job.note("更新源缓存加载异常!", 1);
+				return;
 			}
 		}
 		else
 		{
 			job.note("更新源缓存异常!", 1);
+			return;
+		}
+
+		string strApiVersionSaveLoc = DiceDir + "\\update\\DiceUpdateVersion_" + job.strVar["ver"] + ".json";
+		switch (Cloud::DownloadFile(strVersionTmp.c_str(), strApiVersionSaveLoc.c_str())) {
+		case -1:
+			job.echo("分支版本获取失败:" + strURL);
+			return;
+			break;
+		case -2:
+			job.note("分支版本加载失败!分支版本缓存未找到:" + strApiVersionSaveLoc, 0b10);
+			return;
+			break;
+		case 0:
+			break;
+		}
+
+		string strVerInfo;
+		ifstream fin(strApiVersionSaveLoc);
+		if (!fin) {
+			job.echo("更新源缓存为空!");
+			return;
+		}
+		else {
+			try
+			{
+				fin >> strVerInfo;
+			}
+			catch (...)
+			{
+				job.echo("更新源缓存加载异常!");
+				return;
+			}
+		}
+
+		job.echo("即将更新:[" + strNameTmp + "]\n版本号:" + strVerInfo + "\n分支说明:\n" + strCommentTmp);
+
+		mkDir(DiceDir + "/update/DiceNew_" + job.strVar["ver"]);
+		string strApiDllSaveLoc = DiceDir + "\\update\\DiceNew_" + job.strVar["ver"] + "\\com.w4123.dice.dll";
+		string strApiJsonSaveLoc = DiceDir + "\\update\\DiceNew_" + job.strVar["ver"] + "\\com.w4123.dice.json";
+		string urlDll(strDownloadTmp_dll);
+		string urlJson(strDownloadTmp_json);
+		switch (Cloud::DownloadFile(urlDll.c_str(), strApiDllSaveLoc.c_str())) {
+		case -1:
+			job.echo("更新失败:" + urlDll);
+			return;
+			break;
+		case -2:
+			job.note("更新Dice失败!dll文件未下载到指定位置", 0b1);
+			return;
+			break;
+		case 0:
+		default:
+			switch (Cloud::DownloadFile(urlJson.c_str(), strApiJsonSaveLoc.c_str())) {
+			case -1:
+				job.echo("更新失败:" + urlJson);
+				return;
+				break;
+			case -2:
+				job.note("更新Dice失败!json文件未下载到指定位置", 0b1);
+				return;
+				break;
+			case 0:
+			default:
+				break;
+			}
+		}
+
+		if (frame == QQFrame::Mirai) {
+			mkDir(dirExe + "plugins/MiraiNative/pluginsnew");
+			mkDir(dirExe + "data/MiraiNative/pluginsnew");
+			char pathDll[] = "plugins/MiraiNative/pluginsnew/com.w4123.dice.dll";
+			char pathJson[] = "plugins/MiraiNative/pluginsnew/com.w4123.dice.json";
+			char pathDll_new[] = "data/MiraiNative/pluginsnew/com.w4123.dice.dll";
+			char pathJson_new[] = "data/MiraiNative/pluginsnew/com.w4123.dice.json";
+			if (cp_file(strApiDllSaveLoc, pathDll)) {}
+			else {
+				job.note("更新Dice失败!dll文件整合时失败，但新版本已缓存。", 0b1);
+				return;
+			}
+			if (cp_file(strApiJsonSaveLoc, pathJson)) {}
+			else {
+				job.note("更新Dice失败!json文件整合时失败，但新版本已缓存。", 0b1);
+				return;
+			}
+			if (cp_file(strApiDllSaveLoc, pathDll_new)) {}
+			else {
+				job.note("更新Dice失败!dll文件整合时失败，但新版本已缓存。", 0b1);
+				return;
+			}
+			if (cp_file(strApiJsonSaveLoc, pathJson_new)) {}
+			else {
+				job.note("更新Dice失败!json文件整合时失败，但新版本已缓存。", 0b1);
+				return;
+			}
+			job.note("更新Dice!" + job.strVar["ver"] + "分支成功√", 1);
+		}
+		else if (frame == QQFrame::XianQu) {
+			mkDir(dirExe + "CQPlugins/");
+			char pathDll[] = "CQPlugins/com.w4123.dice.dll";
+			char pathJson[] = "CQPlugins/com.w4123.dice.json";
+			string urlDll(strDownloadTmp_dll);
+			if (cp_file(strApiDllSaveLoc, pathDll)) {}
+			else {
+				job.note("更新Dice失败!dll文件整合时失败，但新版本已缓存。", 0b1);
+				return;
+			}
+			if (cp_file(strApiJsonSaveLoc, pathJson)) {}
+			else {
+				job.note("更新Dice失败!json文件整合时失败，但新版本已缓存。", 0b1);
+				return;
+			}
+			job.note("更新Dice!" + job.strVar["ver"] + "分支成功√", 1);
+		}
+		else {
+			job.note("尝试进行未知服务平台中的更新，暂不予提供自动更新服务，但新版本已缓存。", 1);
+			return;
+			
+			char** path = new char* ();
+			_get_pgmptr(path);
+			string strAppPath(*path);
+			delete path;
+			strAppPath = strAppPath.substr(0, strAppPath.find_last_of("\\")) + "\\app\\com.w4123.dice.cpk";
+			string strURL(strDownloadTmp);
+			switch (Cloud::DownloadFile(strURL.c_str(), strAppPath.c_str())) {
+			case -1:
+				job.echo("更新失败:" + strURL);
+				break;
+			case -2:
+				job.note("更新Dice失败!文件未找到:" + strAppPath, 0b10);
+				break;
+			case 0:
+				job.note("更新Dice!" + job.strVar["ver"] + "分支成功√\n可用.system reload 重启应用更新", 1);
+			}
 		}
 	}
 }
+
+int cp_file(string sourcename, string destname)
+{
+	char buffer[256];
+	try {
+		ifstream in(sourcename, ios_base::in | ios_base::binary);
+		ofstream out(destname, ios_base::out | ios_base::binary);
+		if (!in || !out) {
+			return FALSE;
+		}
+		while (!in.eof())
+		{
+			in.read(buffer, 256);
+			auto n = in.gcount();
+			out.write(buffer, n);
+		}
+		in.close();
+		out.close();
+	}
+	catch (...) {
+		return FALSE;
+	}
+	return TRUE;
+}
+
 
 void dice_cnmods_api(DiceJob& job) {
 	char** path = new char* ();

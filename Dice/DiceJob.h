@@ -21,6 +21,7 @@ void list_group(DiceJob& job);
 void cloud_beat(DiceJob& job);
 void dice_update(DiceJob& job);
 void dice_api_update(DiceJob& job);
+int cp_file(string sourcename, string destname);
 void dice_cnmods_api(DiceJob& job);
 void dice_cloudblack(DiceJob& job);
 
