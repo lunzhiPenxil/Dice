@@ -343,13 +343,14 @@ std::map<std::string, std::string> GlobalMsg
 std::map<std::string, std::string> EditedMsg;
 const std::map<std::string, std::string, less_ci> HelpDoc = {
 {"更新",R"(Oliva:
-1.2.9:新增dx掷骰指令
+1.2.10:自定义更新源
 Shiki:
 567:敏感词检测
 输入以下指令查看详情:
 [.help Oliva更新]
 [.help Shiki更新])"},
 {"Oliva更新",R"([Oliva分支更新]
+1.2.10:自定义更新源
 1.2.9:新增dx掷骰指令
 1.2.8:自定义心跳标准
 1.2.7:正则匹配自定义Reply
@@ -387,8 +388,9 @@ Shiki:
 {"链接",R"(官方论坛:https://forum.kokona.tech/
 查看源码:https://github.com/lunzhiPenxil/Dice/tree/Oliva
 官方在线文档:https://v2docs.kokona.tech/
-青果扩充核心文档:https://oliva.dicer.wiki/)"},
-{"设定","Master：{master_QQ}\n好友申请：需要使用记录\n入群邀请：黑名单制，非黑即入\n讨论组使用：允许\n移出反制：拉黑群和操作者\n禁言反制：默认拉黑群和群主\n刷屏反制：警告\n邀请人责任：有限连带\n窥屏可能：有\n其他插件：{其他插件}\n骰娘用户群:{骰娘用户群}\n官方(水)群: 882747577\n私骰分享群：863062599 192499947\n开发交流群：1029435374"},
+青果扩充核心文档:https://oliva.dicer.wiki/
+青果导航页:http://benzencloudhk.xyz/index.php/olivadice/)"},
+{"设定","Master：{master_QQ}\n好友申请：需要使用记录\n入群邀请：黑名单制，非黑即入\n讨论组使用：允许\n移出反制：拉黑群和操作者\n禁言反制：默认拉黑群和群主\n刷屏反制：警告\n邀请人责任：有限连带\n窥屏可能：有\n其他插件：{其他插件}\n骰娘用户群:{骰娘用户群}\n开发交流群：661366095"},
 {"骰娘用户群","【未设置】"},
 {"窥屏可能","无"},
 {"其他插件","【未设置】"},
