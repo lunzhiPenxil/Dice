@@ -107,7 +107,7 @@ private:
 				{
 					if (flagFirstPass)
 					{
-						int vvintTmpRes_tmp;
+						int vvintTmpRes_tmp = 0;
 						if (vintTmpRes_tmp_this >= AddDiceVal)
 						{
 							vvintTmpRes_tmp = vvintTmpRes_tmp | Dice_HighLight;
@@ -852,12 +852,12 @@ public:
 						{
 							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_HighLight)
 								strReturnString.append("<");
-							else if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_AccMark)
+							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_AccMark)
 								strReturnString.append("[");
 							strReturnString.append(std::to_string((*i)[a]));
 							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_AccMark)
 								strReturnString.append("]");
-							else if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_HighLight)
+							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_HighLight)
 								strReturnString.append(">");
 							if (a != intWWPos + (*i)[intWWPos])
 								strReturnString.append(",");
@@ -910,12 +910,12 @@ public:
 						{
 							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_HighLight)
 								strReturnString.append("<");
-							else if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_AccMark)
+							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_AccMark)
 								strReturnString.append("[");
 							strReturnString.append(std::to_string((*i)[a]));
 							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_AccMark)
 								strReturnString.append("]");
-							else if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_HighLight)
+							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_HighLight)
 								strReturnString.append(">");
 							if (a != intWWPos + (*i)[intWWPos])
 								strReturnString.append(",");
