@@ -568,36 +568,45 @@ void dice_api_update(DiceJob& job) {
 			return;
 		}
 
-		string strApiVersionSaveLoc = DiceDir + "\\update\\DiceUpdateVersion_" + job.strVar["ver"] + ".json";
-		switch (Cloud::DownloadFile(strVersionTmp.c_str(), strApiVersionSaveLoc.c_str())) {
-		case -1:
-			job.echo("分支版本获取失败:" + strURL);
-			return;
-			break;
-		case -2:
-			job.note("分支版本加载失败!分支版本缓存未找到:" + strApiVersionSaveLoc, 0b10);
-			return;
-			break;
-		case 0:
-			break;
-		}
-
 		string strVerInfo;
-		ifstream fin(strApiVersionSaveLoc);
-		if (!fin) {
-			job.echo("更新源缓存为空!");
-			return;
-		}
-		else {
-			try
-			{
-				fin >> strVerInfo;
+
+		if (strVersionTypeTmp == "url") {
+			string strApiVersionSaveLoc = DiceDir + "\\update\\DiceUpdateVersion_" + job.strVar["ver"] + ".json";
+			switch (Cloud::DownloadFile(strVersionTmp.c_str(), strApiVersionSaveLoc.c_str())) {
+			case -1:
+				job.echo("分支版本获取失败:" + strURL);
+				return;
+				break;
+			case -2:
+				job.note("分支版本加载失败!分支版本缓存未找到:" + strApiVersionSaveLoc, 0b10);
+				return;
+				break;
+			case 0:
+				break;
 			}
-			catch (...)
-			{
-				job.echo("更新源缓存加载异常!");
+
+			ifstream fin(strApiVersionSaveLoc);
+			if (!fin) {
+				job.echo("更新源缓存为空!");
 				return;
 			}
+			else {
+				try
+				{
+					fin >> strVerInfo;
+				}
+				catch (...)
+				{
+					job.echo("更新源缓存加载异常!");
+					return;
+				}
+			}
+		}
+		else if(strVersionTypeTmp == "raw") {
+			strVerInfo = strVersionTmp;
+		}
+		else {
+			strVerInfo = strVersionTmp;
 		}
 
 		job.echo("即将更新:[" + strNameTmp + "]\n版本号:" + strVerInfo + "\n分支说明:\n" + strCommentTmp);
