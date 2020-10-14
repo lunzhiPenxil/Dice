@@ -343,13 +343,14 @@ std::map<std::string, std::string> GlobalMsg
 std::map<std::string, std::string> EditedMsg;
 const std::map<std::string, std::string, less_ci> HelpDoc = {
 {"更新",R"(Oliva:
-1.2.10:自定义更新源
+1.2.11:掷骰渲染
 Shiki:
 567:敏感词检测
 输入以下指令查看详情:
 [.help Oliva更新]
 [.help Shiki更新])"},
 {"Oliva更新",R"([Oliva分支更新]
+1.2.11:掷骰渲染
 1.2.10:自定义更新源
 1.2.9:新增dx掷骰指令
 1.2.8:自定义心跳标准
