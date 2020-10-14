@@ -41,6 +41,10 @@
 #define Fudge_Dice 3
 #define WW_Dice 4
 #define DX_Dice 5
+//Dice Shader Type
+#define Dice_Normal 0
+#define Dice_HighLight (1 << 0)
+#define Dice_AccMark (1 << 1)
 //Message Type
 #define PrivateMsg 0
 #define GroupMsg 1

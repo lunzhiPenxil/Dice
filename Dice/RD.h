@@ -83,28 +83,55 @@ private:
 			if (AddDiceVal < 5 || AddDiceVal > 11)
 				return AddDiceVal_Err;
 			std::vector<int> vintTmpRes;
+			std::vector<int> vvintTmpRes;
 			int intTmpRes = 0;
 			while (intDiceCnt != 0)
 			{
+				std::vector<int> vintTmpRes_tmp;
 				vintTmpRes.push_back(intDiceCnt);
+				vintTmpRes_tmp.push_back(intDiceCnt);
 				int AddNum = 0;
 				int intCnt = intDiceCnt;
 				while (intDiceCnt--)
 				{
 					int intTmpResOnce = RandomGenerator::Randint(1, 10);
 					vintTmpRes.push_back(intTmpResOnce);
+					vintTmpRes_tmp.push_back(intTmpResOnce);
 					if (intTmpResOnce >= 8)
 						intTmpRes++;
 					if (intTmpResOnce >= AddDiceVal)
 						AddNum++;
 				}
-				if (intCnt > 10)sort(vintTmpRes.end() - intCnt, vintTmpRes.end());
+				bool flagFirstPass = false;
+				for (auto vintTmpRes_tmp_this : vintTmpRes_tmp)
+				{
+					if (flagFirstPass)
+					{
+						int vvintTmpRes_tmp;
+						if (vintTmpRes_tmp_this >= AddDiceVal)
+						{
+							vvintTmpRes_tmp = vvintTmpRes_tmp | Dice_HighLight;
+						}
+						if (vintTmpRes_tmp_this >= 8)
+						{
+							vvintTmpRes_tmp = vvintTmpRes_tmp | Dice_AccMark;
+						}
+						vvintTmpRes.push_back(vvintTmpRes_tmp);
+					}
+					else
+					{
+						flagFirstPass = true;
+						vvintTmpRes.push_back(vintTmpRes_tmp_this);
+					}
+				}
+				//if (intCnt > 10)sort(vintTmpRes.end() - intCnt, vintTmpRes.end());
 				intDiceCnt = AddNum;
 			}
 			if (boolNegative)
 				intTotal -= intTmpRes;
 			else
 				intTotal += intTmpRes;
+			vvvintRes.push_back(vvintTmpRes);
 			vvintRes.push_back(vintTmpRes);
 			vintRes.push_back(intTmpRes);
 			return 0;
@@ -131,10 +158,13 @@ private:
 			if (AddDiceVal < 2)
 				return AddDiceVal_Err;
 			std::vector<int> vintTmpRes;
+			std::vector<int> vvintTmpRes;
 			int intTmpRes = 0;
 			while (intDiceCnt != 0)
 			{
+				std::vector<int> vintTmpRes_tmp;
 				vintTmpRes.push_back(intDiceCnt);
+				vintTmpRes_tmp.push_back(intDiceCnt);
 				int intTmpMax = 0;
 				int AddNum = 0;
 				int intCnt = intDiceCnt;
@@ -142,11 +172,34 @@ private:
 				{
 					int intTmpResOnce = RandomGenerator::Randint(1, 10);
 					vintTmpRes.push_back(intTmpResOnce);
+					vintTmpRes_tmp.push_back(intTmpResOnce);
 					intTmpMax = intTmpResOnce > intTmpMax ? intTmpResOnce : intTmpMax;
 					if (intTmpResOnce >= AddDiceVal)
 						AddNum++;
 				}
-				if (intCnt > 10)sort(vintTmpRes.end() - intCnt, vintTmpRes.end());
+				bool flagFirstPass = false;
+				for (auto vintTmpRes_tmp_this : vintTmpRes_tmp)
+				{
+					if (flagFirstPass)
+					{
+						int vvintTmpRes_tmp = 0;
+						if (AddNum != 0 && vintTmpRes_tmp_this >= AddDiceVal)
+						{
+							vvintTmpRes_tmp = vvintTmpRes_tmp | Dice_HighLight;
+						}
+						if (AddNum == 0 && vintTmpRes_tmp_this == intTmpMax)
+						{
+							vvintTmpRes_tmp = vvintTmpRes_tmp | Dice_AccMark;
+						}
+						vvintTmpRes.push_back(vvintTmpRes_tmp);
+					}
+					else
+					{
+						flagFirstPass = true;
+						vvintTmpRes.push_back(vintTmpRes_tmp_this);
+					}
+				}
+				//if (intCnt > 10)sort(vintTmpRes.end() - intCnt, vintTmpRes.end());
 				intDiceCnt = AddNum;
 				if (AddNum != 0)
 				{
@@ -161,6 +214,7 @@ private:
 				intTotal -= intTmpRes;
 			else
 				intTotal += intTmpRes;
+			vvvintRes.push_back(vvintTmpRes);
 			vvintRes.push_back(vintTmpRes);
 			vintRes.push_back(intTmpRes);
 			return 0;
@@ -186,6 +240,7 @@ private:
 			if (intDiceNum == 0)
 				return ZeroDice_Err;
 			std::vector<int> vintTmpRes;
+			std::vector<int> vvintTmpRes;
 			int intSum = 0;
 			while (intDiceNum--)
 			{
@@ -193,6 +248,7 @@ private:
 				vintTmpRes.push_back(intTmpSum);
 				intSum += intTmpSum;
 			}
+			vvvintRes.push_back(vvintTmpRes);
 			vvintRes.push_back(vintTmpRes);
 			vintRes.push_back(intSum);
 			if (boolNegative)
@@ -215,6 +271,7 @@ private:
 			if (intPNum == 0)
 				return Value_Err;
 			std::vector<int> vintTmpRes;
+			std::vector<int> vvintTmpRes;
 			vintTmpRes.push_back(RandomGenerator::Randint(1, 100));
 			while (intPNum--)
 			{
@@ -236,6 +293,7 @@ private:
 				intTotal += intTmpD100;
 			vintRes.push_back(intTmpD100);
 			vvintRes.push_back(vintTmpRes);
+			vvvintRes.push_back(vvintTmpRes);
 			return 0;
 		}
 		if (dice[0] == 'B')
@@ -252,6 +310,7 @@ private:
 			if (intBNum == 0)
 				return Value_Err;
 			std::vector<int> vintTmpRes;
+			std::vector<int> vvintTmpRes;
 			vintTmpRes.push_back(RandomGenerator::Randint(1, 100));
 			while (intBNum--)
 			{
@@ -273,6 +332,7 @@ private:
 				intTotal += intTmpD100;
 			vintRes.push_back(intTmpD100);
 			vvintRes.push_back(vintTmpRes);
+			vvvintRes.push_back(vvintTmpRes);
 			return 0;
 		}
 		vBnP.push_back(Normal_Dice);
@@ -315,6 +375,7 @@ private:
 				intTotal += intTmpRes * intMultiplier / intDivider;
 			vintRes.push_back(intTmpRes * intMultiplier / intDivider);
 			vvintRes.push_back(std::vector<int>{intTmpRes});
+			vvvintRes.push_back(std::vector<int>{});
 			return 0;
 		}
 		if (!boolContainK)
@@ -332,6 +393,7 @@ private:
 			if (intDiceType == 0)
 				return ZeroType_Err;
 			std::vector<int> vintTmpRes;
+			std::vector<int> vvintTmpRes;
 			int intTmpRes = 0;
 			while (intDiceCnt--)
 			{
@@ -344,6 +406,7 @@ private:
 			else
 				intTotal += intTmpRes * intMultiplier / intDivider;
 			if (vintTmpRes.size() > 20)sort(vintTmpRes.begin(), vintTmpRes.end());
+			vvvintRes.push_back(vvintTmpRes);
 			vvintRes.push_back(vintTmpRes);
 			vintRes.push_back(intTmpRes * intMultiplier / intDivider);
 			return 0;
@@ -366,6 +429,7 @@ private:
 		if (intDiceType == 0)
 			return ZeroType_Err;
 		std::vector<int> vintTmpRes;
+		std::vector<int> vvintTmpRes;
 		while (intDiceCnt--)
 		{
 			int intTmpResOnce = RandomGenerator::Randint(1, intDiceType);
@@ -383,6 +447,7 @@ private:
 		vintRes.push_back(intTmpRes);
 		if (vintTmpRes.size() > 20)sort(vintTmpRes.begin(), vintTmpRes.end());
 		vvintRes.push_back(vintTmpRes);
+		vvvintRes.push_back(vvintTmpRes);
 		return 0;
 	}
 
@@ -582,6 +647,7 @@ public:
 		if (strDice[strDice.length() - 1] == 'c')strDice.append("10");
 	}
 
+	mutable std::vector<std::vector<int>> vvvintRes{};
 	mutable std::vector<std::vector<int>> vvintRes{};
 	mutable std::vector<int> vintRes{};
 	mutable std::vector<bool> vboolNegative{};
@@ -595,6 +661,7 @@ public:
 	int_errno Roll() const
 	{
 		intTotal = 0;
+		vvvintRes.clear();
 		vvintRes.clear();
 		vboolNegative.clear();
 		vintMultiplier.clear();
@@ -783,7 +850,15 @@ public:
 					else
 						for (int a = intWWPos + 1; a <= intWWPos + (*i)[intWWPos]; a++)
 						{
+							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_HighLight)
+								strReturnString.append("<");
+							else if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_AccMark)
+								strReturnString.append("[");
 							strReturnString.append(std::to_string((*i)[a]));
+							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_AccMark)
+								strReturnString.append("]");
+							else if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_HighLight)
+								strReturnString.append(">");
 							if (a != intWWPos + (*i)[intWWPos])
 								strReturnString.append(",");
 						}
@@ -833,7 +908,15 @@ public:
 					else
 						for (int a = intWWPos + 1; a <= intWWPos + (*i)[intWWPos]; a++)
 						{
+							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_HighLight)
+								strReturnString.append("<");
+							else if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_AccMark)
+								strReturnString.append("[");
 							strReturnString.append(std::to_string((*i)[a]));
+							if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_AccMark)
+								strReturnString.append("]");
+							else if (vvvintRes[distance(vvintRes.begin(), i)][a] & Dice_HighLight)
+								strReturnString.append(">");
 							if (a != intWWPos + (*i)[intWWPos])
 								strReturnString.append(",");
 						}
