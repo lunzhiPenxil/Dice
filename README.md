@@ -18,7 +18,7 @@ Dice!是一款基于酷Q的QQ跑团掷骰机器人，而这是由仑质维护的
 主页: <https://kokona.tech/>   
 手册: <https://oliva.dicer.wiki/>   
 
-Latest Stable Release: [![GitHub release](https://img.shields.io/github/release/lunzhiPenxil/dice.svg)](https://github.com/w4123/lunzhiPenxil/releases) [![GitHub Release Date](https://img.shields.io/github/release-date/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/Dice/releases)
+Latest Stable Release: [![GitHub release](https://img.shields.io/github/release/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/releases) [![GitHub Release Date](https://img.shields.io/github/release-date/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/Dice/releases)
 
 Latest Release: [![GitHub release](https://img.shields.io/github/release-pre/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/Dice/releases) [![GitHub Release Date](https://img.shields.io/github/release-date-pre/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/Dice/releases)
 
