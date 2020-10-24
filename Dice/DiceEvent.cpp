@@ -3344,8 +3344,8 @@ int FromMsg::DiceReply()
 			return 1;
 		}
 		int intRule = intT
-			? get(chat(fromGroup).intConf, string("rc房规"), 0)
-			: get(getUser(fromQQ).intConf, string("rc房规"), 0);
+			              ? get(chat(fromGroup).intConf, string("rc房规"), 0)
+			              : get(getUser(fromQQ).intConf, string("rc房规"), 0);
 		int intTurnCnt = 1;
 		if (strMsg.find('#') != string::npos)
 		{
@@ -3371,7 +3371,7 @@ int FromMsg::DiceReply()
 		int intSkillDivisor = 1;
 		//自动成功
 		bool isAutomatic = false;
-		if ((strLowerMessage[intMsgCnt] == 'p' || strLowerMessage[intMsgCnt] == 'b') && strLowerMessage[intMsgCnt - 1] != ' ') 
+		if ((strLowerMessage[intMsgCnt] == 'p' || strLowerMessage[intMsgCnt] == 'b') && strLowerMessage[intMsgCnt - 1] != ' ')
 		{
 			strMainDice = strLowerMessage[intMsgCnt];
 			intMsgCnt++;
@@ -3382,7 +3382,7 @@ int FromMsg::DiceReply()
 			}
 		}
 		readSkipSpace();
-		if (strMsg.length() == intMsgCnt) 
+		if (strMsg.length() == intMsgCnt)
 		{
 			strVar["attr"] = GlobalMsg["strEnDefaultName"];
 			reply(GlobalMsg["strUnknownPropErr"], {strVar["attr"]});
@@ -3403,7 +3403,7 @@ int FromMsg::DiceReply()
 			intDifficulty = (strVar["attr"].substr(0, 4) == "困难") ? 2 : 5;
 			strVar["attr"] = strVar["attr"].substr(4);
 		}
-		if (strLowerMessage[intMsgCnt] == '*' && isdigit(strLowerMessage[intMsgCnt + 1])) 
+		if (strLowerMessage[intMsgCnt] == '*' && isdigit(strLowerMessage[intMsgCnt + 1]))
 		{
 			intMsgCnt++;
 			readNum(intSkillMultiple);
@@ -3413,7 +3413,7 @@ int FromMsg::DiceReply()
 		{
 			if (!readNum(intSkillModify))strSkillModify = to_signed_string(intSkillModify);
 		}
-		if (strLowerMessage[intMsgCnt] == '/' && isdigit(strLowerMessage[intMsgCnt + 1])) 
+		if (strLowerMessage[intMsgCnt] == '/' && isdigit(strLowerMessage[intMsgCnt + 1]))
 		{
 			intMsgCnt++;
 			readNum(intSkillDivisor);
@@ -3441,7 +3441,7 @@ int FromMsg::DiceReply()
 		int intSkillVal;
 		if (strSkillVal.empty())
 		{
-			if (PList.count(fromQQ) && PList[fromQQ][fromGroup].count(strVar["attr"])) 
+			if (PList.count(fromQQ) && PList[fromQQ][fromGroup].count(strVar["attr"]))
 			{
 				intSkillVal = PList[fromQQ][fromGroup].call(strVar["attr"]);
 			}
@@ -3491,10 +3491,10 @@ int FromMsg::DiceReply()
 		}
 		strVar["attr"] = strDifficulty + strVar["attr"] + (
 			(intSkillMultiple != 1) ? "×" + to_string(intSkillMultiple) : "") + strSkillModify + ((intSkillDivisor != 1)
-			? "/" + to_string(
-				intSkillDivisor)
-			: "");
-		if (strVar["reason"].empty()) 
+				                                                                                      ? "/" + to_string(
+					                                                                                     intSkillDivisor)
+				                                                                                      : "");
+		if (strVar["reason"].empty())
 		{
 			strReply = format(GlobalMsg["strRollSkill"], {strVar["pc"], strVar["attr"]});
 		}
@@ -3522,17 +3522,17 @@ int FromMsg::DiceReply()
 			case 3: if (intDifficulty == 1)
 				{
 					strAns += GlobalMsg["strRollHardSuccess"];
-						break;
+					break;
 				}
 			case 2: strAns += GlobalMsg["strRollRegularSuccess"];
 				break;
 			}
 			strReply += strAns;
 		}
-		else 
+		else
 		{
 			Res.dot("\n");
-			while (intTurnCnt--) 
+			while (intTurnCnt--)
 			{
 				rdMainDice.Roll();
 				strAns = rdMainDice.FormCompleteString() + "/" + to_string(intFianlSkillVal) + " ";
@@ -3546,15 +3546,15 @@ int FromMsg::DiceReply()
 				case 5: strAns += GlobalMsg["strCriticalSuccess"];
 					break;
 				case 4: if (intDifficulty == 1)
-				{
-					strAns += GlobalMsg["strExtremeSuccess"];
-					break;
-				}
+					{
+						strAns += GlobalMsg["strExtremeSuccess"];
+						break;
+					}
 				case 3: if (intDifficulty == 1)
-				{
-					strAns += GlobalMsg["strHardSuccess"];
-					break;
-				}
+					{
+						strAns += GlobalMsg["strHardSuccess"];
+						break;
+					}
 				case 2: strAns += GlobalMsg["strSuccess"];
 					break;
 				}
