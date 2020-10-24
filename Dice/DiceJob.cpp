@@ -13,6 +13,7 @@
 #include "DiceMod.h"
 #include "DiceNetwork.h"
 #include "Jsonio.h"
+#include "DiceNetwork.h"
 #include "S3PutObject.h"
 #include "RD.h"
 #include "GlobalVar.h"
@@ -1091,16 +1092,29 @@ void dice_cnmods_api(DiceJob& job) {
 
 //获取云不良记录
 void dice_cloudblack(DiceJob& job) {
+	bool isSuccess(false);
 	job.echo("开始获取云端记录"); 
 	string strURL("https://shiki.stringempty.xyz/blacklist/checked.json?" + to_string(job.fromTime));
 	switch (Cloud::DownloadFile(strURL.c_str(), (DiceDir + "/conf/CloudBlackList.json").c_str())) {
-	case -1:
-		job.echo("同步云不良记录同步失败:" + strURL);
+	case -1: {
+		string des;
+		if (Network::GET("shiki.stringempty.xyz", "/blacklist/checked.json", 80, des)) {
+			ofstream fout(DiceDir + "/conf/CloudBlackList.json");
+			fout << des << endl;
+			isSuccess = true;
+		}
+		else
+			job.echo("同步云不良记录同步失败:" + strURL);
+	}
 		break;
 	case -2:
 		job.echo("同步云不良记录同步失败!文件未找到");
 		break;
 	case 0:
+	default:
+		break;
+	}
+	if (isSuccess) {
 		job.note("同步云不良记录成功，" + getMsg("self") + "开始读取", 1);
 		blacklist->loadJson(DiceDir + "/conf/CloudBlackList.json", true);
 	}
