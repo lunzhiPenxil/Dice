@@ -3409,7 +3409,7 @@ int FromMsg::DiceReply()
 			readNum(intSkillMultiple);
 		}
 		while ((strLowerMessage[intMsgCnt] == '+' || strLowerMessage[intMsgCnt] == '-') && isdigit(
-			strLowerMessage[intMsgCnt + 1])) 
+			strLowerMessage[intMsgCnt + 1]))
 		{
 			if (!readNum(intSkillModify))strSkillModify = to_signed_string(intSkillModify);
 		}
@@ -3492,7 +3492,7 @@ int FromMsg::DiceReply()
 		strVar["attr"] = strDifficulty + strVar["attr"] + (
 			(intSkillMultiple != 1) ? "¡Á" + to_string(intSkillMultiple) : "") + strSkillModify + ((intSkillDivisor != 1)
 				                                                                                      ? "/" + to_string(
-					                                                                                     intSkillDivisor)
+					                                                                                      intSkillDivisor)
 				                                                                                      : "");
 		if (strVar["reason"].empty())
 		{
