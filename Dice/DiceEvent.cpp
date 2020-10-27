@@ -2083,11 +2083,18 @@ int FromMsg::DiceReply()
 			return 1;
 		}
 		intMsgCnt += 4;
+		bool isPrivate(false);
+		if (strLowerMessage[intMsgCnt] == 'h')
+		{
+			intMsgCnt++;
+			isPrivate = true;
+		}
+		readSkipSpace();
 		while (isspace(static_cast<unsigned char>(strLowerMessage[intMsgCnt])))
 			intMsgCnt++;
 		vector<string> ProDeck;
 		vector<string>* TempDeck = nullptr;
-		bool isPrivate(false);
+		//bool isPrivate(false);
 		string& key{ strVar["deck_name"] = readAttrName() };
 		if (!strVar["deck_name"].empty() && strVar["deck_name"][0] == '_') {
 			isPrivate = true;
