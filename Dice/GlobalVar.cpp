@@ -121,6 +121,7 @@ std::map<std::string, std::string> GlobalMsg
 	{"strPcNoteTooLong","备注长度不能超过255×"},
 	{"strPcTextTooLong","文本长度不能超过48×"},
 	{"strCOCBuild","{pc}的调查员作成:{res}"},
+	{"strDNDBuild","{pc}的英雄作成:{res}"},
 	{"strCensorCaution","提醒：{nick}的指令包含敏感词，{self}已上报"},
 	{"strCensorWarning","警告：{nick}的指令包含敏感词，{self}已记录并上报！"},
 	{"strCensorDanger","警告：{nick}的指令包含敏感词，{self}拒绝指令并已上报！"},
@@ -165,6 +166,7 @@ std::map<std::string, std::string> GlobalMsg
 	{"strRollMultiDiceReason","{pc}掷骰{turn}次{reason}: {dice_exp}={res}"},
 	{"strRollSkill","{pc}进行{attr}检定："},
 	{"strRollSkillReason","由于{reason} {pc}进行{attr}检定："},
+	{"strRollSkillHidden","{pc}进行了一次暗中{attr}检定√" },
 	{"strEnRoll","{pc}的{attr}增强或成长检定：\n{res}"},//{attr}在用户省略技能名后替换为{strEnDefaultName}
 	{"strEnRollNotChange","{strEnRoll}\n{pc}的{attr}值没有变化"},
 	{"strEnRollFailure","{strEnRoll}\n{pc}的{attr}变化{change}点，当前为{final}点"},
@@ -360,7 +362,7 @@ const std::map<std::string, std::string, less_ci> HelpDoc = {
 {"更新",R"(Oliva:
 1.2.11:掷骰渲染
 Shiki:
-568:.deck自定义牌堆重做
+569:.rc/.draw暗骰暗抽
 输入以下指令查看详情:
 [.help Oliva更新]
 [.help Shiki更新])"},
@@ -379,6 +381,7 @@ Shiki:
 1.2.0:多种特殊检定
 1.1.3:模糊匹配.help最终稳定)"},
 {"Shiki更新",R"([Shiki分支更新]
+569:.rc/.draw暗骰暗抽
 568:.deck自定义牌堆重做
 567:敏感词检测
 566:.help查询建议
@@ -392,7 +395,6 @@ Shiki:
 558:新增每日统计
 557:定时作业系统
 556:黑名单系统重做
-555:用户记录/群管系统
 554:新增多角色卡功能
 553:name功能调整
 552:后台系统大修
@@ -445,6 +447,7 @@ R"([第二页]跑团指令
 R"([第三页]其他指令
 .nn 设置昵称
 .draw 抽牌
+.deck 牌堆实例
 .name 随机姓名
 .jrrp 今日人品
 .welcome 入群欢迎
@@ -531,7 +534,7 @@ Master拥有最高权限，且可以调整任意信任)"},
 	{"检定", "&rc/ra"},
 	{
 		"rc/ra",
-		"检定指令：.rc/ra [属性名]([成功率])\n角色卡设置了属性时，可省略成功率\n.rc体质*5\t//允许使用+-*/，但顺序要求为乘法>加减>除法\n.rc 困难幸运\t//技能名开头的困难和极难会被视为关键词\n.rc 敏捷-10\t//修正后成功率必须在1-1000内\n.rcp 手枪\t//奖惩骰至多9个\n默认以规则书判定，大成功大失败的房规由.setcoc设置"
+		"检定指令：.rc/ra(h) (_)([检定次数]#)([难度])[属性名]( [成功率])\n角色卡设置了属性时，可省略成功率\n.rc体质*5\t//允许使用+-*/，但顺序要求为乘法>加减>除法\n.rc 困难幸运\t//技能名开头的困难和极难会被视为关键词\n.rc _心理学50\n.rch 心理学50\t//暗骰结果仅本人及旁观者可见\n.rc 敏捷-10\t//修正后成功率必须在1-1000内\n.rcp 手枪\t//奖惩骰至多9个\n默认以规则书判定，大成功大失败的房规由.setcoc设置"
 	},
 	{
 		"房规",

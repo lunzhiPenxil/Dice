@@ -1487,16 +1487,14 @@ int FromMsg::DiceReply()
 	}
 	else if (strLowerMessage.substr(intMsgCnt, 5) == "coc7d" || strLowerMessage.substr(intMsgCnt, 4) == "cocd")
 	{
-		strReply = strVar["nick"];
-		COC7D(strReply);
-		reply(strReply);
+		COC7D(strVar["res"]);
+		reply(GlobalMsg["strCOCBuild"]);
 		return 1;
 	}
 	else if (strLowerMessage.substr(intMsgCnt, 5) == "coc6d")
 	{
-		strReply = strVar["nick"];
-		COC6D(strReply);
-		reply(strReply);
+		COC6D(strVar["res"]);
+		reply(GlobalMsg["strCOCBuild"]);
 		return 1;
 	}
 	else if (strLowerMessage.substr(intMsgCnt, 5) == "group")
@@ -2020,9 +2018,8 @@ int FromMsg::DiceReply()
 			reply(GlobalMsg["strCharacterCannotBeZero"]);
 			return 1;
 		}
-		strReply = strVar["nick"];
-		COC6(strReply, intNum);
-		reply(strReply);
+		COC6(strVar["res"], intNum);
+		reply(GlobalMsg["strCOCBuild"]);
 		return 1;
 	}
 	else if (strLowerMessage.substr(intMsgCnt, 4) == "deck")
@@ -2586,8 +2583,8 @@ int FromMsg::DiceReply()
 			return 1;
 		}
 		string strReply = strVar["pc"];
-		DND(strReply, intNum);
-		reply(strReply);
+		DND(strVar["res"], intNum);
+		reply(GlobalMsg["strDNDBuild"]);
 		return 1;
 	}
 	else if (strLowerMessage.substr(intMsgCnt, 3) == "log") {
@@ -3332,7 +3329,7 @@ int FromMsg::DiceReply()
 	else if (strLowerMessage.substr(intMsgCnt, 2) == "ra" || strLowerMessage.substr(intMsgCnt, 2) == "rc")
 	{
 		intMsgCnt += 2;
-		bool isHidden = false;
+		bool isHidden(false);
 		if (strLowerMessage[intMsgCnt] == 'h')
 		{
 			intMsgCnt++;
@@ -3347,6 +3344,11 @@ int FromMsg::DiceReply()
 			              ? get(chat(fromGroup).intConf, string("rc房规"), 0)
 			              : get(getUser(fromQQ).intConf, string("rc房规"), 0);
 		int intTurnCnt = 1;
+		//bool isHidden(false);
+		if (strMsg[intMsgCnt] == '_') {
+			isHidden = true;
+			++intMsgCnt;
+		}
 		if (strMsg.find('#') != string::npos)
 		{
 			string strTurnCnt = strMsg.substr(intMsgCnt, strMsg.find('#') - intMsgCnt);
@@ -3382,6 +3384,10 @@ int FromMsg::DiceReply()
 			}
 		}
 		readSkipSpace();
+		if (strMsg[intMsgCnt] == '_') {
+			isHidden = true;
+			++intMsgCnt;
+		}
 		if (strMsg.length() == intMsgCnt)
 		{
 			strVar["attr"] = GlobalMsg["strEnDefaultName"];
@@ -3562,18 +3568,12 @@ int FromMsg::DiceReply()
 			}
 			strReply += Res.show();
 		}
-		if (!isHidden)
-			reply();
-		else
-		{
-			reply(GlobalMsg["strHiddenCheck"]);
-			strReply = format(strReply, GlobalMsg, strVar);
-			strReply = "在" + printChat(fromChat) + "中 " + strReply;
-			for (auto qq : gm->session(fromGroup).get_ob()) 
-{
-				AddMsgToQueue(strReply, qq, msgtype::Private);
-			}
+		if (isHidden) {
+			replyHidden();
+			reply(GlobalMsg["strRollSkillHidden"]);
 		}
+		else
+			reply();
 		return 1;
 	}
 	else if (strLowerMessage.substr(intMsgCnt, 2) == "ri" && intT)
