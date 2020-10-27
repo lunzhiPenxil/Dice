@@ -160,7 +160,6 @@ std::map<std::string, std::string> GlobalMsg
 	{"strRollDice","{pc}掷骰: {res}"},
 	{"strRollDiceReason","{pc}掷骰 {reason}: {res}"},
 	{"strRollHidden","{pc}进行了一次暗骰"},
-	{"strHiddenCheck","{pc}进行{attr}暗检定"},
 	{"strRollTurn","{pc}的掷骰轮数: {turn}轮"},
 	{"strRollMultiDice","{pc}掷骰{turn}次: {dice_exp}={res}"},
 	{"strRollMultiDiceReason","{pc}掷骰{turn}次{reason}: {dice_exp}={res}"},
@@ -566,8 +565,9 @@ Master拥有最高权限，且可以调整任意信任)"},
 	{
 		"draw",
 		R"(抽牌：.draw [牌堆名称] ([抽牌数量])	
+.drawh [牌堆名称] ([抽牌数量]) //暗抽，结果私聊发送
 .draw _[牌堆名称] ([抽牌数量])	//暗抽，结果私聊发送
-.draw _狼人杀	//抽牌结果通过私聊获取，可ob
+.drawh 狼人杀	//抽牌结果通过私聊获取，可ob
 *牌堆名称可以是公共牌堆名或牌堆实例名
 *抽到的牌不放回，牌堆抽空后无法继续
 *查看{self}已安装牌堆，可.help 全牌堆列表或.help 扩展牌堆)"
