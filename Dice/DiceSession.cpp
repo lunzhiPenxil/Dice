@@ -435,7 +435,7 @@ void DiceSession::_draw(FromMsg* msg) {
 			msg->reply(GlobalMsg["strDrawCard"]);
 		update();
 	}
-	if (deck.idxs.empty()) {
+	if (!deck.sizRes) {
 		msg->reply(GlobalMsg["strDeckRestEmpty"]);
 	}
 }

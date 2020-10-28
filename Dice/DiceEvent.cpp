@@ -2108,7 +2108,7 @@ int FromMsg::DiceReply()
 		else
 		{
 			if (gm->has_session(fromSession) && gm->session(fromSession).has_deck(key)) {
-				gm->session(fromSession).deck_draw(this);
+				gm->session(fromSession)._draw(this);
 				return 1;
 			}
 			else if (strVar["deck_name"][0] == '_' || CardDeck::findDeck(strVar["deck_name"]) == 0)
