@@ -4739,6 +4739,11 @@ int FromMsg::CustomReply()
 	bool isInReplyDeckWithDot = FALSE;
 	bool isRegexMatchWithReplyDeck = FALSE;
 
+	if (blacklist->get_qq_danger(fromQQ))
+	{
+		return 0;
+	}
+
 	auto deck_tmp_1 = CardDeck::mReplyDeck.find(strKey);
 	if (console["ReplyMode"] == 2 || console["ReplyMode"] == 1)
 	{
