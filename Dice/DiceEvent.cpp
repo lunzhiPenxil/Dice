@@ -4734,14 +4734,80 @@ int FromMsg::DiceReply()
 		if (L == nullptr)
 		{
 			strReply = "initLuaFail";
+			strReply = UTF8toGBK(strReply);
 			reply();
+			return 1;
 		}
 		else
 		{
 			strReply = "initLuaSuccess";
-			reply();
 		}
+		// 加载相关库文件
+		luaL_openlibs(L);
+
+		// 加载lua文件
+		int bRet = luaL_loadfile(L, string(DiceDir + "\\test.lua").c_str());
+		if (bRet)
+		{
+			strReply += "\nload test.lua file failed";
+			strReply = UTF8toGBK(strReply);
+			reply();
+			return 1;
+		}
+
+		// 执行lua文件
+		bRet = lua_pcall(L, 0, 0, 0);
+		if (bRet)
+		{
+			strReply += "\ncall test.lua file failed";
+			strReply = UTF8toGBK(strReply);
+			reply();
+			return 1;
+		}
+
+		// 获取值
+		lua_getglobal(L, "mystr");
+		std::string str = lua_tostring(L, -1);
+		strReply += "\nstr=" + str;
+
+		// 获取表中数据
+		lua_getglobal(L, "my_table");
+		lua_getfield(L, -1, "name");
+		str = lua_tostring(L, -1);
+		strReply += "\ntable:name=" + str;
+
+		// 获取表中数据
+		lua_getglobal(L, "my_table");
+		lua_getfield(L, -1, "id");
+		int nNumber = lua_tonumber(L, -1);
+		strReply += "\ntable:id=" + to_string(nNumber);
+
+		// 获取并调用函数
+		lua_getglobal(L, "a_add_b");
+		lua_pushnumber(L, 10);
+		lua_pushnumber(L, 20);
+		int iRet = lua_pcall(L, 2, 1, 0);
+		if (iRet)
+		{
+			const char* pErrorMsg = lua_tostring(L, -1);
+			strReply += "\n";
+			strReply += pErrorMsg;
+			lua_close(L);
+			strReply = UTF8toGBK(strReply);
+			reply();
+			return 1;
+		}
+
+		// 获取结果
+		if (lua_isnumber(L, -1))
+		{
+			double fValue = lua_tonumber(L, -1);
+			strReply += "\na + b = " + to_string(fValue);
+		}
+
 		lua_close(L);
+		strReply = UTF8toGBK(strReply);
+		reply();
 	}
 	return 0;
 }
