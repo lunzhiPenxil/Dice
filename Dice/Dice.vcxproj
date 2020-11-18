@@ -212,6 +212,7 @@
     <ClInclude Include="DiceNetwork.h" />
     <ClInclude Include="DiceSchedule.h" />
     <ClInclude Include="DiceSession.h" />
+    <ClInclude Include="Lua\lua.hpp" />
     <ClInclude Include="SHKTrie.h" />
     <ClInclude Include="DiceXMLTree.h" />
     <ClInclude Include="EncodingConvert.h" />

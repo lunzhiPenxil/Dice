@@ -22,6 +22,9 @@
     <Filter Include="头文件\nlohmann">
       <UniqueIdentifier>{911e9211-0dd0-42ff-82bc-c6ae90928af6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Lua">
+      <UniqueIdentifier>{c3546ec4-b53e-4a60-b339-5433e7f71aba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dice.cpp">
@@ -304,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="SHKTrie.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\lua.hpp">
+      <Filter>头文件\Lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
