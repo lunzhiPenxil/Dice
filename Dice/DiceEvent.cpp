@@ -17,6 +17,7 @@
 #include "MD5.h"
 #include <time.h>
 #include <memory>
+#include "Lua/lua.hpp"
 
 //#pragma warning(disable:28159)
 using namespace std;
@@ -4727,6 +4728,20 @@ int FromMsg::DiceReply()
 		
 		cmd_key = "apicnmods";
 		sch.push_job(*this);
+	}
+	else if (strLowerMessage.substr(intMsgCnt, 8) == "luastate") {
+		lua_State* L = luaL_newstate();
+		if (L == nullptr)
+		{
+			strReply = "initLuaFail";
+			reply();
+		}
+		else
+		{
+			strReply = "initLuaSuccess";
+			reply();
+		}
+		lua_close(L);
 	}
 	return 0;
 }
