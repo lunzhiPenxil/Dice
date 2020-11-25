@@ -77,6 +77,7 @@ public:
 	int AdminEvent(const string& strOption);
 	int MasterSet();
 	int DiceReply();
+	int DiceLuaReply();
 	int CustomReply();
 	//ÅĞ¶ÏÊÇ·ñÏìÓ¦
 	bool DiceFilter();

@@ -51,6 +51,7 @@
 #include "DiceGUI.h"
 #include "S3PutObject.h"
 #include "DiceCensor.h"
+#include "DiceLua.h"
 
 #pragma warning(disable:4996)
 #pragma warning(disable:6031)
@@ -116,6 +117,8 @@ void loadData()
 	loadDir(load_words, DiceDir + "\\conf\\censor\\", censor, strLog, true);
 	loadJMap(DiceDir + "\\conf\\CustomCensor.json", censor.CustomWords);
 	censor.build();
+	std::string DiceLua_DirPath = DiceDir + "\\plugin";
+	DiceLua::DiceLua_LoadCommandList(DiceLua_LoadList, strLog, DiceLua_DirPath);
 	if (!strLog.empty())
 	{
 		strLog += "¿©’π≈‰÷√∂¡»°ÕÍ±œ°Ã";
@@ -214,6 +217,7 @@ EVE_Enable(eventEnable)
 	mkDir(DiceDir + "\\audit");
 	mkDir(DiceDir + "\\update");
 	mkDir(DiceDir + "\\cnmods");
+	mkDir(DiceDir + "\\plugin");
 	if (!console.load())
 	{
 		ifstream ifstreamMaster(strFileLoc + "Master.RDconf");

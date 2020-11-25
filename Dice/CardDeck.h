@@ -18,7 +18,7 @@ namespace CardDeck
 	extern std::map<std::string, std::vector<std::string>, less_ci> mReplyDeck;
 	extern std::map<std::string, std::string> PublicComplexDeck;
 	bool isRegexMatch(std::string strRegex, std::string strInput);
-	string doRegexReplace(std::string strRegex, std::string strInput, std::string strfmt);
+	std::string doRegexReplace(std::string strRegex, std::string strInput, std::string strfmt);
 	int findDeck(std::string strDeckName);
 	std::string drawCard(std::vector<std::string>& TempDeck, bool boolBack = false);
 	std::string draw(std::string strDeckName);

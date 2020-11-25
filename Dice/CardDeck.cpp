@@ -1041,7 +1041,7 @@ namespace CardDeck
 		return std::regex_match(strInput, regStrRegex);
 	}
 
-	string doRegexReplace(std::string strRegex, std::string strInput, std::string strfmt)
+	std::string doRegexReplace(std::string strRegex, std::string strInput, std::string strfmt)
 	{
 		std::regex regStrRegex(strRegex);
 		return std::regex_replace(strInput, regStrRegex, strfmt);

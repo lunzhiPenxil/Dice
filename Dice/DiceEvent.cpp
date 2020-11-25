@@ -18,6 +18,7 @@
 #include <time.h>
 #include <memory>
 #include "Lua/lua.hpp"
+#include "DiceLua.h"
 
 //#pragma warning(disable:28159)
 using namespace std;
@@ -4729,85 +4730,270 @@ int FromMsg::DiceReply()
 		cmd_key = "apicnmods";
 		sch.push_job(*this);
 	}
-	else if (strLowerMessage.substr(intMsgCnt, 8) == "luastate") {
-		lua_State* L = luaL_newstate();
-		if (L == nullptr)
+	return 0;
+}
+
+int FromMsg::DiceLuaReply()
+{
+	int intT = static_cast<int>(fromChat.second);
+	while (isspace(static_cast<unsigned char>(strMsg[intMsgCnt])))
+		intMsgCnt++;
+	strVar["nick"] = getName(fromQQ, fromGroup);
+	getPCName(*this);
+	strVar["at"] = intT ? "[CQ:at,qq=" + to_string(fromQQ) + "]" : strVar["nick"];
+	isAuth = trusted > 3 || intT != GroupT || getGroupMemberInfo(fromGroup, fromQQ).permissions != 1 || pGrp->inviter == fromQQ;
+
+	if (intT != PrivateT && pGrp->isset("协议无效"))
+	{
+		return 0;
+	}
+	if (blacklist->get_qq_danger(fromQQ) || (intT != PrivateT && blacklist->get_group_danger(fromGroup)))
+	{
+		return 0;
+	}
+	if (strLowerMessage.substr(intMsgCnt, 6) == "plugin")
+	{
+		intMsgCnt += 6;
+		string Command = readPara();
+		string QQNum = readDigit();
+		if (QQNum.empty() || QQNum == to_string(getLoginQQ()) || (QQNum.length() == 4 && stoll(QQNum) == getLoginQQ() %
+			10000))
 		{
-			strReply = "initLuaFail";
-			strReply = UTF8toGBK(strReply);
-			reply();
-			return 1;
+			if (Command == "on")
+			{
+				if (console["DisabledGlobal"])reply(GlobalMsg["strGlobalOff"]);
+				else if (intT == GroupT && ((console["CheckGroupLicense"] && pGrp->isset("未审核")) || (console["CheckGroupLicense"] == 2 && !pGrp->isset("许可使用"))))reply(GlobalMsg["strGroupLicenseDeny"]);
+				else if (intT)
+				{
+					if (isAuth || trusted > 2)
+					{
+						if (groupset(fromGroup, "停用扩展") > 0)
+						{
+							chat(fromGroup).reset("停用扩展");
+							reply(GlobalMsg["strBotOn"]);
+						}
+						else
+						{
+							reply(GlobalMsg["strBotOnAlready"]);
+						}
+					}
+					else
+					{
+						if (groupset(fromGroup, "停用扩展") > 0 && GroupInfo(fromGroup).nGroupSize > 100)AddMsgToQueue(
+							getMsg("strPermissionDeniedErr", strVar), fromQQ);
+						else reply(GlobalMsg["strPermissionDeniedErr"]);
+					}
+				}
+			}
+			else if (Command == "off")
+			{
+				if (isAuth || trusted > 2)
+				{
+					if (groupset(fromGroup, "停用扩展"))
+					{
+						if (!isCalled && QQNum.empty() && pGrp->isGroup && GroupInfo(fromGroup).nGroupSize > 200)AddMsgToQueue(getMsg("strBotOffAlready", strVar), fromQQ);
+						else reply(GlobalMsg["strBotOffAlready"]);
+					}
+					else
+					{
+						chat(fromGroup).set("停用扩展");
+						reply(GlobalMsg["strBotOff"]);
+					}
+				}
+				else
+				{
+					if (groupset(fromGroup, "停用扩展"))AddMsgToQueue(getMsg("strPermissionDeniedErr", strVar), fromQQ);
+					else reply(GlobalMsg["strPermissionDeniedErr"]);
+				}
+			}
+			else if (!Command.empty() && !isCalled && pGrp->isset("停用扩展"))
+			{
+				return 0;
+			}
+			else if (intT == GroupT && pGrp->isset("停用扩展") && GroupInfo(fromGroup).nGroupSize >= 500 && !isCalled)
+			{
+				//AddMsgToQueue(Dice_Full_Ver_For + getMsg("strBotMsg"), fromQQ);
+			}
+			else
+			{
+				//this_thread::sleep_for(1s);
+				//reply(Dice_Full_Ver_For + GlobalMsg["strBotMsg"]);
+			}
 		}
-		else
+		return 1;
+	}
+	if ((!isCalled || !console["DisabledListenAt"]) && (groupset(fromGroup, "停用扩展") > 0))
+	{
+		return 0;
+	}
+
+	for (const auto DiceLua_LoadList_this : DiceLua_LoadList)
+	{
+		bool flag_isRegexMatch = false;
+		try
 		{
-			strReply = "initLuaSuccess";
+			flag_isRegexMatch = DiceLua::isRegexMatch(GBKtoUTF8(DiceLua_LoadList_this.first), GBKtoUTF8(strMsg));
 		}
-		// 加载相关库文件
-		luaL_openlibs(L);
-
-		// 加载lua文件
-		int bRet = luaL_loadfile(L, string(DiceDir + "\\test.lua").c_str());
-		if (bRet)
+		catch (...)
 		{
-			strReply += "\nload test.lua file failed";
-			strReply = UTF8toGBK(strReply);
-			reply();
-			return 1;
+			flag_isRegexMatch = false;
 		}
-
-		// 执行lua文件
-		bRet = lua_pcall(L, 0, 0, 0);
-		if (bRet)
+		if (flag_isRegexMatch)
 		{
-			strReply += "\ncall test.lua file failed";
-			strReply = UTF8toGBK(strReply);
-			reply();
-			return 1;
+			//信任小于4的用户进行敏感词检测，并回避默认指令已经检查的情况
+			if (trusted < 4 && ((!(groupset(fromGroup, "停用指令") > 0) || (isCalled && console["DisabledListenAt"])) && strMsg[0] != '.')) {
+				unordered_set<string>sens_words;
+				switch (int danger = censor.search(strMsg, sens_words) - 1) {
+				case 3:
+					if (trusted < danger++) {
+						console.log("警告:" + printQQ(fromQQ) + "对" + GlobalMsg["strSelfName"] + "发送了含敏感词指令:\n" + strMsg, 0b1000,
+							printTTime(fromTime));
+						reply(GlobalMsg["strCensorDanger"]);
+						return 1;
+					}
+				case 2:
+					if (trusted < danger++) {
+						console.log("警告:" + printQQ(fromQQ) + "对" + GlobalMsg["strSelfName"] + "发送了含敏感词指令:\n" + strMsg, 0b10,
+							printTTime(fromTime));
+						reply(GlobalMsg["strCensorWarning"]);
+						break;
+					}
+				case 1:
+					if (trusted < danger++) {
+						console.log("提醒:" + printQQ(fromQQ) + "对" + GlobalMsg["strSelfName"] + "发送了含敏感词指令:\n" + strMsg, 0b10,
+							printTTime(fromTime));
+						reply(GlobalMsg["strCensorCaution"]);
+						break;
+					}
+				case 0:
+					console.log("提醒:" + printQQ(fromQQ) + "对" + GlobalMsg["strSelfName"] + "发送了含敏感词指令:\n" + strMsg, 1,
+						printTTime(fromTime));
+					break;
+				default:
+					break;
+				}
+			}
+			
+			
+			try
+			{
+				lua_State* L = luaL_newstate();
+				string strInputForLua = GBKtoUTF8(strMsg);
+				Dice_Msg_T Dice_Msg;
+				std::smatch msg_result;
+				DiceLua::getRegexMatchResult(GBKtoUTF8(DiceLua_LoadList_this.first), GBKtoUTF8(strMsg), msg_result);
+				std::vector<std::string> str_string = {};
+				for (const auto msg_result_this : msg_result)
+				{
+					str_string.push_back(string(msg_result_this.str().c_str()));
+				}
+				char** msg_result_plist = new char* [str_string.size()];
+				for (unsigned int i = 0; i < str_string.size(); i++)
+				{
+					msg_result_plist[i] = new char[LUA_DICELUAREGRANGE];
+					for (unsigned int j = 0; j < str_string[i].size(); j++)
+					{
+						msg_result_plist[i][j] = str_string[i].c_str()[j];
+					}
+					if (str_string[i].size() < LUA_DICELUAREGRANGE - 1)
+					{
+						msg_result_plist[i][str_string[i].size()] = '\0';
+					}
+					else
+					{
+						msg_result_plist[i][LUA_DICELUAREGRANGE - 1] = '\0';
+					}
+				}
+
+				Dice_Msg.msgType = intT;
+				Dice_Msg.msg = strInputForLua.c_str();
+				switch (Dice_Msg.msgType)
+				{
+				case PrivateT:
+				{
+					Dice_Msg.tergetId = fromQQ;
+					break;
+				}
+				case GroupT:
+				{
+					Dice_Msg.tergetId = fromGroup;
+					break;
+				}
+				default:
+				{
+					Dice_Msg.tergetId = 0;
+					break;
+				}
+				}
+				Dice_Msg.selfId = console.DiceMaid;
+				Dice_Msg.fromQQ = fromQQ;
+				Dice_Msg.fromGroup = fromGroup;
+				Dice_Msg.str_max = str_string.size();
+				Dice_Msg.str = msg_result_plist;
+				if (L == nullptr)
+				{
+					return 1;
+				}
+
+				luaL_openlibs(L);
+				DiceLua_openlibs(L);
+
+				int bRet = luaL_loadfile(L, string(DiceLua_LoadList_this.second).c_str());
+				if (bRet)
+				{
+					return 1;
+				}
+				bRet = lua_pcall(L, 0, 0, 0);
+				if (bRet)
+				{
+					return 1;
+				}
+
+				std::map<std::string, std::string> command = {};
+				lua_getglobal(L, LUA_DICELUACOMMANDLIST);
+				lua_pushnil(L);
+				while (lua_next(L, -2) != 0)
+				{
+					string key;
+					string value;
+					key = lua_tostring(L, -2);
+					value = lua_tostring(L, -1);
+					lua_pop(L, 1);
+					command[UTF8toGBK(key)] = value;
+				}
+
+				string funcCall = command[DiceLua_LoadList_this.first];
+
+				lua_getglobal(L, funcCall.c_str());
+				DiceLua_pushMsg(L, Dice_Msg);
+				int iRet = lua_pcall(L, 1, 1, 0);
+				if (iRet)
+				{
+					const char* pErrorMsg = lua_tostring(L, -1);
+					strReply += pErrorMsg;
+					lua_close(L);
+					strReply = UTF8toGBK(strReply);
+					reply();
+					return 1;
+				}
+
+				string fString = lua_tostring(L, -1);
+				strReply = fString;
+
+				lua_close(L);
+				strReply = UTF8toGBK(strReply);
+				if (!strReply.empty())
+				{
+					reply();
+				}
+
+				return 1;
+			}
+			catch (...)
+			{
+
+			}
 		}
-
-		// 获取值
-		lua_getglobal(L, "mystr");
-		std::string str = lua_tostring(L, -1);
-		strReply += "\nstr=" + str;
-
-		// 获取表中数据
-		lua_getglobal(L, "my_table");
-		lua_getfield(L, -1, "name");
-		str = lua_tostring(L, -1);
-		strReply += "\ntable:name=" + str;
-
-		// 获取表中数据
-		lua_getglobal(L, "my_table");
-		lua_getfield(L, -1, "id");
-		int nNumber = lua_tonumber(L, -1);
-		strReply += "\ntable:id=" + to_string(nNumber);
-
-		// 获取并调用函数
-		lua_getglobal(L, "a_add_b");
-		lua_pushnumber(L, 10);
-		lua_pushnumber(L, 20);
-		int iRet = lua_pcall(L, 2, 1, 0);
-		if (iRet)
-		{
-			const char* pErrorMsg = lua_tostring(L, -1);
-			strReply += "\n";
-			strReply += pErrorMsg;
-			lua_close(L);
-			strReply = UTF8toGBK(strReply);
-			reply();
-			return 1;
-		}
-
-		// 获取结果
-		if (lua_isnumber(L, -1))
-		{
-			double fValue = lua_tonumber(L, -1);
-			strReply += "\na + b = " + to_string(fValue);
-		}
-
-		lua_close(L);
-		strReply = UTF8toGBK(strReply);
-		reply();
 	}
 	return 0;
 }
@@ -4957,6 +5143,16 @@ bool FromMsg::DiceFilter()
 	if (fromChat.second == msgtype::Private) isCalled = true;
 	isDisabled = (console["DisabledGlobal"] && (trusted < 4 || !isCalled)) || (!(isCalled && console["DisabledListenAt"]) && groupset(fromGroup, "协议无效") > 0);
 	if (DiceReply()) 
+	{
+		if (isAns)
+		{
+			AddFrq(fromQQ, fromTime, fromChat);
+			getUser(fromQQ).update(fromTime);
+		}
+		if (fromChat.second != msgtype::Private)chat(fromGroup).update(fromTime);
+		return 1;
+	}
+	if (DiceLuaReply())
 	{
 		if (isAns)
 		{

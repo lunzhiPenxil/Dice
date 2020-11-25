@@ -174,9 +174,6 @@
     <ClCompile Include="Lua\lgc.c">
       <Filter>源文件\Lua</Filter>
     </ClCompile>
-    <ClCompile Include="Lua\linit.c">
-      <Filter>源文件\Lua</Filter>
-    </ClCompile>
     <ClCompile Include="Lua\liolib.c">
       <Filter>源文件\Lua</Filter>
     </ClCompile>
@@ -238,6 +235,12 @@
       <Filter>源文件\Lua</Filter>
     </ClCompile>
     <ClCompile Include="Lua\lzio.c">
+      <Filter>源文件\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="DiceLua.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\linit.c">
       <Filter>源文件\Lua</Filter>
     </ClCompile>
   </ItemGroup>
@@ -496,6 +499,9 @@
     </ClInclude>
     <ClInclude Include="Lua\lzio.h">
       <Filter>头文件\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="DiceLua.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
