@@ -17,6 +17,8 @@ int DiceLua_pushMsg(lua_State* L, Dice_Msg_T &Dice_Msg)
     DiceLua_pushObjInt(L, "fromQQ", Dice_Msg.fromQQ);
     DiceLua_pushObjInt(L, "fromGroup", Dice_Msg.fromGroup);
     DiceLua_pushObjInt(L, "tergetId", Dice_Msg.tergetId);
+    DiceLua_pushObjInt(L, "fromQQTrust", Dice_Msg.fromQQTrust);
+    DiceLua_pushObjInt(L, "fromQQInfo", Dice_Msg.fromQQInfo);
     DiceLua_pushObjString(L, "msg", Dice_Msg.msg);
     DiceLua_pushObjInt(L, "str_max", Dice_Msg.str_max);
     lua_pushstring(L, "str");

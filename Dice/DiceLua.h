@@ -29,6 +29,8 @@ struct Dice_Msg_T
     long long fromQQ = 0;
     long long fromGroup = 0;
     long long tergetId = 0;
+    int fromQQTrust = 0;
+    int fromQQInfo = 1;
     const char* msg = NULL;
     unsigned int str_max = 1;
     char** str = NULL;

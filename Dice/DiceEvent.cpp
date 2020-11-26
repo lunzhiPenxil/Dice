@@ -4770,11 +4770,11 @@ int FromMsg::DiceLuaReply()
 						if (groupset(fromGroup, "停用扩展") > 0)
 						{
 							chat(fromGroup).reset("停用扩展");
-							reply(GlobalMsg["strBotOn"]);
+							reply(GlobalMsg["strPluginOn"]);
 						}
 						else
 						{
-							reply(GlobalMsg["strBotOnAlready"]);
+							reply(GlobalMsg["strPluginOnAlready"]);
 						}
 					}
 					else
@@ -4792,12 +4792,12 @@ int FromMsg::DiceLuaReply()
 					if (groupset(fromGroup, "停用扩展"))
 					{
 						if (!isCalled && QQNum.empty() && pGrp->isGroup && GroupInfo(fromGroup).nGroupSize > 200)AddMsgToQueue(getMsg("strBotOffAlready", strVar), fromQQ);
-						else reply(GlobalMsg["strBotOffAlready"]);
+						else reply(GlobalMsg["strPluginOffAlready"]);
 					}
 					else
 					{
 						chat(fromGroup).set("停用扩展");
-						reply(GlobalMsg["strBotOff"]);
+						reply(GlobalMsg["strPluginOff"]);
 					}
 				}
 				else
@@ -4928,6 +4928,8 @@ int FromMsg::DiceLuaReply()
 				Dice_Msg.selfId = console.DiceMaid;
 				Dice_Msg.fromQQ = fromQQ;
 				Dice_Msg.fromGroup = fromGroup;
+				Dice_Msg.fromQQTrust = trusted;
+				Dice_Msg.fromQQInfo = intT == GroupT ? 0 : getGroupMemberInfo(fromGroup, fromQQ).permissions;
 				Dice_Msg.str_max = str_string.size();
 				Dice_Msg.str = msg_result_plist;
 				if (L == nullptr)

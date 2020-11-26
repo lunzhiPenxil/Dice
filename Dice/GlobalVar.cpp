@@ -73,7 +73,7 @@ std::map<std::string, std::string> GlobalMsg
 	{"strUserTrustDenied","{nick}在{self}处无权访问对方的权限×"},
 	{"strUserTrustIllegal","将目标权限修改为{trust}是非法的×"},
 	{"strUserNotFound","{self}无{user}的用户记录"},
-	{"strGroupAuthorized","A roll to the table turns to a dice fumble!\nDice Roller {strSelfName}√\n本群已授权许可，请尽情使用本骰娘√\n请遵守协议使用，服务结束后使用.dismiss送出!" },
+	{"strGroupAuthorized","本群已授权许可，请尽情使用本骰娘√\n请遵守协议使用，服务结束后使用.dismiss送出!" },
 	{"strGroupLicenseDeny","本群未获{self}许可使用，自动在群内静默。\n请先.help协议 阅读并同意协议后向运营方申请许可使用，\n否则请管理员使用!dismiss送出{self}\n可按以下格式填写并发送申请:\n!authorize 申请用途:[ **请写入理由** ] 我已了解Dice!基本用法，仔细阅读并保证遵守{strSelfName}的用户协议，如需停用指令使用[ **请写入指令** ]，用后使用[ **请写入指令** ]送出群" },
 	{"strGroupLicenseApply","此群未通过自助授权×\n许可申请已发送√" },
 	{"strGroupSetOn","现已开启{self}在此群的“{option}”选项√"},			//群内开关和遥控开关通用此文本
@@ -225,6 +225,10 @@ std::map<std::string, std::string> GlobalMsg
 	{"strBotOff", "成功关闭{self}√"},
 	{"strBotOnAlready", "{self}已经处于开启状态!"},
 	{"strBotOffAlready", "{self}已经处于关闭状态!"},
+	{"strPluginOn", "成功开启{self}的扩展指令√" },
+	{"strPluginOff", "成功关闭{self}的扩展指令√" },
+	{"strPluginOnAlready", "{self}的扩展指令已经处于开启状态!" },
+	{"strPluginOffAlready", "{self}的扩展指令已经处于关闭状态!" },
 	{"strRollCriticalSuccess", "大成功！"}, //一般检定用
 	{"strRollExtremeSuccess", "极难成功"},
 	{"strRollHardSuccess", "困难成功"},
@@ -350,9 +354,7 @@ std::map<std::string, std::string> GlobalMsg
 .help群管 查看群管指令
 .help设定 确认骰娘设定
 .help链接 查看源码文档
-官方论坛: https://forum.kokona.tech/
-论坛导航贴: https://kokona.tech
-青果扩充核心文档:https://oliva.dicer.wiki/)"
+青果核心文档:https://oliva.dicer.wiki/)"
 	}
 };
 
@@ -360,12 +362,12 @@ std::map<std::string, std::string> EditedMsg;
 const std::map<std::string, std::string, less_ci> HelpDoc = {
 {"更新",R"(Oliva:
 1.2.11:掷骰渲染
-Shiki:
-569:.rc/.draw暗骰暗抽
+Dice:
+572:喧闹测试第一阶段
 输入以下指令查看详情:
 [.help Oliva更新]
-[.help Shiki更新])"},
-{"Oliva更新",R"([Oliva分支更新]
+[.help Dice更新])"},
+{"Oliva更新",R"([Oliva更新]
 1.2.11:掷骰渲染
 1.2.10:自定义更新源
 1.2.9:新增dx掷骰指令
@@ -379,29 +381,12 @@ Shiki:
 1.2.1:本地Jrrp
 1.2.0:多种特殊检定
 1.1.3:模糊匹配.help最终稳定)"},
-{"Shiki更新",R"([Shiki分支更新]
-569:.rc/.draw暗骰暗抽
-568:.deck自定义牌堆重做
-567:敏感词检测
-566:.help查询建议
-565:.log日志记录
-564:多功能优化，牌数牌堆等
-563:优化指令帮助
-562:新增GUI
-561:群/好友列表内部缓存
-560:支持Mirai加载, 基础GUI
-559:远程更新插件/不良记录
-558:新增每日统计
-557:定时作业系统
-556:黑名单系统重做
-554:新增多角色卡功能
-553:name功能调整
-552:后台系统大修
-551:文件夹批量读取牌堆
-550:允许多轮检定
-549:新增刷屏监测
-547:更新指令开关
-537:更新.send功能)"},
+{"Dice更新",R"([Dice更新]
+572:喧闹测试第一阶段
+571:DiceLua扩展指令
+570:安全性更新)"},
+{"喧闹测试","\"喧闹测试\"是一系列更新的合称，这一系列更新主要围绕DiceLua的扩展指令功能展开，当前正在进行，版本号中带有\"CHAOS\"标志的版本即为喧闹测试版本（注意，它只是发行版的一种），深入参加该测试的骰主将会作为\"遗产骰主\"被标注在测试结束后的核心版本中。"},
+{"遗产骰主","谨以此纪念在喧闹测试中踊跃参与的骰主。\n更多详情请[.help 喧闹测试]"},
 {"协议","0.本协议是Dice!默认服务协议。如果你看到了这句话，意味着Master应用默认协议，请注意。\n1.邀请骰娘、使用掷骰服务和在群内阅读此协议视为同意并承诺遵守此协议，否则请使用.dismiss移出骰娘。\n2.不允许禁言、移出骰娘或刷屏掷骰等对骰娘的不友善行为，这些行为将会提高骰娘被制裁的风险。开关骰娘响应请使用.bot on/off。\n3.骰娘默认邀请行为已事先得到群内同意，因而会自动同意群邀请。因擅自邀请而使骰娘遭遇不友善行为时，邀请者因未履行预见义务而将承担连带责任。\n4.禁止将骰娘用于赌博及其他违法犯罪行为。\n5.对于设置敏感昵称等无法预见但有可能招致言论审查的行为，骰娘可能会出于自我保护而拒绝提供服务\n6.由于技术以及资金原因，我们无法保证机器人100%的时间稳定运行，可能不定时停机维护或遭遇冻结，但是相应情况会及时通过各种渠道进行通知，敬请谅解。临时停机的骰娘不会有任何响应，故而不会影响群内活动，此状态下仍然禁止不友善行为。\n7.对于违反协议的行为，骰娘将视情况终止对用户和所在群提供服务，并将不良记录共享给其他服务提供方。黑名单相关事宜可以与服务提供方协商，但最终裁定权在服务提供方。\n8.本协议内容随时有可能改动。请注意帮助信息、签名、空间、官方群等处的骰娘动态。\n9.骰娘提供掷骰服务是完全免费的，欢迎投食。\n10.本服务最终解释权归服务提供方所有。"},
 {"链接",R"(官方论坛:https://forum.kokona.tech/
 查看源码:https://github.com/lunzhiPenxil/Dice/tree/Oliva
