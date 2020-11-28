@@ -4929,7 +4929,7 @@ int FromMsg::DiceLuaReply()
 				Dice_Msg.fromQQ = fromQQ;
 				Dice_Msg.fromGroup = fromGroup;
 				Dice_Msg.fromQQTrust = trusted;
-				Dice_Msg.fromQQInfo = intT == GroupT ? 0 : getGroupMemberInfo(fromGroup, fromQQ).permissions;
+				Dice_Msg.fromQQInfo = intT == GroupT ? getGroupMemberInfo(fromGroup, fromQQ).permissions : 0 ;
 				Dice_Msg.str_max = str_string.size();
 				Dice_Msg.str = msg_result_plist;
 				if (L == nullptr)

@@ -1010,7 +1010,7 @@ LRESULT DiceGUI::CreateAboutPage()
 	StaticVersionInfo.Create(Dice_Full_Ver_For.c_str(), WS_CHILD | WS_VISIBLE, 0,
 	                         40, 350, 300, 50, m_hwnd);
 
-	StaticAuthorInfo.Create("主要作者: 溯洄 Shiki\r\n本程序于AGPLv3协议下开源", WS_CHILD | WS_VISIBLE, 0,
+	StaticAuthorInfo.Create("主要作者: 仑质\r\n本程序于AGPLv3协议下开源", WS_CHILD | WS_VISIBLE, 0,
 	                        40, 400, 300, 50, m_hwnd);
 
 	StaticSupportLabel.Create("如果您喜欢此应用, 您可以考虑:", WS_CHILD | WS_VISIBLE | SS_CENTERIMAGE, 0,

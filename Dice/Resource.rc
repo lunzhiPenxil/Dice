@@ -79,12 +79,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Dice! Developer Group"
             VALUE "FileDescription", "Dice! Main Dll"
-            VALUE "FileVersion", "2.4.0.0"
+            VALUE "FileVersion", "2.5.0.0"
             VALUE "InternalName", "app.dll"
-            VALUE "LegalCopyright", "Copyright (C) 2020 À›‰ß Shiki"
+            VALUE "LegalCopyright", "Copyright (C) 2020 ¬ÿ÷ "
             VALUE "OriginalFilename", "app.dll"
             VALUE "ProductName", "Dice!"
-            VALUE "ProductVersion", "2.4.0.0"
+            VALUE "ProductVersion", "2.5.0.0"
         END
     END
     BLOCK "VarFileInfo"
