@@ -755,23 +755,23 @@ LRESULT DiceGUI::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 				return 0;
 			case ID_ABOUT_BUTTONSUPPORT:
 				{
-					ShellExecute(m_hwnd, "open", "https://afdian.net/@suhuiw4123", nullptr, nullptr, SW_SHOWDEFAULT);
+					ShellExecute(m_hwnd, "open", "http://benzenpenxil.xyz/OlivaPay/", nullptr, nullptr, SW_SHOWDEFAULT);
 				}
 				return 0;
 			case ID_ABOUT_BUTTONGITHUB:
 				{
-					ShellExecute(m_hwnd, "open", "https://github.com/w4123/Dice", nullptr, nullptr, SW_SHOWDEFAULT);
+					ShellExecute(m_hwnd, "open", "https://github.com/lunzhiPenxil/Dice/tree/Oliva", nullptr, nullptr, SW_SHOWDEFAULT);
 				}
 				return 0;
 			case ID_ABOUT_BUTTONQQGROUP:
 				{
-					ShellExecute(m_hwnd, "open", "https://jq.qq.com/?_wv=1027&k=Wy9CsHcq", nullptr, nullptr,
+					ShellExecute(m_hwnd, "open", "http://oliva.dice.center/", nullptr, nullptr,
 					             SW_SHOWDEFAULT);
 				}
 				return 0;
 			case ID_ABOUT_BUTTONDOCUMENT:
 				{
-					ShellExecute(m_hwnd, "open", "https://v2docs.kokona.tech", nullptr, nullptr, SW_SHOWDEFAULT);
+					ShellExecute(m_hwnd, "open", "https://oliva.dicer.wiki/", nullptr, nullptr, SW_SHOWDEFAULT);
 				}
 				return 0;
 			default:
@@ -1025,7 +1025,7 @@ LRESULT DiceGUI::CreateAboutPage()
 	ButtonGithub.Create("访问源码", WS_CHILD | WS_VISIBLE, 0,
 	                    150, 480, 80, 30, m_hwnd, reinterpret_cast<HMENU>(ID_ABOUT_BUTTONGITHUB));
 
-	ButtonQQGroup.Create("加官方群", WS_CHILD | WS_VISIBLE, 0,
+	ButtonQQGroup.Create("访问官网", WS_CHILD | WS_VISIBLE, 0,
 	                     260, 480, 80, 30, m_hwnd, reinterpret_cast<HMENU>(ID_ABOUT_BUTTONQQGROUP));
 
 	auto hBitmap = static_cast<HBITMAP>(LoadImageA(hDllModule, MAKEINTRESOURCEA(ID_BITMAP_DICELOGO), IMAGE_BITMAP, 0,
