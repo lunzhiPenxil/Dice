@@ -4989,6 +4989,8 @@ int FromMsg::DiceLuaReply()
 					reply();
 				}
 
+				delete[] msg_result_plist;
+
 				return 1;
 			}
 			catch (...)

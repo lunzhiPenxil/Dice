@@ -6,8 +6,11 @@
 #include "CardDeck.h"
 #include "DiceEvent.h"
 #include "DiceMsgSend.h"
+#include "CharacterCard.h"
 #include "RD.h"
 #include "MD5.h"
+
+#pragma warning(disable:4244)
 
 int DiceLua_pushMsg(lua_State* L, Dice_Msg_T &Dice_Msg)
 {
@@ -93,12 +96,76 @@ int Dice_MD5(lua_State* L)
     return 1;
 }
 
+int Dice_DiceDir(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string rv = DiceDir;
+    rv = GBKtoUTF8(rv);
+    lua_pushstring(L, rv.c_str());
+    return 1;
+}
+
+int Dice_GBKtoUTF8(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string rv = lua_tostring(L, 1);
+    rv = GBKtoUTF8(rv);
+    lua_pushstring(L, rv.c_str());
+    return 1;
+}
+
+int Dice_UTF8toGBK(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string rv = lua_tostring(L, 1);
+    rv = UTF8toGBK(rv);
+    lua_pushstring(L, rv.c_str());
+    return 1;
+}
+
+int Dice_GetPcSkill(lua_State* L)
+{
+    int n = lua_gettop(L);
+    long long fromQQ = lua_tointeger(L, 1);
+    long long fromGroup = lua_tointeger(L, 2);
+    std::string skill = lua_tostring(L, 3);
+    skill = UTF8toGBK(skill);
+    std::string skillVal = "0";
+    CharaCard& pc = getPlayer(fromQQ)[fromGroup];
+    int rv_int = pc.show(skill, skillVal);
+    if (skill == "note")
+    {
+        skillVal = "0";
+    }
+    int rv = stoi(skillVal);
+    lua_pushinteger(L, rv);
+    return 1;
+}
+
+int Dice_SetPcSkill(lua_State* L)
+{
+    int n = lua_gettop(L);
+    long long fromQQ = lua_tointeger(L, 1);
+    long long fromGroup = lua_tointeger(L, 2);
+    std::string skill = lua_tostring(L, 3);
+    skill = UTF8toGBK(skill);
+    int skillVal = lua_tointeger(L, 4);
+    CharaCard& pc = getPlayer(fromQQ)[fromGroup];
+    pc.set(skill, skillVal);
+    return 0;
+}
+
 static const luaL_Reg diceLualib[] = {
     {"draw", Dice_Draw},
     {"send", Dice_Send},
     {"int2string", Dice_Int2String},
     {"rd", Dice_Roll},
     {"md5", Dice_MD5},
+    {"DiceDir", Dice_DiceDir},
+    {"GBKtoUTF8", Dice_GBKtoUTF8},
+    {"UTF8toGBK", Dice_UTF8toGBK},
+    {"getPcSkill", Dice_GetPcSkill},
+    {"setPcSkill", Dice_SetPcSkill},
     {NULL, NULL}
 };
 

@@ -200,7 +200,7 @@ public:
 			|| strLowerMessage[intMsgCnt] == 'p' || strLowerMessage[intMsgCnt] == 'b'
 			|| strLowerMessage[intMsgCnt] == 'f'
 			|| strLowerMessage[intMsgCnt] == '+' || strLowerMessage[intMsgCnt] == '-'
-			|| strLowerMessage[intMsgCnt] == 'a'
+			|| strLowerMessage[intMsgCnt] == 'a' || strLowerMessage[intMsgCnt] == 'c'
 			|| strLowerMessage[intMsgCnt] == 'x' || strLowerMessage[intMsgCnt] == '*')
 		{
 			return true;
@@ -249,7 +249,7 @@ public:
 				|| strLowerMessage[intMsgCnt] == 'p' || strLowerMessage[intMsgCnt] == 'b'
 				|| strLowerMessage[intMsgCnt] == 'f'
 				|| strLowerMessage[intMsgCnt] == '+' || strLowerMessage[intMsgCnt] == '-'
-				|| strLowerMessage[intMsgCnt] == 'a'
+				|| strLowerMessage[intMsgCnt] == 'a' || strLowerMessage[intMsgCnt] == 'c'
 				|| strLowerMessage[intMsgCnt] == 'x' || strLowerMessage[intMsgCnt] == '*' || strLowerMessage[intMsgCnt]
 				== '/')
 			{
