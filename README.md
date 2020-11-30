@@ -1,4 +1,4 @@
-# Dice!
+# OlivaDice(DIXE)
 QQ Dice Robot For TRPG Based on CoolQ/Mirai/XQ
 
 [![License](https://img.shields.io/github/license/lunzhiPenxil/Dice.svg)](http://www.gnu.org/licenses)
@@ -9,7 +9,7 @@ QQ Dice Robot For TRPG Based on CoolQ/Mirai/XQ
 
 ## 简介
 
-Dice!是一款基于酷Q的QQ跑团掷骰机器人，而这是由仑质维护的Oliva分支。
+OlivaDice(DIXE)是一款基于酷Q的QQ跑团掷骰机器人，由仑质维护。
 
 欢迎加入开发群: [青果铺] `661366095`    
 或是官方骰娘[小青果酱]的用户群: [青果批发车间] `828786809`    
@@ -23,7 +23,7 @@ Latest Release: [![GitHub release](https://img.shields.io/github/release-pre/lun
 
 ## 开发者
 
-贡献者:w4123溯洄 Shiki jh123111 緋色月下、スイカを食う 仑质
+贡献者:w4123溯洄 Shiki jh123111 緋色月下、スイカを食う 仑质 鱼仙
 
 感谢:Flandre Cirno 回転 他是王家乐。白いとう 哞哞哞哞哞哞哞哞哞哞哞哞 丸子 黯星 一盏大师 初音py2001 Coxxs orzFly 鱼仙 等(排名不分先后)
 
