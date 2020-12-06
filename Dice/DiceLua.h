@@ -51,6 +51,6 @@ namespace DiceLua
     void DiceLua_LoadCommandList(std::map<std::string, std::string>& DiceLua_LoadList, std::string& strLog, std::string DiceLua_DirPath);
     bool isRegexMatch(std::string strRegex, std::string strInput);
     std::string doRegexReplace(std::string strRegex, std::string strInput, std::string strfmt);
-    bool getRegexMatchResult(std::string strRegex, std::string strInput, std::smatch& result);
+    bool getRegexMatchResult(const std::string& strRegex, const std::string& strInput, std::smatch& result);
     int deletePlist(char*** in, unsigned int size);
 }

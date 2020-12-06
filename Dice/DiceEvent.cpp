@@ -4736,6 +4736,8 @@ int FromMsg::DiceReply()
 int FromMsg::DiceLuaReply()
 {
 	int intT = static_cast<int>(fromChat.second);
+	string strMsg_1(strMsg);
+	string strMsg_UTF8(GBKtoUTF8(strMsg));
 	while (isspace(static_cast<unsigned char>(strMsg[intMsgCnt])))
 		intMsgCnt++;
 	strVar["nick"] = getName(fromQQ, fromGroup);
@@ -4830,9 +4832,10 @@ int FromMsg::DiceLuaReply()
 	for (const auto DiceLua_LoadList_this : DiceLua_LoadList)
 	{
 		bool flag_isRegexMatch = false;
+		std::smatch msg_result;
 		try
 		{
-			flag_isRegexMatch = DiceLua::isRegexMatch(GBKtoUTF8(DiceLua_LoadList_this.first), GBKtoUTF8(strMsg));
+			flag_isRegexMatch = DiceLua::getRegexMatchResult(GBKtoUTF8(DiceLua_LoadList_this.first), strMsg_UTF8, msg_result);
 		}
 		catch (...)
 		{
@@ -4874,14 +4877,11 @@ int FromMsg::DiceLuaReply()
 				}
 			}
 			
-			
 			try
 			{
 				lua_State* L = luaL_newstate();
-				string strInputForLua = GBKtoUTF8(strMsg);
+				string strInputForLua = strMsg_UTF8;
 				Dice_Msg_T Dice_Msg;
-				std::smatch msg_result;
-				DiceLua::getRegexMatchResult(GBKtoUTF8(DiceLua_LoadList_this.first), GBKtoUTF8(strMsg), msg_result);
 				std::vector<std::string> str_string = {};
 				for (const auto msg_result_this : msg_result)
 				{

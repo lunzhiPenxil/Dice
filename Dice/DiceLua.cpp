@@ -283,9 +283,9 @@ namespace DiceLua
         return std::regex_replace(strInput, regStrRegex, strfmt);
     }
 
-    bool getRegexMatchResult(std::string strRegex, std::string strInput, std::smatch &result)
+    bool getRegexMatchResult(const std::string &strRegex, const std::string &strInput, std::smatch &result)
     {
-        std::regex regStrRegex(strRegex);
+        const std::regex regStrRegex(strRegex);
         return std::regex_match(strInput, result, regStrRegex);
     }
 
