@@ -363,7 +363,7 @@ const std::map<std::string, std::string, less_ci> HelpDoc = {
 {"更新",R"(Oliva:
 1.2.11:掷骰渲染
 Dice:
-573:喧闹测试第二阶段
+574:喧闹测试第三阶段
 输入以下指令查看详情:
 [.help Oliva更新]
 [.help Dice更新])"},
@@ -382,6 +382,7 @@ Dice:
 1.2.0:多种特殊检定
 1.1.3:模糊匹配.help最终稳定)"},
 {"Dice更新",R"([Dice更新]
+574:喧闹测试第二阶段
 573:喧闹测试第二阶段
 572:喧闹测试第一阶段
 571:DiceLua扩展指令

@@ -4835,7 +4835,7 @@ int FromMsg::DiceLuaReply()
 		std::smatch msg_result;
 		try
 		{
-			flag_isRegexMatch = DiceLua::getRegexMatchResult(GBKtoUTF8(DiceLua_LoadList_this.first), strMsg_UTF8, msg_result);
+			flag_isRegexMatch = DiceLua::getRegexMatchResult(DiceLua_LoadList_this.first, strMsg_1, msg_result);
 		}
 		catch (...)
 		{
@@ -4883,9 +4883,18 @@ int FromMsg::DiceLuaReply()
 				string strInputForLua = strMsg_UTF8;
 				Dice_Msg_T Dice_Msg;
 				std::vector<std::string> str_string = {};
+				int count_sub_num = 0;
 				for (const auto msg_result_this : msg_result)
 				{
-					str_string.push_back(string(msg_result_this.str().c_str()));
+					if (count_sub_num == 0)
+					{
+						str_string.push_back(strInputForLua);
+					}
+					else
+					{
+						str_string.push_back(GBKtoUTF8(DiceLua::doRegexReplace(DiceLua_LoadList_this.first, strMsg_1, "$" + to_string(count_sub_num))));
+					}
+					count_sub_num++;
 				}
 				char** msg_result_plist = new char* [str_string.size()];
 				for (unsigned int i = 0; i < str_string.size(); i++)
