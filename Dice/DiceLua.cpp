@@ -1,14 +1,18 @@
 #include "DiceLua.h"
 
 #include <string>
+#include <sstream>
 #include <regex>
+#include <map>
 #include "EncodingConvert.h"
 #include "CardDeck.h"
 #include "DiceEvent.h"
 #include "DiceMsgSend.h"
+#include "DiceCloud.h"
 #include "CharacterCard.h"
 #include "RD.h"
 #include "MD5.h"
+#include "json.hpp"
 
 #pragma warning(disable:4244)
 
@@ -123,6 +127,24 @@ int Dice_UTF8toGBK(lua_State* L)
     return 1;
 }
 
+int Dice_UrlEncode(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string rv = lua_tostring(L, 1);
+    rv = UrlEncode(rv);
+    lua_pushstring(L, rv.c_str());
+    return 1;
+}
+
+int Dice_UrlDecode(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string rv = lua_tostring(L, 1);
+    rv = UrlDecode(rv);
+    lua_pushstring(L, rv.c_str());
+    return 1;
+}
+
 int Dice_GetPcSkill(lua_State* L)
 {
     int n = lua_gettop(L);
@@ -155,6 +177,223 @@ int Dice_SetPcSkill(lua_State* L)
     return 0;
 }
 
+int Dice_FReadJson(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string rv = "";
+    std::string rv_json_path = "jsonbase";
+    std::string dot = ".";
+    std::string file_path = lua_tostring(L, 1);
+
+    std::stringstream json_get;
+
+    std::ifstream fin(UTF8toGBK(file_path));
+    nlohmann::json obj_json;
+    if (!fin)
+    {
+        rv = "fReadJson#file not there";
+    }
+    else
+    {
+        try
+        {
+            fin >> obj_json;
+            for (int i = 2; i <= n; i++)
+            {
+                if (lua_isinteger(L, i))
+                {
+                    int this_obj = lua_tointeger(L, i);
+                    rv_json_path += dot + "[" + to_string(this_obj) + "]";
+                    obj_json = obj_json[this_obj];
+                }
+                else if (lua_isstring(L, i))
+                {
+                    std::string this_obj = lua_tostring(L, i);
+                    rv_json_path += dot + this_obj;
+                    obj_json = obj_json[this_obj];
+                }
+            }
+            json_get << obj_json;
+            rv = json_get.str();
+        }
+        catch (...)
+        {
+            rv = "fReadJson#can not reach:" + rv_json_path;
+        }
+    }
+
+    lua_pushstring(L, rv.c_str());
+    return 1;
+}
+
+int Dice_FGetJson(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string rv = "";
+    std::string rv_json_path = "jsonbase";
+    std::string dot = ".";
+    std::string file_path = lua_tostring(L, 1);
+
+    std::stringstream json_in;
+    std::stringstream json_get;
+
+    std::ifstream fin(UTF8toGBK(file_path));
+    nlohmann::json obj_json;
+    if (!fin)
+    {
+        rv = "fGetJson#file not there";
+    }
+    else
+    {
+        try
+        {
+            json_in << fin.rdbuf();
+            if (nlohmann::json::accept(json_in.str()))
+            {
+                obj_json = nlohmann::json::parse(json_in.str());
+                for (int i = 2; i <= n; i++)
+                {
+                    if (lua_isinteger(L, i))
+                    {
+                        int this_obj = lua_tointeger(L, i);
+                        rv_json_path += dot + "[" + to_string(this_obj) + "]";
+                        obj_json = obj_json[this_obj];
+                    }
+                    else if (lua_isstring(L, i))
+                    {
+                        std::string this_obj = lua_tostring(L, i);
+                        rv_json_path += dot + this_obj;
+                        obj_json = obj_json[this_obj];
+                    }
+                }
+                if (obj_json.is_structured())
+                {
+                    json_get << obj_json;
+                }
+                else if (obj_json.is_string())
+                {
+                    json_get << obj_json.get<std::string>();
+                }
+                else
+                {
+                    json_get << obj_json;
+                }
+                rv = json_get.str();
+            }
+            else
+            {
+                rv = "fGetJson#is not json";
+            }
+        }
+        catch (...)
+        {
+            rv = "fGetJson#can not reach:" + rv_json_path;
+        }
+    }
+
+    lua_pushstring(L, rv.c_str());
+    return 1;
+}
+
+int Dice_FSetJson(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string rv = "";
+    std::string rv_json_path = "jsonbase";
+    std::string dot = ".";
+    std::string file_path = lua_tostring(L, 1);
+    std::string str_set = lua_tostring(L, 2);
+
+    std::stringstream json_in;
+    std::stringstream json_get;
+
+    std::ifstream fin(UTF8toGBK(file_path));
+    nlohmann::json obj_json;
+    std::vector<std::pair<nlohmann::json, std::string>> json_path_list;
+    if (!fin)
+    {
+        rv = "fSetJson#file not there";
+    }
+    else
+    {
+        try
+        {
+            json_in << fin.rdbuf();
+            if (nlohmann::json::accept(json_in.str()))
+            {
+                obj_json = nlohmann::json::parse(json_in.str());
+                for (int i = 3; i <= n; i++)
+                {
+                    if (lua_isstring(L, i))
+                    {
+                        std::string this_obj = lua_tostring(L, i);
+                        rv_json_path += dot + this_obj;
+                        json_path_list.push_back(pair(obj_json, this_obj));
+                        obj_json = obj_json[this_obj];
+                    }
+                }
+                json_path_list.push_back(pair(obj_json, ""));
+            }
+            else
+            {
+                rv = "fSetJson#is not json";
+            }
+        }
+        catch (...)
+        {
+            rv = "fSetJson#can not reach:" + rv_json_path;
+        }
+    }
+
+    std::ofstream fout(file_path);
+    if (!fout)
+    {
+        rv = "fSetJson#file not there";
+    }
+    else
+    {
+        try
+        {
+            for (auto json_path_list_it = json_path_list.rbegin(); json_path_list_it != json_path_list.rend(); ++json_path_list_it)
+            {
+                if (json_path_list_it->second == "")
+                {
+                    obj_json = str_set;
+                }
+                else
+                {
+                    json_path_list_it->first[json_path_list_it->second] = obj_json;
+                    obj_json = json_path_list_it->first;
+                }
+            }
+
+            fout << std::setw(2) << obj_json;
+            rv = "fSetJson#done";
+        }
+        catch (...)
+        {
+            rv = "fSetJson#can not reach:" + rv_json_path;
+        }
+    }
+    
+
+    lua_pushstring(L, rv.c_str());
+    return 1;
+}
+
+int Dice_FDownWebPage(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string dot = ".";
+    std::string url = lua_tostring(L, 1);
+    std::string file_path = lua_tostring(L, 2);
+
+    int rv = Cloud::DownloadFile(url.c_str(), file_path.c_str());
+
+    lua_pushinteger(L, rv);
+    return 1;
+}
+
 static const luaL_Reg diceLualib[] = {
     {"draw", Dice_Draw},
     {"send", Dice_Send},
@@ -164,8 +403,14 @@ static const luaL_Reg diceLualib[] = {
     {"DiceDir", Dice_DiceDir},
     {"GBKtoUTF8", Dice_GBKtoUTF8},
     {"UTF8toGBK", Dice_UTF8toGBK},
+    {"UrlEncode", Dice_UrlEncode},
+    {"UrlDecode", Dice_UrlDecode},
     {"getPcSkill", Dice_GetPcSkill},
     {"setPcSkill", Dice_SetPcSkill},
+    {"fReadJson", Dice_FReadJson},
+    {"fGetJson", Dice_FGetJson},
+    {"fSetJson", Dice_FSetJson},
+    {"fDownWebPage", Dice_FDownWebPage},
     {NULL, NULL}
 };
 

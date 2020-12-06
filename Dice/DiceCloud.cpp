@@ -1,6 +1,6 @@
 /*
- * 骰娘网络
- * Copyright (C) 2019 String.Empty
+ * 网络模组
+ * Copyright (C) 2020 lunzhiPenxil
  */
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -25,7 +25,7 @@ namespace Cloud
 {
 	void update()
 	{
-		//Shiki心跳
+		//上古心跳
 		if (console["PulseMode"] & (0x001 << 0))
 		{
 			const string strVer = GBKtoUTF8(string(Dice_Ver));
