@@ -177,6 +177,27 @@ int Dice_SetPcSkill(lua_State* L)
     return 0;
 }
 
+int Dice_GetPcName(lua_State* L)
+{
+    int n = lua_gettop(L);
+    long long fromQQ = lua_tointeger(L, 1);
+    long long fromGroup = lua_tointeger(L, 2);
+    CharaCard& pc = getPlayer(fromQQ)[fromGroup];
+    std::string name = pc.Name;
+    lua_pushstring(L, name.c_str());
+    return 1;
+}
+
+int Dice_SetPcName(lua_State* L)
+{
+    int n = lua_gettop(L);
+    long long fromQQ = lua_tointeger(L, 1);
+    long long fromGroup = lua_tointeger(L, 2);
+    std::string name_set = lua_tostring(L, 3);
+    getUser(fromQQ).setNick(fromGroup, name_set);
+    return 0;
+}
+
 int Dice_FReadJson(lua_State* L)
 {
     int n = lua_gettop(L);
@@ -408,6 +429,8 @@ static const luaL_Reg diceLualib[] = {
     {"UrlDecode", Dice_UrlDecode},
     {"getPcSkill", Dice_GetPcSkill},
     {"setPcSkill", Dice_SetPcSkill},
+    {"getPcName", Dice_GetPcName},
+    {"setPcName", Dice_SetPcName},
     {"fReadJson", Dice_FReadJson},
     {"fGetJson", Dice_FGetJson},
     {"fSetJson", Dice_FSetJson},
