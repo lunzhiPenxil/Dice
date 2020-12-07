@@ -233,6 +233,7 @@ int Dice_FGetJson(lua_State* L)
     std::string rv_json_path = "jsonbase";
     std::string dot = ".";
     std::string file_path = lua_tostring(L, 1);
+    std::string str_lobby = lua_tostring(L, 2);
 
     std::stringstream json_in;
     std::stringstream json_get;
@@ -241,7 +242,7 @@ int Dice_FGetJson(lua_State* L)
     nlohmann::json obj_json;
     if (!fin)
     {
-        rv = "fGetJson#file not there";
+        rv = str_lobby;
     }
     else
     {
@@ -251,7 +252,7 @@ int Dice_FGetJson(lua_State* L)
             if (nlohmann::json::accept(json_in.str()))
             {
                 obj_json = nlohmann::json::parse(json_in.str());
-                for (int i = 2; i <= n; i++)
+                for (int i = 3; i <= n; i++)
                 {
                     if (lua_isinteger(L, i))
                     {
@@ -282,12 +283,12 @@ int Dice_FGetJson(lua_State* L)
             }
             else
             {
-                rv = "fGetJson#is not json";
+                rv = str_lobby;
             }
         }
         catch (...)
         {
-            rv = "fGetJson#can not reach:" + rv_json_path;
+            rv = str_lobby;
         }
     }
 
