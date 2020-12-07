@@ -182,8 +182,8 @@ int Dice_GetPcName(lua_State* L)
     int n = lua_gettop(L);
     long long fromQQ = lua_tointeger(L, 1);
     long long fromGroup = lua_tointeger(L, 2);
-    CharaCard& pc = getPlayer(fromQQ)[fromGroup];
-    std::string name = pc.Name;
+    std::string name = getName(fromQQ, fromGroup);
+    name = GBKtoUTF8(name);
     lua_pushstring(L, name.c_str());
     return 1;
 }
@@ -194,6 +194,7 @@ int Dice_SetPcName(lua_State* L)
     long long fromQQ = lua_tointeger(L, 1);
     long long fromGroup = lua_tointeger(L, 2);
     std::string name_set = lua_tostring(L, 3);
+    name_set = UTF8toGBK(name_set);
     getUser(fromQQ).setNick(fromGroup, name_set);
     return 0;
 }
