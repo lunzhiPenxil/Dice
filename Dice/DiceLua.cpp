@@ -255,6 +255,7 @@ int Dice_FGetJson(lua_State* L)
     std::string dot = ".";
     std::string file_path = lua_tostring(L, 1);
     std::string str_lobby = lua_tostring(L, 2);
+    str_lobby = UTF8toGBK(str_lobby);
 
     std::stringstream json_in;
     std::stringstream json_get;
@@ -301,6 +302,10 @@ int Dice_FGetJson(lua_State* L)
                     json_get << obj_json;
                 }
                 rv = json_get.str();
+                if (rv == "null" || rv == "")
+                {
+                    rv = str_lobby;
+                }
             }
             else
             {
