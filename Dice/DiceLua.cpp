@@ -9,6 +9,7 @@
 #include "DiceEvent.h"
 #include "DiceMsgSend.h"
 #include "DiceCloud.h"
+#include "DiceFile.hpp"
 #include "CharacterCard.h"
 #include "RD.h"
 #include "MD5.h"
@@ -106,6 +107,16 @@ int Dice_DiceDir(lua_State* L)
     std::string rv = DiceDir;
     rv = GBKtoUTF8(rv);
     lua_pushstring(L, rv.c_str());
+    return 1;
+}
+
+int Dice_MKDir(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string dir_path = lua_tostring(L, 1);
+    dir_path = UTF8toGBK(dir_path);
+    int rv = mkDir(dir_path);
+    lua_pushinteger(L, rv);
     return 1;
 }
 
@@ -207,9 +218,11 @@ int Dice_FReadJson(lua_State* L)
     std::string dot = ".";
     std::string file_path = lua_tostring(L, 1);
 
+    file_path = UTF8toGBK(file_path);
+
     std::stringstream json_get;
 
-    std::ifstream fin(UTF8toGBK(file_path));
+    std::ifstream fin(file_path);
     nlohmann::json obj_json;
     if (!fin)
     {
@@ -257,10 +270,12 @@ int Dice_FGetJson(lua_State* L)
     std::string file_path = lua_tostring(L, 1);
     std::string str_lobby = lua_tostring(L, 2);
 
+    file_path = UTF8toGBK(file_path);
+
     std::stringstream json_in;
     std::stringstream json_get;
 
-    std::ifstream fin(UTF8toGBK(file_path));
+    std::ifstream fin(file_path);
     nlohmann::json obj_json;
     if (!fin)
     {
@@ -331,10 +346,12 @@ int Dice_FSetJson(lua_State* L)
     std::string file_path = lua_tostring(L, 1);
     std::string str_set = lua_tostring(L, 2);
 
+    file_path = UTF8toGBK(file_path);
+
     std::stringstream json_in;
     std::stringstream json_get;
 
-    std::ifstream fin(UTF8toGBK(file_path));
+    std::ifstream fin(file_path);
     nlohmann::json obj_json;
     std::vector<std::pair<nlohmann::json, std::string>> json_path_list;
     if (!fin)
@@ -415,6 +432,8 @@ int Dice_FDownWebPage(lua_State* L)
     std::string url = lua_tostring(L, 1);
     std::string file_path = lua_tostring(L, 2);
 
+    file_path = UTF8toGBK(file_path);
+
     int rv = Cloud::DownloadFile(url.c_str(), file_path.c_str());
 
     lua_pushinteger(L, rv);
@@ -428,6 +447,7 @@ static const luaL_Reg diceLualib[] = {
     {"rd", Dice_Roll},
     {"md5", Dice_MD5},
     {"DiceDir", Dice_DiceDir},
+    {"mkDir", Dice_MKDir},
     {"GBKtoUTF8", Dice_GBKtoUTF8},
     {"UTF8toGBK", Dice_UTF8toGBK},
     {"UrlEncode", Dice_UrlEncode},
