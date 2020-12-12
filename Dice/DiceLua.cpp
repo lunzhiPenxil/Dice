@@ -270,6 +270,8 @@ int Dice_FGetJson(lua_State* L)
     std::string file_path = lua_tostring(L, 1);
     std::string str_lobby = lua_tostring(L, 2);
 
+    bool flag_not_in_law = false;
+
     file_path = UTF8toGBK(file_path);
 
     std::stringstream json_in;
@@ -295,6 +297,10 @@ int Dice_FGetJson(lua_State* L)
                     {
                         int this_obj = lua_tointeger(L, i);
                         rv_json_path += dot + "[" + to_string(this_obj) + "]";
+                        if (obj_json.size() < this_obj)
+                        {
+                            flag_not_in_law = true;
+                        }
                         obj_json = obj_json[this_obj];
                     }
                     else if (lua_isstring(L, i))
@@ -317,7 +323,7 @@ int Dice_FGetJson(lua_State* L)
                     json_get << obj_json;
                 }
                 rv = json_get.str();
-                if (rv == "null" || rv == "")
+                if (flag_not_in_law || rv == "null" || rv == "")
                 {
                     rv = str_lobby;
                 }
