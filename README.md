@@ -15,7 +15,8 @@ OlivaDice(DIXE)是一款基于酷Q的QQ跑团掷骰机器人，由仑质维护�
 或是官方骰娘[小青果酱]的用户群: [青果批发车间] `828786809`    
   
 主页: <http://oliva.dice.center>   
-手册: <https://oliva.dicer.wiki/>   
+手册: <https://wiki.dice.center>   
+备用手册: <https://oliva.dicer.wiki>   
 
 Latest Stable Release: [![GitHub release](https://img.shields.io/github/release/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/releases) [![GitHub Release Date](https://img.shields.io/github/release-date/lunzhiPenxil/dice.svg)](https://github.com/lunzhiPenxil/Dice/releases)
 
