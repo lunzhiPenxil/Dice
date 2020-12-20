@@ -19,6 +19,7 @@
 #include <memory>
 #include "Lua/lua.hpp"
 #include "DiceLua.h"
+#include "ChineseLocalization.h"
 
 //#pragma warning(disable:28159)
 using namespace std;
@@ -2096,13 +2097,7 @@ int FromMsg::DiceReply()
 			intMsgCnt++;
 		vector<string> ProDeck;
 		vector<string>* TempDeck = nullptr;
-		//bool isPrivate(false);
 		string& key{ strVar["deck_name"] = readAttrName() };
-		if (!strVar["deck_name"].empty() && strVar["deck_name"][0] == '_') {
-			isPrivate = true;
-			strVar["hidden"];
-			strVar["deck_name"].erase(strVar["deck_name"].begin());
-		}
 		if (strVar["deck_name"].empty()){
 			reply(fmt->get_help("draw"));
 			return 1;
@@ -3353,11 +3348,6 @@ int FromMsg::DiceReply()
 			              ? get(chat(fromGroup).intConf, string("rc房规"), 0)
 			              : get(getUser(fromQQ).intConf, string("rc房规"), 0);
 		int intTurnCnt = 1;
-		//bool isHidden(false);
-		if (strMsg[intMsgCnt] == '_') {
-			isHidden = true;
-			++intMsgCnt;
-		}
 		if (strMsg.find('#') != string::npos)
 		{
 			string strTurnCnt = strMsg.substr(intMsgCnt, strMsg.find('#') - intMsgCnt);
@@ -3406,6 +3396,7 @@ int FromMsg::DiceReply()
 		strVar["attr"] = strMsg.substr(intMsgCnt);
 		if (PList.count(fromQQ) && PList[fromQQ][fromGroup].count(strVar["attr"]))intMsgCnt = strMsg.length();
 		else strVar["attr"] = readAttrName();
+		strVar["attr"] = TCNGBKtoSCNGBK(strVar["attr"]);
 		if (strVar["attr"].find("自动成功") == 0)
 		{
 			strDifficulty = strVar["attr"].substr(0, 8);

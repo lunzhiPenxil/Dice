@@ -308,7 +308,7 @@ int Dice_FGetJson(lua_State* L)
                 {
                     if (lua_isinteger(L, i))
                     {
-                        int this_obj = lua_tointeger(L, i);
+                        unsigned int this_obj = lua_tointeger(L, i);
                         rv_json_path += dot + "[" + to_string(this_obj) + "]";
                         if (obj_json.size() < this_obj)
                         {

@@ -147,6 +147,7 @@
     <ClCompile Include="BlackListManager.cpp" />
     <ClCompile Include="CardDeck.cpp" />
     <ClCompile Include="CharacterCard.cpp" />
+    <ClCompile Include="ChineseLocalization.cpp" />
     <ClCompile Include="Dice.cpp" />
     <ClCompile Include="DiceCensor.cpp" />
     <ClCompile Include="DiceCloud.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="BlackListManager.h" />
     <ClInclude Include="CardDeck.h" />
     <ClInclude Include="CharacterCard.h" />
+    <ClInclude Include="ChineseLocalization.h" />
     <ClInclude Include="DiceCensor.h" />
     <ClInclude Include="DiceCloud.h" />
     <ClInclude Include="DiceConsole.h" />
