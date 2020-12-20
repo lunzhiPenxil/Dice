@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2019 String.Empty
  * 消息频率监听
+ * Copyright (C) 2019 String.Empty
+ * Copyright (C) 2019-2020 lunzhiPenxil仑质
  */
 #include <set>
 #include <queue>

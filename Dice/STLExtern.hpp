@@ -1,6 +1,7 @@
 /*
  * 自定义容器
  * Copyright (C) 2019-2020 String.Empty
+ * Copyright (C) 2019-2020 lunzhiPenxil仑质
  */
 #pragma once
 #include <vector>

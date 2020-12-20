@@ -1,6 +1,7 @@
 /*
  * ÎÄ¼ş¶ÁĞ´
  * Copyright (C) 2019-2020 String.Empty
+ * Copyright (C) 2019-2020 lunzhiPenxilÂØÖÊ
  */
 #pragma once
 #include <fstream>

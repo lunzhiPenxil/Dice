@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2019-2020 String.Empty
+ * Copyright (C) 2019-2020 lunzhiPenxil¬ÿ÷ 
  */
 #pragma once
 #ifndef Dice_Console

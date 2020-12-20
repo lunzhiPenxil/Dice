@@ -1,6 +1,7 @@
 /*
  * 后台系统
  * Copyright (C) 2019-2020 String.Empty
+ * Copyright (C) 2019-2020 lunzhiPenxil仑质
  * 控制清理用户/群聊记录，清理图片，监控系统
  */
 #pragma once

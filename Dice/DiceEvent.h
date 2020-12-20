@@ -1,6 +1,6 @@
 /*
  * 消息处理
- * Copyright (C) 2019 String.Empty
+ * Copyright (C) 2019-2020 lunzhiPenxil仑质
  */
 #ifndef DICE_EVENT
 #define DICE_EVENT

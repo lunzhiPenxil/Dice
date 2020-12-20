@@ -2,6 +2,7 @@
  * Copyright (C) 2019-2020 String.Empty
  * 处理定时事件
  * 处理不能即时完成的指令
+ * Copyright (C) 2019-2020 lunzhiPenxil仑质
  */
 #pragma once
 #include <string>

@@ -1,3 +1,16 @@
+/*
+ *  ______   _____  ____  ____  ________  
+ * |_   _ `.|_   _||_  _||_  _||_   __  | 
+ *   | | `. \ | |    \ \  / /    | |_ \_| 
+ *   | |  | | | |     > `' <     |  _| _  
+ *  _| |_.' /_| |_  _/ /'`\ \_  _| |__/ | 
+ * |______.'|_____||____||____||________| 
+ *                                       
+ * OlivaDice(DIXE) QQ Dice Robot for TRPG
+ * Copyright (C) 2019-2020 lunzhiPenxilÂØÖÊ
+ * 
+ */
+
 #include "DiceLua.h"
 
 #include <string>
@@ -435,12 +448,31 @@ int Dice_FDownWebPage(lua_State* L)
 {
     int n = lua_gettop(L);
     std::string dot = ".";
-    std::string url = lua_tostring(L, 1);
-    std::string file_path = lua_tostring(L, 2);
+    std::string url = "";
+    std::string file_path = "";
+    
+    int rv = -1;
+
+    try
+    {
+        url = lua_tostring(L, 1);
+        file_path = lua_tostring(L, 2);
+    }
+    catch (...)
+    {
+        url = "";
+        file_path = "";
+    }
 
     file_path = UTF8toGBK(file_path);
-
-    int rv = Cloud::DownloadFile(url.c_str(), file_path.c_str());
+    try
+    {
+        rv = Cloud::DownloadFile(url.c_str(), file_path.c_str());
+    }
+    catch (...)
+    {
+        rv = -1;
+    }
 
     lua_pushinteger(L, rv);
     return 1;

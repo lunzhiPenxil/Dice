@@ -2,6 +2,8 @@
  * 牌堆抽卡功能
  * 因为发展方向与Dice！插件并不相合，所以更新会止步在某种程度
  * Copyright (C) 2019 String.Empty
+ * 然而一年之后，上面这句话变成了笑话
+ * Copyright (C) 2019-2020 lunzhiPenxil仑质
  */
 #pragma once
 #ifndef CARD_DECK

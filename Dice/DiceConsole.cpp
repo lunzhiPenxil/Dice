@@ -1,14 +1,15 @@
 /*
- * _______   ________  ________  ________  __
- * |  __ \  |__  __| |  _____| |  _____| | |
- * | | | |   | |   | |    | |_____  | |
- * | | | |   | |   | |    |  _____| |__|
- * | |__| |  __| |__  | |_____  | |_____  __
- * |_______/  |________| |________| |________| |__|
+ *  _______     ________    ________    ________    __
+ * |   __  \   |__    __|  |   _____|  |   _____|  |  |
+ * |  |  |  |     |  |     |  |        |  |_____   |  |
+ * |  |  |  |     |  |     |  |        |   _____|  |__|
+ * |  |__|  |   __|  |__   |  |_____   |  |_____    __
+ * |_______/   |________|  |________|  |________|  |__|
  *
  * Dice! QQ Dice Robot for TRPG
  * Copyright (C) 2018-2020 w4123À›‰ß
  * Copyright (C) 2019-2020 String.Empty
+ * Copyright (C) 2019-2020 lunzhiPenxil¬ÿ÷ 
  *
  * This program is free software: you can redistribute it and/or modify it under the terms
  * of the GNU Affero General Public License as published by the Free Software Foundation,
