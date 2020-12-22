@@ -27,6 +27,7 @@
 #include "RD.h"
 #include "MD5.h"
 #include "json.hpp"
+#include "ChineseLocalization.h"
 
 #pragma warning(disable:4244)
 
@@ -130,6 +131,28 @@ int Dice_MKDir(lua_State* L)
     dir_path = UTF8toGBK(dir_path);
     int rv = mkDir(dir_path);
     lua_pushinteger(L, rv);
+    return 1;
+}
+
+int Dice_TCNtoSCN(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string rv = lua_tostring(L, 1);
+    rv = UTF8toGBK(rv);
+    rv = TCNGBKtoSCNGBK(rv);
+    rv = GBKtoUTF8(rv);
+    lua_pushstring(L, rv.c_str());
+    return 1;
+}
+
+int Dice_SCNtoTCN(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string rv = lua_tostring(L, 1);
+    rv = UTF8toGBK(rv);
+    rv = SCNGBKtoTCNGBK(rv);
+    rv = GBKtoUTF8(rv);
+    lua_pushstring(L, rv.c_str());
     return 1;
 }
 
@@ -486,6 +509,8 @@ static const luaL_Reg diceLualib[] = {
     {"md5", Dice_MD5},
     {"DiceDir", Dice_DiceDir},
     {"mkDir", Dice_MKDir},
+    {"TCNtoSCN", Dice_TCNtoSCN},
+    {"SCNtoTCN", Dice_SCNtoTCN},
     {"GBKtoUTF8", Dice_GBKtoUTF8},
     {"UTF8toGBK", Dice_UTF8toGBK},
     {"UrlEncode", Dice_UrlEncode},

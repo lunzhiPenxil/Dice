@@ -49,6 +49,7 @@ const std::map<std::string, int, less_ci>Console::intDefault{
 {"LocalJrrp",1},{"LocalJrrpMin",1},{"LocalJrrpRange",100},{"JrrpDashesRange",25},
 {"PulseMode",0},
 {"HelpMode",1},
+{"CnLocalMode",1},{"CnOutputMode",0},
 {"CnmodsMode",1},
 {"ReplyMode",3},
 {"Private",0},{"CheckGroupLicense",0},{"LeaveDiscuss",0},

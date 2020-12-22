@@ -30,6 +30,7 @@
 #include "MsgFormat.h"
 #include "GlobalVar.h"
 #include "DiceConsole.h"
+#include "ChineseLocalization.h"
 using namespace std;
 using namespace CQ;
 
@@ -55,8 +56,22 @@ mutex msgQueueMutex;
 
 void AddMsgToQueue(const string& msg, long long target_id, msgtype msg_type)
 {
+	//¼ò·±×ª»»
+	string msg_rv;
+	if (console["CnOutputMode"] == 1)
+	{
+		msg_rv = TCNGBKtoSCNGBK(msg);
+	}
+	else if (console["CnOutputMode"] == 2)
+	{
+		msg_rv = SCNGBKtoTCNGBK(msg);
+	}
+	else
+	{
+		msg_rv = msg;
+	}
 	lock_guard<std::mutex> lock_queue(msgQueueMutex);
-	msgQueue.emplace(msg_t(msg, target_id, msg_type));
+	msgQueue.emplace(msg_t(msg_rv, target_id, msg_type));
 }
 
 void AddMsgToQueue(const std::string& msg, chatType ct)

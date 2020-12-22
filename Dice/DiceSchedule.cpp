@@ -6,6 +6,7 @@
 #include "ManagerSystem.h"
 #include "Jsonio.h"
 #include "DiceSchedule.h"
+#include "ChineseLocalization.h"
 
 unordered_map<string, cmd> mCommand = {
 	{"syscheck",check_system},
@@ -36,15 +37,29 @@ void DiceJob::exec() {
 }
 void DiceJob::echo(const std::string& msg) {
 	if (!fromChat.first)return;
+	//¼ò·±×ª»»
+	string msg_rv;
+	if (console["CnOutputMode"] == 1)
+	{
+		msg_rv = TCNGBKtoSCNGBK(msg);
+	}
+	else if (console["CnOutputMode"] == 2)
+	{
+		msg_rv = SCNGBKtoTCNGBK(msg);
+	}
+	else
+	{
+		msg_rv = msg;
+	}
 	switch (fromChat.second) {
 	case CQ::msgtype::Private:
-		CQ::sendPrivateMsg(fromQQ, msg);
+		CQ::sendPrivateMsg(fromQQ, msg_rv);
 		break;
 	case CQ::msgtype::Group:
-		CQ::sendGroupMsg(fromChat.first, msg);
+		CQ::sendGroupMsg(fromChat.first, msg_rv);
 		break;
 	case CQ::msgtype::Discuss:
-		CQ::sendDiscussMsg(fromChat.first, msg);
+		CQ::sendDiscussMsg(fromChat.first, msg_rv);
 		break;
 	}
 }

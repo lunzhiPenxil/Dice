@@ -950,7 +950,7 @@ int FromMsg::DiceReply()
 		if (!console.master())
 		{
 			console.newMaster(fromQQ);
-			strReply = "请认真阅读当前版本Master手册以及用户手册。最新版，请注意版本号对应: https://v2docs.kokona.tech";
+			strReply = "请认真阅读当前版本Master手册以及用户手册。最新版，请注意版本号对应: https://wiki.dice.center/";
 			strReply += "\n如要添加较多没有单群开关的插件，推荐开启DisabledBlock保证群内的静默；";
 			strReply += "\n默认开启对群移出、禁言、刷屏事件的监听，如要关闭请手动调整；";
 			strReply += "\n请注意云黑系统默认开启，如无需此功能请关闭CloudBlackShare；";
@@ -1002,6 +1002,77 @@ int FromMsg::DiceReply()
 	if (blacklist->get_qq_danger(fromQQ) || (intT != PrivateT && blacklist->get_group_danger(fromGroup)))
 	{
 		return 0;
+	}
+	if (strLowerMessage.substr(intMsgCnt, 6) == "plugin")
+	{
+		intMsgCnt += 6;
+		string Command = readPara();
+		string QQNum = readDigit();
+		if (QQNum.empty() || QQNum == to_string(getLoginQQ()) || (QQNum.length() == 4 && stoll(QQNum) == getLoginQQ() %
+			10000))
+		{
+			if (Command == "on")
+			{
+				if (console["DisabledGlobal"])reply(GlobalMsg["strGlobalOff"]);
+				else if (intT == GroupT && ((console["CheckGroupLicense"] && pGrp->isset("未审核")) || (console["CheckGroupLicense"] == 2 && !pGrp->isset("许可使用"))))reply(GlobalMsg["strGroupLicenseDeny"]);
+				else if (intT)
+				{
+					if (isAuth || trusted > 2)
+					{
+						if (groupset(fromGroup, "停用扩展") > 0)
+						{
+							chat(fromGroup).reset("停用扩展");
+							reply(GlobalMsg["strPluginOn"]);
+						}
+						else
+						{
+							reply(GlobalMsg["strPluginOnAlready"]);
+						}
+					}
+					else
+					{
+						if (groupset(fromGroup, "停用扩展") > 0 && GroupInfo(fromGroup).nGroupSize > 100)AddMsgToQueue(
+							getMsg("strPermissionDeniedErr", strVar), fromQQ);
+						else reply(GlobalMsg["strPermissionDeniedErr"]);
+					}
+				}
+			}
+			else if (Command == "off")
+			{
+				if (isAuth || trusted > 2)
+				{
+					if (groupset(fromGroup, "停用扩展"))
+					{
+						if (!isCalled && QQNum.empty() && pGrp->isGroup && GroupInfo(fromGroup).nGroupSize > 200)AddMsgToQueue(getMsg("strBotOffAlready", strVar), fromQQ);
+						else reply(GlobalMsg["strPluginOffAlready"]);
+					}
+					else
+					{
+						chat(fromGroup).set("停用扩展");
+						reply(GlobalMsg["strPluginOff"]);
+					}
+				}
+				else
+				{
+					if (groupset(fromGroup, "停用扩展"))AddMsgToQueue(getMsg("strPermissionDeniedErr", strVar), fromQQ);
+					else reply(GlobalMsg["strPermissionDeniedErr"]);
+				}
+			}
+			else if (!Command.empty() && !isCalled && pGrp->isset("停用扩展"))
+			{
+				return 0;
+			}
+			else if (intT == GroupT && pGrp->isset("停用扩展") && GroupInfo(fromGroup).nGroupSize >= 500 && !isCalled)
+			{
+				//AddMsgToQueue(Dice_Full_Ver_For + getMsg("strBotMsg"), fromQQ);
+			}
+			else
+			{
+				//this_thread::sleep_for(1s);
+				//reply(Dice_Full_Ver_For + GlobalMsg["strBotMsg"]);
+			}
+		}
+		return 1;
 	}
 	if (strLowerMessage.substr(intMsgCnt, 3) == "bot")
 	{
@@ -3396,7 +3467,15 @@ int FromMsg::DiceReply()
 		strVar["attr"] = strMsg.substr(intMsgCnt);
 		if (PList.count(fromQQ) && PList[fromQQ][fromGroup].count(strVar["attr"]))intMsgCnt = strMsg.length();
 		else strVar["attr"] = readAttrName();
-		strVar["attr"] = TCNGBKtoSCNGBK(strVar["attr"]);
+		//简繁转换
+		if (console["CnLocalMode"] == 1)
+		{
+			strVar["attr"] = TCNGBKtoSCNGBK(strVar["attr"]);
+		}
+		else if(console["CnLocalMode"] == 2)
+		{
+			strVar["attr"] = SCNGBKtoTCNGBK(strVar["attr"]);
+		}
 		if (strVar["attr"].find("自动成功") == 0)
 		{
 			strDifficulty = strVar["attr"].substr(0, 8);
@@ -3737,6 +3816,15 @@ int FromMsg::DiceReply()
 	}
 	else if (strLowerMessage.substr(intMsgCnt, 2) == "st")
 	{
+		//简繁转换
+		if (console["CnLocalMode"] == 1)
+		{
+			strMsg = TCNGBKtoSCNGBK(strMsg);
+		}
+		else if (console["CnLocalMode"] == 2)
+		{
+			strMsg = SCNGBKtoTCNGBK(strMsg);
+		}
 		intMsgCnt += 2;
 		while (isspace(static_cast<unsigned char>(strLowerMessage[intMsgCnt])))
 			intMsgCnt++;
@@ -4744,77 +4832,7 @@ int FromMsg::DiceLuaReply()
 	{
 		return 0;
 	}
-	if (strLowerMessage.substr(intMsgCnt, 6) == "plugin")
-	{
-		intMsgCnt += 6;
-		string Command = readPara();
-		string QQNum = readDigit();
-		if (QQNum.empty() || QQNum == to_string(getLoginQQ()) || (QQNum.length() == 4 && stoll(QQNum) == getLoginQQ() %
-			10000))
-		{
-			if (Command == "on")
-			{
-				if (console["DisabledGlobal"])reply(GlobalMsg["strGlobalOff"]);
-				else if (intT == GroupT && ((console["CheckGroupLicense"] && pGrp->isset("未审核")) || (console["CheckGroupLicense"] == 2 && !pGrp->isset("许可使用"))))reply(GlobalMsg["strGroupLicenseDeny"]);
-				else if (intT)
-				{
-					if (isAuth || trusted > 2)
-					{
-						if (groupset(fromGroup, "停用扩展") > 0)
-						{
-							chat(fromGroup).reset("停用扩展");
-							reply(GlobalMsg["strPluginOn"]);
-						}
-						else
-						{
-							reply(GlobalMsg["strPluginOnAlready"]);
-						}
-					}
-					else
-					{
-						if (groupset(fromGroup, "停用扩展") > 0 && GroupInfo(fromGroup).nGroupSize > 100)AddMsgToQueue(
-							getMsg("strPermissionDeniedErr", strVar), fromQQ);
-						else reply(GlobalMsg["strPermissionDeniedErr"]);
-					}
-				}
-			}
-			else if (Command == "off")
-			{
-				if (isAuth || trusted > 2)
-				{
-					if (groupset(fromGroup, "停用扩展"))
-					{
-						if (!isCalled && QQNum.empty() && pGrp->isGroup && GroupInfo(fromGroup).nGroupSize > 200)AddMsgToQueue(getMsg("strBotOffAlready", strVar), fromQQ);
-						else reply(GlobalMsg["strPluginOffAlready"]);
-					}
-					else
-					{
-						chat(fromGroup).set("停用扩展");
-						reply(GlobalMsg["strPluginOff"]);
-					}
-				}
-				else
-				{
-					if (groupset(fromGroup, "停用扩展"))AddMsgToQueue(getMsg("strPermissionDeniedErr", strVar), fromQQ);
-					else reply(GlobalMsg["strPermissionDeniedErr"]);
-				}
-			}
-			else if (!Command.empty() && !isCalled && pGrp->isset("停用扩展"))
-			{
-				return 0;
-			}
-			else if (intT == GroupT && pGrp->isset("停用扩展") && GroupInfo(fromGroup).nGroupSize >= 500 && !isCalled)
-			{
-				//AddMsgToQueue(Dice_Full_Ver_For + getMsg("strBotMsg"), fromQQ);
-			}
-			else
-			{
-				//this_thread::sleep_for(1s);
-				//reply(Dice_Full_Ver_For + GlobalMsg["strBotMsg"]);
-			}
-		}
-		return 1;
-	}
+	
 	if ((!isCalled || !console["DisabledListenAt"]) && (groupset(fromGroup, "停用扩展") > 0))
 	{
 		return 0;
