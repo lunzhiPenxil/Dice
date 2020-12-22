@@ -166,6 +166,10 @@ void dataBackUp()
 	mkDir(DiceDir + "\\conf");
 	mkDir(DiceDir + "\\user");
 	mkDir(DiceDir + "\\audit");
+	mkDir(DiceDir + "\\update");
+	mkDir(DiceDir + "\\cnmods");
+	mkDir(DiceDir + "\\plugin");
+	mkDir(DiceDir + "\\plugin\\lib");
 	//备份列表
 	saveBFile(DiceDir + "\\user\\PlayerCards.RDconf", PList);
 	saveFile(DiceDir + "\\user\\ChatList.txt", ChatList);
@@ -220,6 +224,7 @@ EVE_Enable(eventEnable)
 	mkDir(DiceDir + "\\update");
 	mkDir(DiceDir + "\\cnmods");
 	mkDir(DiceDir + "\\plugin");
+	mkDir(DiceDir + "\\plugin\\lib");
 	if (!console.load())
 	{
 		ifstream ifstreamMaster(strFileLoc + "Master.RDconf");

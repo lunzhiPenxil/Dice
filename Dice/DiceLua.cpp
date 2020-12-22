@@ -536,6 +536,14 @@ LUAMOD_API int luaopen_diceLua(lua_State* L) {
 
 LUALIB_API void DiceLua_openlibs(lua_State* L)
 {
+    std::string lib_path;
+    lua_getglobal(L, "package");
+    lua_getfield(L, -1, "path");
+    lib_path = lua_tostring(L, -1);
+    lib_path += ";" + DiceDir + "\\plugin\\lib\\?.lua";
+    lua_getglobal(L, "package");
+    lua_pushstring(L, lib_path.c_str());
+    lua_setfield(L, -2, "path");
     luaL_requiref(L, LUA_DICELUALIBNAME, luaopen_diceLua, 1);
     lua_pop(L, 1);
 }
@@ -566,7 +574,9 @@ namespace DiceLua
         {
             if ((fileinfo.attrib & _A_SUBDIR))
             {
-                if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
+                if (strcmp(fileinfo.name, ".") != 0 && 
+                    strcmp(fileinfo.name, "..") != 0 &&
+                    strcmp(fileinfo.name, "lib") != 0)
                 {
                     sprintf_s(tmpPath, "%s\\%s", directoryPath, fileinfo.name);
                     GetFilesFromDirectory(files, tmpPath);
@@ -587,6 +597,12 @@ namespace DiceLua
         GetFilesFromDirectory(DiceLua_FileList_tmp, DiceLua_DirPath.c_str());
         for (const auto DiceLua_FileList_this : DiceLua_FileList_tmp)
         {
+            if (DiceLua_FileList_this.size() <= 4 || 
+                DiceLua_FileList_this.substr(DiceLua_FileList_this.size() - 4, DiceLua_FileList_this.size()) != ".lua")
+            {
+                continue;
+            }
+
             lua_State* L_load = luaL_newstate();
             luaL_openlibs(L_load);
             DiceLua_openlibs(L_load);
