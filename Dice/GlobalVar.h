@@ -37,12 +37,12 @@
  * 请勿修改Dice_Build, Dice_Ver_Without_Build，DiceRequestHeader以及Dice_Ver常量
  * 请修改Dice_Short_Ver或Dice_Full_Ver常量以达到版本自定义
  */
-const unsigned short Dice_Build = 574u;
-inline const std::string Dice_Ver_Without_Build = "2.5.1CHAOS3";
-constexpr auto DiceRequestHeader = "Dice/2.5.1CHAOS3";
-constexpr auto Oliva_Dice_Ver_Without_Build = "Oliva.1.2.11";
+const unsigned short Dice_Build = 575u;
+inline const std::string Dice_Ver_Without_Build = "2.5.2CHAOS4";
+constexpr auto DiceRequestHeader = "OlivaDice/2.5.2CHAOS4";
+constexpr auto Oliva_Dice_Ver_Without_Build = "Oliva.1.2.12";
 inline const std::string Dice_Ver = Dice_Ver_Without_Build + "." + Oliva_Dice_Ver_Without_Build + "(" + std::to_string(Dice_Build) + ")";
-inline const std::string Dice_Short_Ver = "Dice! by Dice-Developer-Team 仑质 Ver " + Dice_Ver;
+inline const std::string Dice_Short_Ver = "OlivaDice(DIXE) by Dice-Developer-Team 仑质 Ver " + Dice_Ver;
 
 #ifdef __clang__
 

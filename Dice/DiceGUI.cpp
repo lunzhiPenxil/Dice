@@ -587,7 +587,7 @@ LRESULT DiceGUI::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 	case WM_CLOSE:
-		if (MessageBoxA(m_hwnd, "未点击保存/设置的项目不会被保存，确认退出?", "Dice! GUI", MB_OKCANCEL) == IDOK)
+		if (MessageBoxA(m_hwnd, "未点击保存/设置的项目不会被保存，确认退出?", "OlivaDice(DIXE)", MB_OKCANCEL) == IDOK)
 		{
 			DestroyWindow(m_hwnd);
 		}
@@ -655,7 +655,7 @@ LRESULT DiceGUI::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (str.length() < 5 || str.length() > 17)
 					{
-						MessageBoxA(m_hwnd, "QQ号无效!", "Dice! GUI", MB_OK | MB_ICONWARNING);
+						MessageBoxA(m_hwnd, "QQ号无效!", "OlivaDice(DIXE)", MB_OK | MB_ICONWARNING);
 						return 0;
 					}
 					long long qq = std::stoll(str);
@@ -682,14 +682,14 @@ LRESULT DiceGUI::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					while (str.length() > 1 && str[0] == '0')str.erase(str.begin());
 					if (str.length() < 5 || str.length() > 17)
 					{
-						MessageBoxA(m_hwnd, "QQ号无效!", "Dice! GUI", MB_OK | MB_ICONWARNING);
+						MessageBoxA(m_hwnd, "QQ号无效!", "OlivaDice(DIXE)", MB_OK | MB_ICONWARNING);
 						return 0;
 					}
 					long long qq = std::stoll(str);
 					int ret = ListViewUserTrust.GetItemIndexByText(str);
 					if (ret == -1 && !UserList.count(qq))
 					{
-						MessageBoxA(m_hwnd, "找不到此用户", "Dice GUI!", MB_OK | MB_ICONWARNING);
+						MessageBoxA(m_hwnd, "找不到此用户", "OlivaDice(DIXE)", MB_OK | MB_ICONWARNING);
 					}
 					else
 					{
@@ -705,7 +705,7 @@ LRESULT DiceGUI::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					while (str.length() > 1 && str[0] == '0')str.erase(str.begin());
 					if (str.length() < 5 || str.length() > 17)
 					{
-						MessageBoxA(m_hwnd, "QQ号无效!", "Dice! GUI", MB_OK | MB_ICONWARNING);
+						MessageBoxA(m_hwnd, "QQ号无效!", "OlivaDice(DIXE)", MB_OK | MB_ICONWARNING);
 						return 0;
 					}
 					long long qq = std::stoll(str);
@@ -714,13 +714,13 @@ LRESULT DiceGUI::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					string trust = EditUserTrustLevel.GetText();
 					if (trust.length() != 1)
 					{
-						MessageBoxA(m_hwnd, "信任等级无效!", "Dice! GUI", MB_OK | MB_ICONWARNING);
+						MessageBoxA(m_hwnd, "信任等级无效!", "OlivaDice(DIXE)", MB_OK | MB_ICONWARNING);
 						return 0;
 					}
 					int trustlevel = std::stoi(trust);
 					if (trustlevel < 0 || trustlevel > 5)
 					{
-						MessageBoxA(m_hwnd, "信任等级无效!", "Dice! GUI", MB_OK | MB_ICONWARNING);
+						MessageBoxA(m_hwnd, "信任等级无效!", "OlivaDice(DIXE)", MB_OK | MB_ICONWARNING);
 						return 0;
 					}
 					UserList[qq].trust(trustlevel);
@@ -745,7 +745,7 @@ LRESULT DiceGUI::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					while (valstr.length() > 1 && valstr[0] == '0')valstr.erase(valstr.begin());
 					if (valstr.length() == 0 || valstr.length() > 9)
 					{
-						MessageBoxA(m_hwnd, "属性值无效!", "Dice! GUI", MB_OK | MB_ICONWARNING);
+						MessageBoxA(m_hwnd, "属性值无效!", "OlivaDice(DIXE)", MB_OK | MB_ICONWARNING);
 						return 0;
 					}
 					int val = std::stoi(valstr);
@@ -869,7 +869,7 @@ LRESULT DiceGUI::CreateCustomMsgPage()
 	                     300, rcClient.bottom - 80, rcClient.right - rcClient.left - 320, 60, m_hwnd, reinterpret_cast<HMENU>(ID_EDIT));
 
 
-	StaticMainLabel.Create("欢迎来到Dice!自定义回复修改面板\r\n请双击右侧标题，在下方更改文本\r\n更改文本后请点击保存\r\n每个文本修改后均需点击一次",
+	StaticMainLabel.Create("欢迎来到OlivaDice(DIXE)自定义回复修改面板\r\n请双击右侧标题，在下方更改文本\r\n更改文本后请点击保存\r\n每个文本修改后均需点击一次",
 	                       WS_CHILD | WS_VISIBLE, 0,
 	                       25, 40, 230, 200, m_hwnd, reinterpret_cast<HMENU>(ID_MAINLABEL));
 
@@ -1106,7 +1106,7 @@ int WINAPI GUIMain()
 	if (UserList.size() > 100)
 	{
 		LoadStranger = false;
-		MessageBoxA(nullptr, "用户数量超过100, 跳过非好友用户昵称加载", "Dice! GUI", MB_OK);
+		MessageBoxA(nullptr, "用户数量超过100, 跳过非好友用户昵称加载", "OlivaDice(DIXE)", MB_OK);
 	}
 
 	// 进度条
@@ -1144,7 +1144,7 @@ int WINAPI GUIMain()
 	// 主GUI
 	DiceGUI MainWindow(std::move(nicknameMp));
 
-	if (!MainWindow.Create("Dice! GUI", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER | WS_CLIPSIBLINGS, 0,
+	if (!MainWindow.Create("OlivaDice(DIXE)", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER | WS_CLIPSIBLINGS, 0,
 	                       CW_USEDEFAULT, CW_USEDEFAULT, 1146, 564))
 	{
 		return 0;

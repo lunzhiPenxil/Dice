@@ -50,7 +50,7 @@ namespace Cloud
 				"token=" + GlobalMsg["strConfigPulseToken"] +
 				"&user_id=" + to_string(console.DiceMaid) +
 				"&time_ts=" + to_string(TimeStamp) + "000" +
-				"&version=Dice! " + strVer +
+				"&version=OlivaDice(DIXE) " + strVer +
 				"&name=" + UrlEncode(GBKtoUTF8(GlobalMsg["strSelfName"])) +
 				"&masterid=" + to_string(console.master()) +
 				"&interval=" + to_string(interval + waitfor) +

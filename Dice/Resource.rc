@@ -77,13 +77,13 @@ BEGIN
     BEGIN
         BLOCK "080404b0"
         BEGIN
-            VALUE "CompanyName", "Dice! Developer Group"
-            VALUE "FileDescription", "Dice! Main Dll"
+            VALUE "CompanyName", "Dixe Developer Group"
+            VALUE "FileDescription", "Dixe Main Dll"
             VALUE "FileVersion", "2.5.0.0"
             VALUE "InternalName", "app.dll"
             VALUE "LegalCopyright", "Copyright (C) 2020 ¬ÿ÷ "
             VALUE "OriginalFilename", "app.dll"
-            VALUE "ProductName", "Dice!"
+            VALUE "ProductName", "Dixe"
             VALUE "ProductVersion", "2.5.0.0"
         END
     END

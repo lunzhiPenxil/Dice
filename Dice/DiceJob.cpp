@@ -663,7 +663,7 @@ void dice_api_update(DiceJob& job) {
 			return;
 			break;
 		case -2:
-			job.note("更新Dice失败!dll文件未下载到指定位置", 0b1);
+			job.note("更新OlivaDice(DIXE)失败!dll文件未下载到指定位置", 0b1);
 			return;
 			break;
 		case 0:
@@ -674,7 +674,7 @@ void dice_api_update(DiceJob& job) {
 				return;
 				break;
 			case -2:
-				job.note("更新Dice失败!json文件未下载到指定位置", 0b1);
+				job.note("更新OlivaDice(DIXE)失败!json文件未下载到指定位置", 0b1);
 				return;
 				break;
 			case 0:
@@ -692,25 +692,25 @@ void dice_api_update(DiceJob& job) {
 			char pathJson_new[] = "data/MiraiNative/pluginsnew/com.w4123.dice.json";
 			if (cp_file(strApiDllSaveLoc, pathDll)) {}
 			else {
-				job.note("更新Dice失败!dll文件整合时失败，但新版本已缓存。", 0b1);
+				job.note("更新OlivaDice(DIXE)失败!dll文件整合时失败，但新版本已缓存。", 0b1);
 				return;
 			}
 			if (cp_file(strApiJsonSaveLoc, pathJson)) {}
 			else {
-				job.note("更新Dice失败!json文件整合时失败，但新版本已缓存。", 0b1);
+				job.note("更新OlivaDice(DIXE)失败!json文件整合时失败，但新版本已缓存。", 0b1);
 				return;
 			}
 			if (cp_file(strApiDllSaveLoc, pathDll_new)) {}
 			else {
-				job.note("更新Dice失败!dll文件整合时失败，但新版本已缓存。", 0b1);
+				job.note("更新OlivaDice(DIXE)失败!dll文件整合时失败，但新版本已缓存。", 0b1);
 				return;
 			}
 			if (cp_file(strApiJsonSaveLoc, pathJson_new)) {}
 			else {
-				job.note("更新Dice失败!json文件整合时失败，但新版本已缓存。", 0b1);
+				job.note("更新OlivaDice(DIXE)失败!json文件整合时失败，但新版本已缓存。", 0b1);
 				return;
 			}
-			job.note("更新Dice!" + job.strVar["ver"] + "分支成功√", 1);
+			job.note("更新OlivaDice(DIXE)" + job.strVar["ver"] + "分支成功√", 1);
 		}
 		else if (frame == QQFrame::XianQu) {
 			mkDir(dirExe + "CQPlugins/");
@@ -719,15 +719,15 @@ void dice_api_update(DiceJob& job) {
 			string urlDll(strDownloadTmp_dll);
 			if (cp_file(strApiDllSaveLoc, pathDll)) {}
 			else {
-				job.note("更新Dice失败!dll文件整合时失败，但新版本已缓存。", 0b1);
+				job.note("更新OlivaDice(DIXE)失败!dll文件整合时失败，但新版本已缓存。", 0b1);
 				return;
 			}
 			if (cp_file(strApiJsonSaveLoc, pathJson)) {}
 			else {
-				job.note("更新Dice失败!json文件整合时失败，但新版本已缓存。", 0b1);
+				job.note("更新OlivaDice(DIXE)失败!json文件整合时失败，但新版本已缓存。", 0b1);
 				return;
 			}
-			job.note("更新Dice!" + job.strVar["ver"] + "分支成功√", 1);
+			job.note("更新OlivaDice(DIXE)" + job.strVar["ver"] + "分支成功√", 1);
 		}
 		else {
 			job.note("尝试进行未知服务平台中的更新，暂不予提供自动更新服务，但新版本已缓存。", 1);
@@ -744,10 +744,10 @@ void dice_api_update(DiceJob& job) {
 				job.echo("更新失败:" + strURL);
 				break;
 			case -2:
-				job.note("更新Dice失败!文件未找到:" + strAppPath, 0b10);
+				job.note("更新OlivaDice(DIXE)失败!文件未找到:" + strAppPath, 0b10);
 				break;
 			case 0:
-				job.note("更新Dice!" + job.strVar["ver"] + "分支成功√\n可用.system reload 重启应用更新", 1);
+				job.note("更新OlivaDice(DIXE)" + job.strVar["ver"] + "分支成功√\n可用.system reload 重启应用更新", 1);
 			}
 		}
 	}
